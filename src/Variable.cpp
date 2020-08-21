@@ -16,7 +16,6 @@ class matioCpp::Variable::Impl
 public:
     matvar_t* matVar_ptr{nullptr};
     std::vector<size_t> dimensions;
-    mat_complex_split_t matioComplexSplit;
 
     void freePtr()
     {
@@ -121,10 +120,11 @@ bool matioCpp::Variable::createComplexVar(const std::string& name, const Variabl
         return false;
     }
 
-    m_pimpl->matioComplexSplit.Re = realData;
-    m_pimpl->matioComplexSplit.Im = imaginaryData;
+    mat_complex_split_t matioComplexSplit;
+    matioComplexSplit.Re = realData;
+    matioComplexSplit.Im = imaginaryData;
 
-    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, m_pimpl->dimensions.size(), m_pimpl->dimensions.data(), &(m_pimpl->matioComplexSplit), MAT_F_COMPLEX));
+    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, m_pimpl->dimensions.size(), m_pimpl->dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
     return m_pimpl->matVar_ptr != nullptr;
 }
@@ -135,9 +135,53 @@ matioCpp::Variable::Variable()
 
 }
 
+matioCpp::Variable::Variable(const matioCpp::Variable &other)
+{
+    this->operator=(other);
+}
+
+matioCpp::Variable::Variable(matioCpp::Variable &&other)
+{
+    this->operator=(other);
+}
+
 matioCpp::Variable::~Variable()
 {
 
+}
+
+matioCpp::Variable &matioCpp::Variable::operator=(const matioCpp::Variable &other)
+{
+    fromMatio(other.m_pimpl->matVar_ptr);
+    return *this;
+}
+
+matioCpp::Variable &matioCpp::Variable::operator=(matioCpp::Variable &&other)
+{
+    m_pimpl = std::move(other.m_pimpl);
+    return *this;
+}
+
+bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
+{
+    std::string errorPrefix = "[ERROR][matioCpp::Variable::fromMatio] ";
+    if (!inputVar)
+    {
+        std::cerr << errorPrefix << "Empty input variable." << std::endl;
+        return false;
+    }
+
+    matioCpp::Span<size_t> dimensionsSpan = matioCpp::make_span(inputVar->dims, inputVar->rank);
+    m_pimpl->dimensions.assign(dimensionsSpan.begin(), dimensionsSpan.end());
+
+    m_pimpl->resetPtr(Mat_VarDuplicate(inputVar, 0));
+
+    return true;
+}
+
+const matvar_t *matioCpp::Variable::toMatio() const
+{
+    return m_pimpl->matVar_ptr;
 }
 
 std::string matioCpp::Variable::name() const

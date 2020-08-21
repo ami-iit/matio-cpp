@@ -15,10 +15,6 @@
 #include <matioCpp/Utilities.h>
 #include <matioCpp/Span.h>
 
-namespace matioCpp {
-class Variable;
-}
-
 class matioCpp::Variable
 {
 
@@ -57,7 +53,19 @@ public:
 
     Variable();
 
+    Variable(const Variable& other);
+
+    Variable(Variable&& other);
+
     ~Variable();
+
+    Variable& operator=(const Variable& other);
+
+    Variable& operator=(Variable&& other);
+
+    bool fromMatio(const matvar_t * inputVar);
+
+    const matvar_t * toMatio() const;
 
     std::string name() const;
 

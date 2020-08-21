@@ -1,0 +1,4 @@
+#ifndef MATIOCPP_VECTOR_H
+#define MATIOCPP_VECTOR_H
+
+#endif // MATIOCPP_VECTOR_H

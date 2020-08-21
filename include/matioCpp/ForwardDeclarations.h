@@ -103,6 +103,9 @@ MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;
 template <class ElementType, std::ptrdiff_t Extent = dynamic_extent>
 class Span;
 
+class Variable;
+
+class Vector;
 }
 
 #endif // MATIOCPP_FORWARDDECLARATIONS_H
