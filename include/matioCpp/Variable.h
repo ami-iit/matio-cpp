@@ -10,14 +10,8 @@
  * at your option.
  */
 
-#include <matio.h>
-#include <complex>
-#include <vector>
-#include <memory>
-#include <string>
-#include <initializer_list>
-#include <iostream>
 
+#include <matioCpp/ForwardDeclarations.h>
 #include <matioCpp/Utilities.h>
 #include <matioCpp/Span.h>
 
@@ -64,6 +58,14 @@ public:
     Variable();
 
     ~Variable();
+
+    std::string name() const;
+
+    matioCpp::VariableType variableType() const;
+
+    matioCpp::ValueType valueType() const;
+
+    bool isComplex() const;
 
 };
 

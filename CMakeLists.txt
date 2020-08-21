@@ -94,7 +94,9 @@ set(MATIOCPP_SRC src/Variable.cpp
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/Utilities.h
-                 include/matioCpp/Variable.h)
+                 include/matioCpp/Variable.h
+                 include/matioCpp/ForwardDeclarations.h
+                 include/matioCpp/matioCpp.h)
 
 # Define the library target
 add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR})

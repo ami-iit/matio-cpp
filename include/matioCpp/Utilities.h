@@ -10,43 +10,15 @@
  * at your option.
  */
 
-#include <matio.h>
-#include <string>
-#include <type_traits>
+#include <matioCpp/ForwardDeclarations.h>
 
 namespace matioCpp {
 
-enum class VariableType
-{
-    Vector,
-    MultiDimensionalArray,
-    StructArray,
-    CellArray
-};
-
-enum class ValueType
-{
-    INT8,
-    UINT8,
-    INT16,
-    UINT16,
-    INT32,
-    UINT32,
-    SINGLE,
-    DOUBLE,
-    INT64,
-    UINT64,
-    UTF8,
-    UTF16,
-    UTF32,
-    STRING,
-    CELL,
-    STRUCT,
-};
-
 matio_types get_matio_value_type(const ValueType& inputValueType);
 
-void get_matio_types(const VariableType& inputVariableType, const ValueType& inputValueType, matio_classes& outputMatioClasses, matio_types& outputMatioType);
+bool get_matio_types(const VariableType& inputVariableType, const ValueType& inputValueType, matio_classes& outputMatioClasses, matio_types& outputMatioType);
+
+bool get_types_from_matvart(const matvar_t* input, VariableType& outputVariableType, ValueType &outputValueType);
 
 // defaults
 template <typename Tp> struct get_type;
@@ -77,9 +49,6 @@ template <> struct matio_type_to_cpp<MAT_T_SINGLE> { using type = float; };
 template <> struct matio_type_to_cpp<MAT_T_DOUBLE> { using type = double; };
 template <> struct matio_type_to_cpp<MAT_T_INT64>  { using type = int64_t; };
 template <> struct matio_type_to_cpp<MAT_T_UINT64> { using type = uint64_t; };
-
-
-
 
 
 }

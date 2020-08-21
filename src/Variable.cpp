@@ -66,7 +66,11 @@ bool matioCpp::Variable::createVar(const std::string& name, const VariableType& 
     matio_types matioType;
     matio_classes matioClass;
 
-    get_matio_types(variableType, valueType, matioClass, matioType);
+    if(!get_matio_types(variableType, valueType, matioClass, matioType))
+    {
+        std::cerr << errorPrefix << "Either the variableType or the valueType are not supported." << std::endl;
+        return false;
+    }
 
     m_pimpl->dimensions = dimensions;
 
@@ -111,7 +115,11 @@ bool matioCpp::Variable::createComplexVar(const std::string& name, const Variabl
     matio_types matioType;
     matio_classes matioClass;
 
-    get_matio_types(variableType, valueType, matioClass, matioType);
+    if (!get_matio_types(variableType, valueType, matioClass, matioType))
+    {
+        std::cerr << errorPrefix << "Either the variableType or the valueType are not supported." << std::endl;
+        return false;
+    }
 
     m_pimpl->matioComplexSplit.Re = realData;
     m_pimpl->matioComplexSplit.Im = imaginaryData;
@@ -130,4 +138,44 @@ matioCpp::Variable::Variable()
 matioCpp::Variable::~Variable()
 {
 
+}
+
+std::string matioCpp::Variable::name() const
+{
+    if (m_pimpl->matVar_ptr)
+    {
+        return m_pimpl->matVar_ptr->name;
+    }
+    else
+    {
+        return "";
+    }
+}
+
+matioCpp::VariableType matioCpp::Variable::variableType() const
+{
+    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
+    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(m_pimpl->matVar_ptr, outputVariableType, outputValueType);
+    return outputVariableType;
+}
+
+matioCpp::ValueType matioCpp::Variable::valueType() const
+{
+    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
+    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(m_pimpl->matVar_ptr, outputVariableType, outputValueType);
+    return outputValueType;
+}
+
+bool matioCpp::Variable::isComplex() const
+{
+    if (m_pimpl->matVar_ptr)
+    {
+        return m_pimpl->matVar_ptr->isComplex;
+    }
+    else
+    {
+        return false;
+    }
 }

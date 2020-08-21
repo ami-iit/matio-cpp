@@ -10,7 +10,7 @@
 
 #include <matioCpp/Utilities.h>
 
-void matioCpp::get_matio_types(const matioCpp::VariableType &inputVariableType, const matioCpp::ValueType &inputValueType, matio_classes &outputMatioClasses, matio_types &outputMatioType)
+bool matioCpp::get_matio_types(const matioCpp::VariableType &inputVariableType, const matioCpp::ValueType &inputValueType, matio_classes &outputMatioClasses, matio_types &outputMatioType)
 {
     if (inputVariableType == VariableType::Vector || inputVariableType == VariableType::MultiDimensionalArray)
     {
@@ -56,12 +56,30 @@ void matioCpp::get_matio_types(const matioCpp::VariableType &inputVariableType, 
             outputMatioClasses = matio_classes::MAT_C_UINT64;
             outputMatioType =  matio_types::MAT_T_UINT64;
             break;
+        case matioCpp::ValueType::UNSUPPORTED:
+            return false;
         default:
             outputMatioClasses = matio_classes::MAT_C_DOUBLE;
             outputMatioType = get_matio_value_type(inputValueType);
             break;
         }
     }
+    else if (inputVariableType == VariableType::CellContainer)
+    {
+        outputMatioClasses = matio_classes::MAT_C_CELL;
+        outputMatioType = get_matio_value_type(inputValueType);
+    }
+    else if (inputVariableType == VariableType::StructContainer)
+    {
+        outputMatioClasses = matio_classes::MAT_C_STRUCT;
+        outputMatioType = get_matio_value_type(inputValueType);
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
 }
 
 matio_types matioCpp::get_matio_value_type(const matioCpp::ValueType &inputValueType)
@@ -103,4 +121,107 @@ matio_types matioCpp::get_matio_value_type(const matioCpp::ValueType &inputValue
     default:
         return matio_types::MAT_T_DOUBLE;
     }
+}
+
+bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableType &outputVariableType, matioCpp::ValueType &outputValueType)
+{
+    if (!input)
+    {
+        return false;
+    }
+
+    switch (input->data_type)
+    {
+    case matio_types::MAT_T_INT8:
+        outputValueType = matioCpp::ValueType::INT8;
+        break;
+    case matio_types::MAT_T_UINT8:
+        outputValueType = matioCpp::ValueType::UINT8;
+        break;
+    case matio_types::MAT_T_INT16:
+        outputValueType = matioCpp::ValueType::INT16;
+        break;
+    case matio_types::MAT_T_UINT16:
+        outputValueType = matioCpp::ValueType::UINT16;
+        break;
+    case matio_types::MAT_T_INT32:
+        outputValueType = matioCpp::ValueType::INT32;
+        break;
+    case matio_types::MAT_T_UINT32:
+        outputValueType = matioCpp::ValueType::UINT32;
+        break;
+    case matio_types::MAT_T_SINGLE:
+        outputValueType = matioCpp::ValueType::SINGLE;
+        break;
+    case matio_types::MAT_T_DOUBLE:
+        outputValueType = matioCpp::ValueType::DOUBLE;
+        break;
+    case matio_types::MAT_T_INT64:
+        outputValueType = matioCpp::ValueType::INT64;
+        break;
+    case matio_types::MAT_T_UINT64:
+        outputValueType = matioCpp::ValueType::UINT64;
+        break;
+    case matio_types::MAT_T_UTF8:
+        outputValueType = matioCpp::ValueType::UTF8;
+        break;
+    case matio_types::MAT_T_UTF16:
+        outputValueType = matioCpp::ValueType::UTF16;
+        break;
+    case matio_types::MAT_T_UTF32:
+        outputValueType = matioCpp::ValueType::UTF32;
+        break;
+    case matio_types::MAT_T_STRING:
+        outputValueType = matioCpp::ValueType::STRING;
+        break;
+    case matio_types::MAT_T_CELL:
+        outputValueType = matioCpp::ValueType::CELL;
+        break;
+    case matio_types::MAT_T_STRUCT:
+        outputValueType = matioCpp::ValueType::STRUCT;
+        break;
+    case matio_types::MAT_T_ARRAY:
+        outputValueType = matioCpp::ValueType::VECTOR;
+        break;
+    case matio_types::MAT_T_MATRIX:
+        outputValueType = matioCpp::ValueType::MULTI_DIMENSIONAL_ARRAY;
+        break;
+    case matio_types::MAT_T_COMPRESSED:
+    case matio_types::MAT_T_FUNCTION:
+    case matio_types::MAT_T_UNKNOWN:
+        outputValueType = matioCpp::ValueType::UNSUPPORTED;
+        break;
+    }
+
+    if (input->class_type == matio_classes::MAT_C_CELL || outputValueType == matioCpp::ValueType::CELL)
+    {
+        outputVariableType = matioCpp::VariableType::CellContainer;
+    }
+    else if (input->class_type == matio_classes::MAT_C_STRUCT || outputValueType == matioCpp::ValueType::STRUCT)
+    {
+        outputVariableType = matioCpp::VariableType::StructContainer;
+    }
+    else if ((input->class_type == matio_classes::MAT_C_OBJECT) ||
+             (input->class_type == matio_classes::MAT_C_SPARSE) ||
+             (input->class_type == matio_classes::MAT_C_FUNCTION) ||
+             (input->class_type == matio_classes::MAT_C_OPAQUE) ||
+             (outputValueType == matioCpp::ValueType::CELL) ||
+             (outputValueType == matioCpp::ValueType::STRUCT) ||
+             (outputValueType == matioCpp::ValueType::VECTOR) ||
+             (outputValueType == matioCpp::ValueType::MULTI_DIMENSIONAL_ARRAY) ||
+             (outputValueType == matioCpp::ValueType::UNSUPPORTED))
+    {
+        outputVariableType = matioCpp::VariableType::Unsupported;
+        return true;
+    }
+    else if ((input->rank < 2) || ((input->rank == 2) && ((input->dims[0] == 1) || (input->dims[1] == 1))))
+    {
+        outputVariableType = matioCpp::VariableType::Vector;
+    }
+    else
+    {
+        outputVariableType = matioCpp::VariableType::MultiDimensionalArray;
+    }
+
+    return true;
 }
