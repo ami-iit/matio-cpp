@@ -96,7 +96,8 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/Utilities.h
                  include/matioCpp/Variable.h
                  include/matioCpp/ForwardDeclarations.h
-                 include/matioCpp/matioCpp.h)
+                 include/matioCpp/matioCpp.h
+                 include/matioCpp/Vector.h)
 
 # Define the library target
 add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR})
@@ -108,8 +109,14 @@ target_link_libraries(matioCpp PUBLIC MATIO::MATIO)
 
 add_library(matioCpp::matioCpp ALIAS matioCpp)
 
-install(TARGETS matioCpp EXPORT matioCppTargets DESTINATION lib/cmake/matioCpp)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
+# Specify installation targets, typology and destination folders.
+install(TARGETS    matioCpp
+  EXPORT           matioCppTargets
+  COMPONENT        runtime
+  LIBRARY          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                       COMPONENT shlib
+  ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                       COMPONENT lib
+  RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"                       COMPONENT bin
+  PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/include/matioCpp/" COMPONENT dev)
 
 include(InstallBasicPackageFiles)
 install_basic_package_files(${PROJECT_NAME}
