@@ -27,7 +27,7 @@
  * at your option.
  */
 
-#include <matioCpp/Span.h>
+#include <matioCpp/matioCpp.h>
 
 // Catch2
 #include <catch2/catch.hpp>

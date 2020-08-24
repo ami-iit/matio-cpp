@@ -99,13 +99,21 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/matioCpp.h
                  include/matioCpp/Vector.h)
 
+set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp)
+
 # Define the library target
-add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR})
+add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR} ${MATIOCPP_TPP})
 target_include_directories(matioCpp PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                                            $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(matioCpp PUBLIC MATIO::MATIO)
+
+set_target_properties(matioCpp PROPERTIES
+  OUTPUT_NAME matioCpp
+  VERSION ${${PROJECT_NAME}_VERSION}
+  PUBLIC_HEADER "${MATIOCPP_HDR}"
+  PRIVATE_HEADER "${MATIOCPP_TPP}")
 
 add_library(matioCpp::matioCpp ALIAS matioCpp)
 
@@ -113,10 +121,11 @@ add_library(matioCpp::matioCpp ALIAS matioCpp)
 install(TARGETS    matioCpp
   EXPORT           matioCppTargets
   COMPONENT        runtime
-  LIBRARY          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                       COMPONENT shlib
-  ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                       COMPONENT lib
-  RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"                       COMPONENT bin
-  PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/include/matioCpp/" COMPONENT dev)
+  LIBRARY          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                   COMPONENT shlib
+  ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                   COMPONENT lib
+  RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"                   COMPONENT bin
+  PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/matioCpp/"     COMPONENT dev
+  PRIVATE_HEADER   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/matioCpp/impl" COMPONENT dev)
 
 include(InstallBasicPackageFiles)
 install_basic_package_files(${PROJECT_NAME}

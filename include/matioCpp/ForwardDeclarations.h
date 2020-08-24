@@ -105,6 +105,7 @@ class Span;
 
 class Variable;
 
+template<typename T>
 class Vector;
 }
 

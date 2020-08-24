@@ -5,3 +5,7 @@
 add_unit_test(NAME Span
               SOURCES SpanUnitTest.cpp
               LINKS matioCpp::matioCpp)
+
+add_unit_test(NAME Variable
+              SOURCES VariableUnitTest.cpp
+              LINKS matioCpp::matioCpp)

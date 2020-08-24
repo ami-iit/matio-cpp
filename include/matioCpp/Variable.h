@@ -22,17 +22,12 @@ class matioCpp::Variable
 
     std::unique_ptr<Impl> m_pimpl;
 
+protected:
+
     bool createVar(const std::string &name, const VariableType &variableType, const ValueType &valueType, const std::vector<size_t> &dimensions, void *data);
 
     bool createComplexVar(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData);
 
-protected:
-
-    template<typename T>
-    bool createVector(const std::string& name, const Span<T> inputVector)
-    {
-        return createVar(name, VariableType::Vector, get_type<T>::value_type, {inputVector.size(), 1}, (void*)inputVector.data());
-    }
 
     template<typename T>
     bool createComplexVector(const std::string& name, const Span<T> realInputVector, const Span<T> imaginaryInputVector)
@@ -53,6 +48,8 @@ public:
 
     Variable();
 
+    Variable(const matvar_t * inputVar);
+
     Variable(const Variable& other);
 
     Variable(Variable&& other);
@@ -63,7 +60,7 @@ public:
 
     Variable& operator=(Variable&& other);
 
-    bool fromMatio(const matvar_t * inputVar);
+    virtual bool fromMatio(const matvar_t * inputVar); //Child classes need to make sure that the types are correct
 
     const matvar_t * toMatio() const;
 
@@ -74,6 +71,8 @@ public:
     matioCpp::ValueType valueType() const;
 
     bool isComplex() const;
+
+    const std::vector<size_t>& dimensions() const;
 
 };
 

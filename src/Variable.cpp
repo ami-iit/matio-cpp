@@ -135,12 +135,20 @@ matioCpp::Variable::Variable()
 
 }
 
+matioCpp::Variable::Variable(const matvar_t *inputVar)
+    : m_pimpl(std::make_unique<Impl>())
+{
+    fromMatio(inputVar);
+}
+
 matioCpp::Variable::Variable(const matioCpp::Variable &other)
+    : m_pimpl(std::make_unique<Impl>())
 {
     this->operator=(other);
 }
 
 matioCpp::Variable::Variable(matioCpp::Variable &&other)
+    : m_pimpl(std::make_unique<Impl>())
 {
     this->operator=(other);
 }
@@ -174,7 +182,7 @@ bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
     matioCpp::Span<size_t> dimensionsSpan = matioCpp::make_span(inputVar->dims, inputVar->rank);
     m_pimpl->dimensions.assign(dimensionsSpan.begin(), dimensionsSpan.end());
 
-    m_pimpl->resetPtr(Mat_VarDuplicate(inputVar, 0));
+    m_pimpl->resetPtr(Mat_VarDuplicate(inputVar, 1)); //0 Shallow copy, 1 Deep copy
 
     return true;
 }
@@ -222,4 +230,9 @@ bool matioCpp::Variable::isComplex() const
     {
         return false;
     }
+}
+
+const std::vector<size_t> &matioCpp::Variable::dimensions() const
+{
+    return m_pimpl->dimensions;
 }

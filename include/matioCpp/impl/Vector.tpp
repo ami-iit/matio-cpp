@@ -1,5 +1,6 @@
-#ifndef MATIOCPP_H
-#define MATIOCPP_H
+#ifndef MATIOCPP_VECTOR_TPP
+#define MATIOCPP_VECTOR_TPP
+
 /*
  * Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia
  *
@@ -10,9 +11,7 @@
  * at your option.
  */
 
-#include <matioCpp/Span.h>
-#include <matioCpp/Utilities.h>
-#include <matioCpp/Variable.h>
-#include <matioCpp/Vector.h>
 
-#endif //MATIOCPP_H
+
+
+#endif // MATIOCPP_VECTOR_TPP
