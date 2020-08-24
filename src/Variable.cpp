@@ -32,6 +32,23 @@ public:
         matVar_ptr = newPtr;
     }
 
+    bool fromMatio(const matvar_t *inputVar)
+    {
+        std::string errorPrefix = "[ERROR][matioCpp::Variable::fromMatio] ";
+        if (!inputVar)
+        {
+            std::cerr << errorPrefix << "Empty input variable." << std::endl;
+            return false;
+        }
+
+        matioCpp::Span<size_t> dimensionsSpan = matioCpp::make_span(inputVar->dims, inputVar->rank);
+        dimensions.assign(dimensionsSpan.begin(), dimensionsSpan.end());
+
+        resetPtr(Mat_VarDuplicate(inputVar, 1)); //0 Shallow copy, 1 Deep copy
+
+        return true;
+    }
+
     Impl()
     { }
 
@@ -56,9 +73,9 @@ bool matioCpp::Variable::createVar(const std::string& name, const VariableType& 
         return false;
     }
 
-    if (!data)
+    if (*std::min_element(dimensions.begin(), dimensions.end()) && !data)
     {
-        std::cerr << errorPrefix << "The data pointer is empty." << std::endl;
+        std::cerr << errorPrefix << "The min dimension is not zero, but the data pointer is empty." << std::endl;
         return false;
     }
 
@@ -124,6 +141,8 @@ bool matioCpp::Variable::createComplexVar(const std::string& name, const Variabl
     matioComplexSplit.Re = realData;
     matioComplexSplit.Im = imaginaryData;
 
+    m_pimpl->dimensions = dimensions;
+
     m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, m_pimpl->dimensions.size(), m_pimpl->dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
     return m_pimpl->matVar_ptr != nullptr;
@@ -138,19 +157,19 @@ matioCpp::Variable::Variable()
 matioCpp::Variable::Variable(const matvar_t *inputVar)
     : m_pimpl(std::make_unique<Impl>())
 {
-    fromMatio(inputVar);
+    m_pimpl->fromMatio(inputVar);
 }
 
 matioCpp::Variable::Variable(const matioCpp::Variable &other)
     : m_pimpl(std::make_unique<Impl>())
 {
-    this->operator=(other);
+    m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
 }
 
 matioCpp::Variable::Variable(matioCpp::Variable &&other)
     : m_pimpl(std::make_unique<Impl>())
 {
-    this->operator=(other);
+    m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
 }
 
 matioCpp::Variable::~Variable()
@@ -158,32 +177,19 @@ matioCpp::Variable::~Variable()
 
 }
 
-matioCpp::Variable &matioCpp::Variable::operator=(const matioCpp::Variable &other)
-{
-    fromMatio(other.m_pimpl->matVar_ptr);
-    return *this;
-}
-
-matioCpp::Variable &matioCpp::Variable::operator=(matioCpp::Variable &&other)
-{
-    m_pimpl = std::move(other.m_pimpl);
-    return *this;
-}
-
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 {
-    std::string errorPrefix = "[ERROR][matioCpp::Variable::fromMatio] ";
-    if (!inputVar)
-    {
-        std::cerr << errorPrefix << "Empty input variable." << std::endl;
-        return false;
-    }
+    return m_pimpl->fromMatio(inputVar);
+}
 
-    matioCpp::Span<size_t> dimensionsSpan = matioCpp::make_span(inputVar->dims, inputVar->rank);
-    m_pimpl->dimensions.assign(dimensionsSpan.begin(), dimensionsSpan.end());
+bool matioCpp::Variable::fromOther(const matioCpp::Variable &other)
+{
+    return m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
+}
 
-    m_pimpl->resetPtr(Mat_VarDuplicate(inputVar, 1)); //0 Shallow copy, 1 Deep copy
-
+bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
+{
+    m_pimpl = std::move(other.m_pimpl);
     return true;
 }
 

@@ -82,7 +82,7 @@ TEST_CASE("Copy/move constructor/assignment")
         matioCpp::Variable a;
         REQUIRE(a.fromMatio(matioVar));
         matioCpp::Variable b;
-        b = a;
+        b.fromOther(a);
         checkSameVariable(a,b);
     }
 
@@ -100,10 +100,30 @@ TEST_CASE("Copy/move constructor/assignment")
         matioCpp::Variable a;
         REQUIRE(a.fromMatio(matioVar));
         matioCpp::Variable b;
-        b = std::move(a);
+        b.fromOther(std::move(a));
         checkVariable(b, "test", matioCpp::VariableType::Vector,
                       matioCpp::ValueType::DOUBLE, false, {vec.size(), 1});
     }
+
+    Mat_VarFree(matioVar);
+}
+
+TEST_CASE("Complex int")
+{
+    std::vector<int64_t> real(7);
+    std::vector<int64_t> imaginary(real.size());
+    std::vector<size_t> dimensions = {real.size(), 1};
+    mat_complex_split_t matioComplexSplit;
+    matioComplexSplit.Re = real.data();
+    matioComplexSplit.Im = imaginary.data();
+
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_INT64, dimensions.size(), dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX);
+    REQUIRE(matioVar);
+
+    matioCpp::Variable var(matioVar);
+
+    checkVariable(var, "test", matioCpp::VariableType::Vector,
+                  matioCpp::ValueType::INT64, true, {real.size(), 1});
 
     Mat_VarFree(matioVar);
 }

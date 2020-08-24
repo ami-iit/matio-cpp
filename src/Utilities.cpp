@@ -209,7 +209,8 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
              (outputValueType == matioCpp::ValueType::STRUCT) ||
              (outputValueType == matioCpp::ValueType::VECTOR) ||
              (outputValueType == matioCpp::ValueType::MULTI_DIMENSIONAL_ARRAY) ||
-             (outputValueType == matioCpp::ValueType::UNSUPPORTED))
+             (outputValueType == matioCpp::ValueType::UNSUPPORTED) ||
+             (input->compression != matio_compression::MAT_COMPRESSION_NONE))
     {
         outputVariableType = matioCpp::VariableType::Unsupported;
         return true;

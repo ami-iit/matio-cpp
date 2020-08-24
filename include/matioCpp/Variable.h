@@ -41,7 +41,7 @@ protected:
                 return false;
             }
         }
-        return createComplexVar(name, VariableType::Vector, get_type<T>::value_type, {realInputVector.size(), 1}, (void*)realInputVector.data(), (void*)imaginaryInputVector.data());
+        return createComplexVar(name, VariableType::Vector, get_type<T>::valuetype, {realInputVector.size(), 1}, (void*)realInputVector.data(), (void*)imaginaryInputVector.data());
     }
 
 public:
@@ -56,11 +56,15 @@ public:
 
     ~Variable();
 
-    Variable& operator=(const Variable& other);
+    Variable& operator=(const Variable& other) = delete; //To avoid assigning a child class to a child class of different type
 
-    Variable& operator=(Variable&& other);
+    Variable& operator=(Variable&& other) = delete;
 
     virtual bool fromMatio(const matvar_t * inputVar); //Child classes need to make sure that the types are correct
+
+    virtual bool fromOther(const Variable& other); //Child classes need to make sure that the types are correct
+
+    virtual bool fromOther(Variable&& other); //Child classes need to make sure that the types are correct
 
     const matvar_t * toMatio() const;
 
