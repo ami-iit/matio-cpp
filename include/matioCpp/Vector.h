@@ -35,6 +35,8 @@ public:
 
     using  const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer;
 
+    Vector();
+
     Vector(const std::string& name);
 
     Vector(const std::string& name, Span<T> inputVector);
@@ -65,6 +67,8 @@ public:
 
     size_t size() const;
 
+    void resize(size_t newSize);
+
     T * data();
 
     const T * data() const;
@@ -85,6 +89,14 @@ template<typename T>
 bool matioCpp::Vector<T>::createVector(const std::string& name, Span<T> inputVector)
 {
     return createVar(name, VariableType::Vector, matioCpp::get_type<T>::valueType, {static_cast<size_t>(inputVector.size()), 1}, (void*)inputVector.data());
+}
+
+template<typename T>
+matioCpp::Vector<T>::Vector()
+{
+    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
+    std::vector<T> empty;
+    createVector("unnamed_vector", matioCpp::make_span(empty));
 }
 
 template<typename T>
@@ -124,12 +136,14 @@ template<typename T>
 matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const matioCpp::Vector<T> &other)
 {
     fromOther(other);
+    return *this;
 }
 
 template<typename T>
 matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(matioCpp::Vector<T> &&other)
 {
     fromOther(other);
+    return *this;
 }
 
 template<typename T>
@@ -137,7 +151,7 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
 {
     if (size() == other.size())
     {
-        memcpy(toMatio()->data, other.data(), size());
+        memcpy(toMatio()->data, other.data(), size() * sizeof(T));
     }
     else
     {
@@ -216,20 +230,21 @@ bool matioCpp::Vector<T>::setName(const std::string &newName)
 template<typename T>
 size_t matioCpp::Vector<T>::size() const
 {
-    //If there are at least two non-zero dimensions, take the biggest, otherwise the size is 0. Examples:
-    // 0x0 -> 0
-    //  0x1 -> 0
-    // 1x1x0 -> 1
-    // 1x0x0 -> 0
-    // 1x1x0x0 -> 1
+    //A vector should have the size of dimensions equal to 2
+    assert(this->dimensions().size() == 2);
 
-    size_t nonZeroDims = 0;
-    for (size_t dim : this->dimensions())
+    return std::min(this->dimensions()[0], this->dimensions()[1]) > 0 ? std::max(this->dimensions()[0], this->dimensions()[1]) : 0;
+}
+
+template<typename T>
+void matioCpp::Vector<T>::resize(size_t newSize)
+{
+    if (newSize != size())
     {
-        nonZeroDims += dim > 0; //Count non-zero dimensions
+        std::vector<T> newVector(newSize);
+        memcpy(newVector.data(), data(), std::min(newSize, size()) * sizeof(T));
+        this->operator=(newVector);
     }
-
-    return nonZeroDims > 1 ? *std::max_element(this->dimensions().begin(), this->dimensions().end()) : 0;
 }
 
 template<typename T>
@@ -267,7 +282,6 @@ T matioCpp::Vector<T>::operator[](size_t el) const
 {
     return this->operator()(el);
 }
-
 
 
 #endif // MATIOCPP_VECTOR_H

@@ -210,12 +210,13 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
              (outputValueType == matioCpp::ValueType::VECTOR) ||
              (outputValueType == matioCpp::ValueType::MULTI_DIMENSIONAL_ARRAY) ||
              (outputValueType == matioCpp::ValueType::UNSUPPORTED) ||
-             (input->compression != matio_compression::MAT_COMPRESSION_NONE))
+             (input->compression != matio_compression::MAT_COMPRESSION_NONE) ||
+             (input->rank < 2)) //Matio requires the rank to be at least 2
     {
         outputVariableType = matioCpp::VariableType::Unsupported;
         return true;
     }
-    else if ((input->rank < 2) || ((input->rank == 2) && ((input->dims[0] == 1) || (input->dims[1] == 1))))
+    else if ((input->rank == 2) && ((input->dims[0] == 1) || (input->dims[1] == 1)))
     {
         outputVariableType = matioCpp::VariableType::Vector;
     }
