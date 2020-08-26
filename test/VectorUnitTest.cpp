@@ -30,6 +30,11 @@ void checkVariable(const matioCpp::Variable& var,
     }
 }
 
+void REQUIRE_TRUE(bool value)
+{
+    REQUIRE(value);
+}
+
 void checkSameVariable(const matioCpp::Variable& a, const matioCpp::Variable& b)
 {
     checkVariable(a, b.name(), b.variableType(), b.valueType(), b.isComplex(), b.dimensions());
@@ -217,5 +222,385 @@ TEST_CASE("Data")
     in[2] = 7;
 
     checkSameVector(matioCpp::make_span(in), out.toSpan());
+}
+
+TEST_CASE("Iterators")
+{
+    SECTION("iterator_default_init")
+    {
+        matioCpp::Vector<int>::iterator it1;
+        matioCpp::Vector<int>::iterator it2;
+        bool ok = it1 == it2;
+        REQUIRE(ok);
+    }
+
+    SECTION("const_iterator_default_init")
+    {
+        matioCpp::Vector<int>::const_iterator it1;
+        matioCpp::Vector<int>::const_iterator it2;
+        bool ok = it1 == it2;
+        REQUIRE(ok);
+    }
+
+    SECTION("iterator_conversions")
+    {
+        matioCpp::Vector<int>::iterator badIt;
+        matioCpp::Vector<int>::const_iterator badConstIt;
+        bool ok = badIt == badConstIt;
+        REQUIRE(ok);
+
+        int a[] = {1, 2, 3, 4};
+        matioCpp::Vector<int> s("test");
+        s = a;
+
+        auto it = s.begin();
+        auto cit = s.cbegin();
+
+        ok = it == cit;
+        REQUIRE(ok);
+        ok = cit == it;
+        REQUIRE(ok);
+
+        matioCpp::Vector<int>::const_iterator cit2 = it;
+        ok = cit2 == cit;
+        REQUIRE(ok);
+
+        matioCpp::Vector<int>::const_iterator cit3 = it + 4;
+        ok = cit3 == s.cend();
+        REQUIRE(ok);
+    }
+
+    SECTION("iterator_comparisons")
+    {
+        bool ok;
+        int a[] = {1, 2, 3, 4};
+        {
+            matioCpp::Vector<int> s("test");
+            s = a;
+            matioCpp::Vector<int>::iterator it = s.begin();
+            auto it2 = it + 1;
+            matioCpp::Vector<int>::const_iterator cit = s.cbegin();
+
+            ok = it == cit;
+            REQUIRE(ok);
+            ok = cit == it;
+            REQUIRE(ok);
+            ok = it == it;
+            REQUIRE(ok);
+            ok = cit == cit;
+            REQUIRE(ok);
+            ok = cit == s.begin();
+            REQUIRE(ok);
+            ok = s.begin() == cit;
+            REQUIRE(ok);
+            ok = s.cbegin() == cit;
+            REQUIRE(ok);
+            ok = it == s.begin();
+            REQUIRE(ok);
+            ok = s.begin() == it;
+            REQUIRE(ok);
+
+            ok = it != it2;
+            REQUIRE(ok);
+            ok = it2 != it;
+            REQUIRE(ok);
+            ok = it != s.end();
+            REQUIRE(ok);
+            ok = it2 != s.end();
+            REQUIRE(ok);
+            ok = s.end() != it;
+            REQUIRE(ok);
+            ok = it2 != cit;
+            REQUIRE(ok);
+            ok = cit != it2;
+            REQUIRE(ok);
+
+            ok = (it < it2);
+            REQUIRE(ok);
+            ok = (it <= it2);
+            REQUIRE(ok);
+            ok = (it2 <= s.end());
+            REQUIRE(ok);
+            ok = (it < s.end());
+            REQUIRE(ok);
+            ok = (it <= cit);
+            REQUIRE(ok);
+            ok = (cit <= it);
+            REQUIRE(ok);
+            ok = (cit < it2);
+            REQUIRE(ok);
+            ok = (cit <= it2);
+            REQUIRE(ok);
+            ok = (cit < s.end());
+            REQUIRE(ok);
+            ok = (cit <= s.end());
+            REQUIRE(ok);
+
+            ok = (it2 > it);
+            REQUIRE(ok);
+            ok = (it2 >= it);
+            REQUIRE(ok);
+            ok = (s.end() > it2);
+            REQUIRE(ok);
+            ok = (s.end() >= it2);
+            REQUIRE(ok);
+            ok = (it2 > cit);
+            REQUIRE(ok);
+            ok = (it2 >= cit);
+            REQUIRE(ok);
+        }
+    }
+
+    SECTION("begin_end")
+    {
+        bool ok;
+        {
+            int a[] = {1, 2, 3, 4};
+            matioCpp::Vector<int> s("test");
+            s = a;
+
+            matioCpp::Vector<int>::iterator it = s.begin();
+            matioCpp::Vector<int>::iterator it2 = std::begin(s);
+            ok = (it == it2);
+            REQUIRE(ok);
+
+            it = s.end();
+            it2 = std::end(s);
+            ok = (it == it2);
+            REQUIRE(ok);
+        }
+
+        {
+            int a[] = {1, 2, 3, 4};
+            matioCpp::Vector<int> s("test");
+            s = a;
+
+            auto it = s.begin();
+            auto first = it;
+            ok = (it == first);
+            REQUIRE(ok);
+            ok = (*it == 1);
+            REQUIRE(ok);
+
+            auto beyond = s.end();
+            ok = (it != beyond);
+            REQUIRE(ok);
+
+            ok = (beyond - first == 4);
+            REQUIRE(ok);
+            ok = (first - first == 0);
+            REQUIRE(ok);
+            ok = (beyond - beyond == 0);
+            REQUIRE(ok);
+
+            ++it;
+            ok = (it - first == 1);
+            REQUIRE(ok);
+            ok = (*it == 2);
+            REQUIRE(ok);
+            *it = 22;
+            ok = (*it == 22);
+            REQUIRE(ok);
+            ok = (beyond - it == 3);
+            REQUIRE(ok);
+
+            it = first;
+            ok = (it == first);
+            REQUIRE(ok);
+            while (it != s.end()) {
+                *it = 5;
+                ++it;
+            }
+
+            ok = (it == beyond);
+            REQUIRE(ok);
+            ok = (it - beyond == 0);
+            REQUIRE(ok);
+
+            for (const auto& n : s) {
+                ok = (n == 5);
+                REQUIRE(ok);
+            }
+        }
+    }
+
+    SECTION("cbegin_cend")
+    {
+        bool ok;
+        {
+            int a[] = {1, 2, 3, 4};
+            matioCpp::Vector<int> s("test");
+            s = a;
+
+            matioCpp::Vector<int>::const_iterator cit = s.cbegin();
+            matioCpp::Vector<int>::const_iterator cit2 = std::cbegin(s);
+            ok = (cit == cit2);
+            REQUIRE(ok);
+
+            cit = s.cend();
+            cit2 = std::cend(s);
+            ok = (cit == cit2);
+            REQUIRE(ok);
+        }
+
+        {
+            int a[] = {1, 2, 3, 4};
+            matioCpp::Vector<int> s("test");
+            s = a;
+
+            auto it = s.cbegin();
+            auto first = it;
+            ok = (it == first);
+            REQUIRE(ok);
+            ok = (*it == 1);
+            REQUIRE(ok);
+
+            auto beyond = s.cend();
+            ok = (it != beyond);
+            REQUIRE(ok);
+
+            ok = (beyond - first == 4);
+            REQUIRE(ok);
+            ok = (first - first == 0);
+            REQUIRE(ok);
+            ok = (beyond - beyond == 0);
+            REQUIRE(ok);
+
+            ++it;
+            ok = (it - first == 1);
+            REQUIRE(ok);
+            ok = (*it == 2);
+            REQUIRE(ok);
+            ok = (beyond - it == 3);
+            REQUIRE(ok);
+
+            int last = 0;
+            it = first;
+            ok = (it == first);
+            REQUIRE(ok);
+            while (it != s.cend()) {
+                ok = (*it == last + 1);
+                REQUIRE(ok);
+
+                last = *it;
+                ++it;
+            }
+
+            ok = (it == beyond);
+            REQUIRE(ok);
+            ok = (it - beyond == 0);
+            REQUIRE(ok);
+        }
+    }
+
+    SECTION("rbegin_rend")
+    {
+        bool ok;
+        {
+            int a[] = {1, 2, 3, 4};
+            matioCpp::Vector<int> s("test");
+            s = a;
+
+            auto it = s.rbegin();
+            auto first = it;
+            ok = (it == first);
+            REQUIRE(ok);
+            ok = (*it == 4);
+            REQUIRE(ok);
+
+            auto beyond = s.rend();
+            ok = (it != beyond);
+            REQUIRE(ok);
+
+            ok = (beyond - first == 4);
+            REQUIRE(ok);
+            ok = (first - first == 0);
+            REQUIRE(ok);
+            ok = (beyond - beyond == 0);
+            REQUIRE(ok);
+
+            ++it;
+            ok = (it - first == 1);
+            REQUIRE(ok);
+            ok = (*it == 3);
+            REQUIRE(ok);
+            *it = 22;
+            ok = (*it == 22);
+            REQUIRE(ok);
+            ok = (beyond - it == 3);
+            REQUIRE(ok);
+
+            it = first;
+            ok = (it == first);
+            REQUIRE(ok);
+            while (it != s.rend()) {
+                *it = 5;
+                ++it;
+            }
+
+            ok = (it == beyond);
+            REQUIRE(ok);
+            ok = (it - beyond == 0);
+            REQUIRE(ok);
+
+            for (const auto& n : s) {
+                ok = (n == 5);
+                REQUIRE(ok);
+            }
+        }
+    }
+
+    SECTION("crbegin_crend")
+    {
+        bool ok;
+        {
+            int a[] = {1, 2, 3, 4};
+            matioCpp::Vector<int> s("test");
+            s = a;
+
+            auto it = s.crbegin();
+            auto first = it;
+            ok = (it == first);
+            REQUIRE(ok);
+            ok = (*it == 4);
+            REQUIRE(ok);
+
+            auto beyond = s.crend();
+            ok = (it != beyond);
+            REQUIRE(ok);
+
+            ok = (beyond - first == 4);
+            REQUIRE(ok);
+            ok = (first - first == 0);
+            REQUIRE(ok);
+            ok = (beyond - beyond == 0);
+            REQUIRE(ok);
+
+            ++it;
+            ok = (it - first == 1);
+            REQUIRE(ok);
+            ok = (*it == 3);
+            REQUIRE(ok);
+            ok = (beyond - it == 3);
+            REQUIRE(ok);
+
+            it = first;
+            ok = (it == first);
+            REQUIRE(ok);
+            int last = 5;
+            while (it != s.crend()) {
+                ok = (*it == last - 1);
+                REQUIRE(ok);
+                last = *it;
+
+                ++it;
+            }
+
+            ok = (it == beyond);
+            REQUIRE(ok);
+            ok = (it - beyond == 0);
+            REQUIRE(ok);
+        }
+    }
 }
 

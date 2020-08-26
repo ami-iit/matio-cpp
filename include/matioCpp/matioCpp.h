@@ -11,7 +11,7 @@
  */
 
 #include <matioCpp/Span.h>
-#include <matioCpp/Utilities.h>
+#include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Variable.h>
 #include <matioCpp/Vector.h>
 

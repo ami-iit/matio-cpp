@@ -656,7 +656,17 @@ MATIOCPP_CONSTEXPR Span<typename Ptr::element_type> make_span(Ptr& cont, std::pt
     return Span<typename Ptr::element_type>(cont, count);
 }
 
-template <class Ptr>
+//Small utility to detect if type T has value_type defined
+template <typename T, typename = void> struct is_value_defined : std::false_type
+{
+};
+
+template <typename T>
+struct is_value_defined<T, void_t<typename T::value_type>> : std::true_type
+{
+};
+
+template <class Ptr, typename = typename std::enable_if<!is_value_defined<Ptr>::value, void>::type>
 MATIOCPP_CONSTEXPR Span<typename Ptr::element_type> make_span(Ptr& cont)
 {
     return Span<typename Ptr::element_type>(cont);

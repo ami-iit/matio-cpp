@@ -12,7 +12,7 @@
 
 
 #include <matioCpp/ForwardDeclarations.h>
-#include <matioCpp/Utilities.h>
+#include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Span.h>
 
 class matioCpp::Variable

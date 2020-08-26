@@ -8,7 +8,7 @@
  * at your option.
  */
 
-#include <matioCpp/Utilities.h>
+#include <matioCpp/ConversionUtilities.h>
 
 bool matioCpp::get_matio_types(const matioCpp::VariableType &inputVariableType, const matioCpp::ValueType &inputValueType, matio_classes &outputMatioClasses, matio_types &outputMatioType)
 {

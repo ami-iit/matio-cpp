@@ -63,8 +63,14 @@
 #define MATIOCPP_CONSTEXPR constexpr
 #endif
 
-    namespace matioCpp
+namespace matioCpp
 {
+
+/**
+ * Implementation of the c++17 <code>void_t<\code> metafunction to avoid some static analyzer warnings.
+ */
+template<typename... Ts> struct make_void { typedef void type;};
+template<typename... Ts> using void_t = typename make_void<Ts...>::type;
 
 enum class VariableType
 {
@@ -100,6 +106,9 @@ enum class ValueType
 
 // [views.constants], constants
 MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;
+
+template <class Container, bool IsConst>
+class vector_iterator;
 
 template <class ElementType, std::ptrdiff_t Extent = dynamic_extent>
 class Span;

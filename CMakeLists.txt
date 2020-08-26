@@ -93,7 +93,8 @@ set(MATIOCPP_SRC src/Variable.cpp
                  src/Utilities.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
-                 include/matioCpp/Utilities.h
+                 include/matioCpp/VectorIterator.h
+                 include/matioCpp/ConversionUtilities.h
                  include/matioCpp/Variable.h
                  include/matioCpp/ForwardDeclarations.h
                  include/matioCpp/matioCpp.h

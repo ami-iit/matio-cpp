@@ -717,39 +717,58 @@ TEST_CASE("iterator_comparisons")
         ok = cit != it2;
         REQUIRE(ok);
 
-        REQUIRE(it < it2);
-        REQUIRE(it <= it2);
-        REQUIRE(it2 <= s.end());
-        REQUIRE(it < s.end());
-        REQUIRE(it <= cit);
-        REQUIRE(cit <= it);
-        REQUIRE(cit < it2);
-        REQUIRE(cit <= it2);
-        REQUIRE(cit < s.end());
-        REQUIRE(cit <= s.end());
+        ok = (it < it2);
+        REQUIRE(ok);
+        ok = (it <= it2);
+        REQUIRE(ok);
+        ok = (it2 <= s.end());
+        REQUIRE(ok);
+        ok = (it < s.end());
+        REQUIRE(ok);
+        ok = (it <= cit);
+        REQUIRE(ok);
+        ok = (cit <= it);
+        REQUIRE(ok);
+        ok = (cit < it2);
+        REQUIRE(ok);
+        ok = (cit <= it2);
+        REQUIRE(ok);
+        ok = (cit < s.end());
+        REQUIRE(ok);
+        ok = (cit <= s.end());
+        REQUIRE(ok);
 
-        REQUIRE(it2 > it);
-        REQUIRE(it2 >= it);
-        REQUIRE(s.end() > it2);
-        REQUIRE(s.end() >= it2);
-        REQUIRE(it2 > cit);
-        REQUIRE(it2 >= cit);
+        ok = (it2 > it);
+        REQUIRE(ok);
+        ok = (it2 >= it);
+        REQUIRE(ok);
+        ok = (s.end() > it2);
+        REQUIRE(ok);
+        ok = (s.end() >= it2);
+        REQUIRE(ok);
+        ok = (it2 > cit);
+        REQUIRE(ok);
+        ok = (it2 >= cit);
+        REQUIRE(ok);
     }
 }
 
 TEST_CASE("begin_end")
 {
+    bool ok;
     {
         int a[] = {1, 2, 3, 4};
         Span<int> s = a;
 
         Span<int>::iterator it = s.begin();
         Span<int>::iterator it2 = std::begin(s);
-        REQUIRE(it == it2);
+        ok = (it == it2);
+        REQUIRE(ok);
 
         it = s.end();
         it2 = std::end(s);
-        REQUIRE(it == it2);
+        ok = (it == it2);
+        REQUIRE(ok);
     }
 
     {
@@ -758,53 +777,69 @@ TEST_CASE("begin_end")
 
         auto it = s.begin();
         auto first = it;
-        REQUIRE(it == first);
-        REQUIRE(*it == 1);
+        ok = (it == first);
+        REQUIRE(ok);
+        ok = (*it == 1);
+        REQUIRE(ok);
 
         auto beyond = s.end();
-        REQUIRE(it != beyond);
-        //CHECK_THROWS_AS(*beyond, fail_fast);
+        ok = (it != beyond);
+        REQUIRE(ok);
 
-        REQUIRE(beyond - first == 4);
-        REQUIRE(first - first == 0);
-        REQUIRE(beyond - beyond == 0);
+        ok = (beyond - first == 4);
+        REQUIRE(ok);
+        ok = (first - first == 0);
+        REQUIRE(ok);
+        ok = (beyond - beyond == 0);
+        REQUIRE(ok);
 
         ++it;
-        REQUIRE(it - first == 1);
-        REQUIRE(*it == 2);
+        ok = (it - first == 1);
+        REQUIRE(ok);
+        ok = (*it == 2);
+        REQUIRE(ok);
         *it = 22;
-        REQUIRE(*it == 22);
-        REQUIRE(beyond - it == 3);
+        ok = (*it == 22);
+        REQUIRE(ok);
+        ok = (beyond - it == 3);
+        REQUIRE(ok);
 
         it = first;
-        REQUIRE(it == first);
+        ok = (it == first);
+        REQUIRE(ok);
         while (it != s.end()) {
             *it = 5;
             ++it;
         }
 
-        REQUIRE(it == beyond);
-        REQUIRE(it - beyond == 0);
+        ok = (it == beyond);
+        REQUIRE(ok);
+        ok = (it - beyond == 0);
+        REQUIRE(ok);
 
         for (const auto& n : s) {
-            REQUIRE(n == 5);
+            ok = (n == 5);
+            REQUIRE(ok);
         }
     }
 }
 
 TEST_CASE("cbegin_cend")
 {
+    bool ok;
     {
         int a[] = {1, 2, 3, 4};
         Span<int> s = a;
 
         Span<int>::const_iterator cit = s.cbegin();
         Span<int>::const_iterator cit2 = std::cbegin(s);
-        REQUIRE(cit == cit2);
+        ok = (cit == cit2);
+        REQUIRE(ok);
 
         cit = s.cend();
         cit2 = std::cend(s);
-        REQUIRE(cit == cit2);
+        ok = (cit == cit2);
+        REQUIRE(ok);
     }
 
     {
@@ -813,115 +848,155 @@ TEST_CASE("cbegin_cend")
 
         auto it = s.cbegin();
         auto first = it;
-        REQUIRE(it == first);
-        REQUIRE(*it == 1);
+        ok = (it == first);
+        REQUIRE(ok);
+        ok = (*it == 1);
+        REQUIRE(ok);
 
         auto beyond = s.cend();
-        REQUIRE(it != beyond);
-        //CHECK_THROWS_AS(*beyond, fail_fast);
+        ok = (it != beyond);
+        REQUIRE(ok);
 
-        REQUIRE(beyond - first == 4);
-        REQUIRE(first - first == 0);
-        REQUIRE(beyond - beyond == 0);
+        ok = (beyond - first == 4);
+        REQUIRE(ok);
+        ok = (first - first == 0);
+        REQUIRE(ok);
+        ok = (beyond - beyond == 0);
+        REQUIRE(ok);
 
         ++it;
-        REQUIRE(it - first == 1);
-        REQUIRE(*it == 2);
-        REQUIRE(beyond - it == 3);
+        ok = (it - first == 1);
+        REQUIRE(ok);
+        ok = (*it == 2);
+        REQUIRE(ok);
+        ok = (beyond - it == 3);
+        REQUIRE(ok);
 
         int last = 0;
         it = first;
-        REQUIRE(it == first);
+        ok = (it == first);
+        REQUIRE(ok);
         while (it != s.cend()) {
-            REQUIRE(*it == last + 1);
+            ok = (*it == last + 1);
+            REQUIRE(ok);
 
             last = *it;
             ++it;
         }
 
-        REQUIRE(it == beyond);
-        REQUIRE(it - beyond == 0);
+        ok = (it == beyond);
+        REQUIRE(ok);
+        ok = (it - beyond == 0);
+        REQUIRE(ok);
     }
 }
 
 TEST_CASE("rbegin_rend")
 {
+    bool ok;
     {
         int a[] = {1, 2, 3, 4};
         Span<int> s = a;
 
         auto it = s.rbegin();
         auto first = it;
-        REQUIRE(it == first);
-        REQUIRE(*it == 4);
+        ok = (it == first);
+        REQUIRE(ok);
+        ok = (*it == 4);
+        REQUIRE(ok);
 
         auto beyond = s.rend();
-        REQUIRE(it != beyond);
+        ok = (it != beyond);
+        REQUIRE(ok);
         //CHECK_THROWS_AS(*beyond, fail_fast);
 
-        REQUIRE(beyond - first == 4);
-        REQUIRE(first - first == 0);
-        REQUIRE(beyond - beyond == 0);
+        ok = (beyond - first == 4);
+        REQUIRE(ok);
+        ok = (first - first == 0);
+        REQUIRE(ok);
+        ok = (beyond - beyond == 0);
+        REQUIRE(ok);
 
         ++it;
-        REQUIRE(it - first == 1);
-        REQUIRE(*it == 3);
+        ok = (it - first == 1);
+        REQUIRE(ok);
+        ok = (*it == 3);
+        REQUIRE(ok);
         *it = 22;
-        REQUIRE(*it == 22);
-        REQUIRE(beyond - it == 3);
+        ok = (*it == 22);
+        REQUIRE(ok);
+        ok = (beyond - it == 3);
+        REQUIRE(ok);
 
         it = first;
-        REQUIRE(it == first);
+        ok = (it == first);
+        REQUIRE(ok);
         while (it != s.rend()) {
             *it = 5;
             ++it;
         }
 
-        REQUIRE(it == beyond);
-        REQUIRE(it - beyond == 0);
+        ok = (it == beyond);
+        REQUIRE(ok);
+        ok = (it - beyond == 0);
+        REQUIRE(ok);
 
         for (const auto& n : s) {
-            REQUIRE(n == 5);
+            ok = (n == 5);
+            REQUIRE(ok);
         }
     }
 }
 
 TEST_CASE("crbegin_crend")
 {
+    bool ok;
     {
         int a[] = {1, 2, 3, 4};
         Span<int> s = a;
 
         auto it = s.crbegin();
         auto first = it;
-        REQUIRE(it == first);
-        REQUIRE(*it == 4);
+        ok = (it == first);
+        REQUIRE(ok);
+        ok = (*it == 4);
+        REQUIRE(ok);
 
         auto beyond = s.crend();
-        REQUIRE(it != beyond);
-        //CHECK_THROWS_AS(*beyond, fail_fast);
+        ok = (it != beyond);
+        REQUIRE(ok);
 
-        REQUIRE(beyond - first == 4);
-        REQUIRE(first - first == 0);
-        REQUIRE(beyond - beyond == 0);
+        ok = (beyond - first == 4);
+        REQUIRE(ok);
+        ok = (first - first == 0);
+        REQUIRE(ok);
+        ok = (beyond - beyond == 0);
+        REQUIRE(ok);
 
         ++it;
-        REQUIRE(it - first == 1);
-        REQUIRE(*it == 3);
-        REQUIRE(beyond - it == 3);
+        ok = (it - first == 1);
+        REQUIRE(ok);
+        ok = (*it == 3);
+        REQUIRE(ok);
+        ok = (beyond - it == 3);
+        REQUIRE(ok);
 
         it = first;
-        REQUIRE(it == first);
+        ok = (it == first);
+        REQUIRE(ok);
         int last = 5;
         while (it != s.crend()) {
-            REQUIRE(*it == last - 1);
+            ok = (*it == last - 1);
+            REQUIRE(ok);
             last = *it;
 
             ++it;
         }
 
-        REQUIRE(it == beyond);
-        REQUIRE(it - beyond == 0);
+        ok = (it == beyond);
+        REQUIRE(ok);
+        ok = (it - beyond == 0);
+        REQUIRE(ok);
     }
 }
 

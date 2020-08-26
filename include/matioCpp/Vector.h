@@ -13,9 +13,10 @@
 
 
 #include <matioCpp/ForwardDeclarations.h>
-#include <matioCpp/Utilities.h>
+#include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Span.h>
 #include <matioCpp/Variable.h>
+#include <matioCpp/VectorIterator.h>
 
 template<typename T>
 class matioCpp::Vector : public matioCpp::Variable
@@ -25,15 +26,25 @@ class matioCpp::Vector : public matioCpp::Variable
 
 public:
 
-    //Typedefs to enable make_span.
+    using element_type = T;
 
-    using value_type = T;
+    using value_type = std::remove_cv_t<T>;
 
     using allocator_type = std::allocator<T>;
 
+    using index_type = size_t;
+
     using pointer = typename std::allocator_traits<std::allocator<T>>::pointer;
 
-    using  const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer;
+    using const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer;
+
+    using iterator = vector_iterator<Vector<T>, false>;
+
+    using const_iterator = vector_iterator<Vector<T>, true>;
+
+    using reverse_iterator = std::reverse_iterator<iterator>;
+
+    using const_reverse_iterator =std::reverse_iterator<const_iterator>;
 
     Vector();
 
@@ -81,6 +92,29 @@ public:
 
     T operator[](size_t el) const;
 
+    iterator begin();
+
+    iterator end();
+
+    const_iterator begin() const;
+
+    const_iterator end() const;
+
+    const_iterator cbegin() const;
+
+    const_iterator cend() const;
+
+    reverse_iterator rbegin();
+
+    reverse_iterator rend();
+
+    const_reverse_iterator rbegin() const;
+
+    const_reverse_iterator rend() const;
+
+    const_reverse_iterator crbegin() const;
+
+    const_reverse_iterator crend() const;
 };
 
 //#include "impl/Vector.tpp"
@@ -281,6 +315,78 @@ template<typename T>
 T matioCpp::Vector<T>::operator[](size_t el) const
 {
     return this->operator()(el);
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::iterator matioCpp::Vector<T>::begin()
+{
+    return iterator(this, 0);
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::iterator matioCpp::Vector<T>::end()
+{
+    return iterator(this, size());
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_iterator matioCpp::Vector<T>::begin() const
+{
+    return const_iterator(this, 0);
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_iterator matioCpp::Vector<T>::end() const
+{
+    return const_iterator(this, size());
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_iterator matioCpp::Vector<T>::cbegin() const
+{
+    return const_iterator(this, 0);
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_iterator matioCpp::Vector<T>::cend() const
+{
+    return const_iterator(this, size());
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::reverse_iterator matioCpp::Vector<T>::rbegin()
+{
+    return reverse_iterator{end()};
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::reverse_iterator matioCpp::Vector<T>::rend()
+{
+    return reverse_iterator{begin()};
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_reverse_iterator matioCpp::Vector<T>::rbegin() const
+{
+    return const_reverse_iterator{cend()};
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_reverse_iterator matioCpp::Vector<T>::rend() const
+{
+    return const_reverse_iterator{cbegin()};
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_reverse_iterator matioCpp::Vector<T>::crbegin() const
+{
+    return const_reverse_iterator{cend()};
+}
+
+template<typename T>
+typename matioCpp::Vector<T>::const_reverse_iterator matioCpp::Vector<T>::crend() const
+{
+    return const_reverse_iterator{cbegin()};
 }
 
 
