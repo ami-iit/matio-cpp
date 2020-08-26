@@ -90,7 +90,7 @@ endif()
 find_package(matio REQUIRED)
 
 set(MATIOCPP_SRC src/Variable.cpp
-                 src/Utilities.cpp)
+                 src/ConversionUtilities.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/VectorIterator.h
