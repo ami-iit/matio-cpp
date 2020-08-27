@@ -1,5 +1,5 @@
-#ifndef MATIOCPP_CONTAINERITERATOR_H
-#define MATIOCPP_CONTAINERITERATOR_H
+#ifndef MATIOCPP_VECTORITERATOR_H
+#define MATIOCPP_VECTORITERATOR_H
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -193,4 +193,4 @@ operator-(typename vector_iterator<Span, IsConst>::difference_type n,
 }
 }
 
-#endif // MATIOCPP_CONTAINERITERATOR_H
+#endif // MATIOCPP_VECTORITERATOR_H

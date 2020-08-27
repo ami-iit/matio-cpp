@@ -15,6 +15,9 @@
 #include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Span.h>
 
+/**
+ * @brief The matioCpp::Variable class is the equivalent of matvar_t in matio. It is supposed to be a basic access to object that are or need to be saved in a mat file.
+ */
 class matioCpp::Variable
 {
 
@@ -24,13 +27,43 @@ class matioCpp::Variable
 
 protected:
 
-    bool createVar(const std::string &name, const VariableType &variableType, const ValueType &valueType, const std::vector<size_t> &dimensions, void *data);
+    /**
+     * @brief Initialize the variable.
+     *
+     * @note Matlab stores data in column-major format (https://it.mathworks.com/help/coder/ug/what-are-column-major-and-row-major-representation-1.html).
+     * Hence, given a multi-dimensional array of size n x m x p, the element (i, j, k) (with zero indexing) is at position i + j*n + k*n*m
+     *
+     * @param name The name of the variable.
+     * @param variableType The type of variable
+     * @param valueType The type of each element in the variable
+     * @param dimensions Vector containing the variable dimensions. The size of this vector should be at least 2.
+     * @param data A void pointer to the (flattened) data.
+     * @return true in case the variable was correctly initialized.
+     */
+    bool initializeVariable(const std::string &name, const VariableType &variableType, const ValueType &valueType, const std::vector<size_t> &dimensions, void *data);
 
-    bool createComplexVar(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData);
+    /**
+     * @brief Initialize a complex variable
+     * @param name The name of the variable.
+     * @param variableType The type of variable
+     * @param valueType The type of each element in the variable
+     * @param dimensions Vector containing the variable dimensions. The size of this vector should be at least 2.
+     * @param realData A void pointer to the (flattened) real data. Check the documentation of initializeVariable for understanding how to obtain/interpret this vector.
+     * @param imaginaryData A void pointer to the (flattened) imaginary data. Check the documentation of initializeVariable for understanding how to obtain/interpret this vector.
+     * @return true in case the variable was correctly initialized.
+     */
+    bool initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData);
 
 
+    /**
+     * @brief Initialize a complex vector.
+     * @param name The name of the variable.
+     * @param realInputVector The real input vector.
+     * @param imaginaryInputVector The imaginary input vector.
+     * @return true in case the variable was correctly initialized.
+     */
     template<typename T>
-    bool createComplexVector(const std::string& name, const Span<T> realInputVector, const Span<T> imaginaryInputVector)
+    bool initializeComplexVector(const std::string& name, const Span<T> realInputVector, const Span<T> imaginaryInputVector)
     {
         if (realInputVector.size() != imaginaryInputVector.size())
         {
@@ -41,45 +74,108 @@ protected:
                 return false;
             }
         }
-        return createComplexVar(name, VariableType::Vector, get_type<T>::valuetype, {realInputVector.size(), 1}, (void*)realInputVector.data(), (void*)imaginaryInputVector.data());
+        return initializeComplexVariable(name, VariableType::Vector, get_type<T>::valuetype, {realInputVector.size(), 1}, (void*)realInputVector.data(), (void*)imaginaryInputVector.data());
     }
 
 public:
 
+    /**
+     * @brief Default constructor
+     */
     Variable();
 
+    /**
+     * @brief Constructor from an existing matvar_t pointer.
+     * @param inputVar The input pointer. It has to be not null.
+     */
     Variable(const matvar_t * inputVar);
 
+    /**
+     * @brief Copy constructor
+     */
     Variable(const Variable& other);
 
+    /**
+     * @brief Move constructor
+     */
     Variable(Variable&& other);
 
+    /**
+    * @brief Destructor
+    */
     ~Variable();
 
-    Variable& operator=(const Variable& other) = delete; //To avoid assigning a child class to a child class of different type
+    /**
+     * @brief The copy operator has been deleted to avoid a specific child class to be assigned to another one not compatible.
+     */
+    Variable& operator=(const Variable& other) = delete;
 
+    /**
+     * @brief The copy operator has been deleted to avoid a specific child class to be assigned to another one not compatible.
+     */
     Variable& operator=(Variable&& other) = delete;
 
-    virtual bool fromMatio(const matvar_t * inputVar); //Child classes need to make sure that the types are correct
+    /**
+     * @brief Set this variable from an existing matio variable.
+     * @param inputVar The not null pointer to a matio variable. The variable is cloned.
+     * @return True if the cloning was successfull.
+     */
+    virtual bool fromMatio(const matvar_t * inputVar);
 
+    /**
+     * @brief Set this variable from another variable.
+     * @note Child classes need to override this method to make sure that only compatible classes can be copied.
+     * @param other The Variable from which to copy the content.
+     * @return True if the cloning was successful.
+     */
     virtual bool fromOther(const Variable& other); //Child classes need to make sure that the types are correct
 
+    /**
+     * @brief Set this variable from another variable.
+     * @note No copy is performed, but the original object is no more usable.
+     * @note Child classes need to override this method to make sure that only compatible classes can be imported.
+     * @param other The source Variable. Content is moved.
+     * @return True if the moving was successful.
+     */
     virtual bool fromOther(Variable&& other); //Child classes need to make sure that the types are correct
 
+    /**
+     * @brief Convert this Variable to a matio variable.
+     * @warning Any modification to the matio variable is reflected to this Variable.
+     * @return A matvar_t pointer.
+     */
     const matvar_t * toMatio() const;
 
+    /**
+     * @brief Get the name of the Variable.
+     * @return The name of the variable.
+     */
     std::string name() const;
 
+    /**
+     * @brief Get the VariableType.
+     * @return The VariableType
+     */
     matioCpp::VariableType variableType() const;
 
+    /**
+     * @brief Get the ValueType.
+     * @return The ValueType
+     */
     matioCpp::ValueType valueType() const;
 
+    /**
+     * @brief Get if the variable is complex.
+     * @return True if complex.
+     */
     bool isComplex() const;
 
+    /**
+     * @brief Get the dimensions of this object.
+     * @return The dimensions of the object
+     */
     const std::vector<size_t>& dimensions() const;
 
 };
-
-
 
 #endif

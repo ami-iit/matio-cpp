@@ -12,9 +12,9 @@
  */
 
 template<typename T>
-bool matioCpp::Vector<T>::createVector(const std::string& name, Span<T> inputVector)
+bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
 {
-    return createVar(name, VariableType::Vector, matioCpp::get_type<T>::valueType, {static_cast<size_t>(inputVector.size()), 1}, (void*)inputVector.data());
+    return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, {static_cast<size_t>(inputVector.size()), 1}, (void*)inputVector.data());
 }
 
 template<typename T>
@@ -22,7 +22,7 @@ matioCpp::Vector<T>::Vector()
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<T> empty;
-    createVector("unnamed_vector", matioCpp::make_span(empty));
+    initializeVector("unnamed_vector", matioCpp::make_span(empty));
 }
 
 template<typename T>
@@ -30,14 +30,14 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<T> empty;
-    createVector(name, matioCpp::make_span(empty));
+    initializeVector(name, matioCpp::make_span(empty));
 }
 
 template<typename T>
 matioCpp::Vector<T>::Vector(const std::string& name, Span<T> inputVector)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
-    createVector(name, inputVector);
+    initializeVector(name, inputVector);
 }
 
 template<typename T>
@@ -81,7 +81,7 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
     }
     else
     {
-        createVector(name(), other);
+        initializeVector(name(), other);
     }
 
     return *this;
@@ -150,7 +150,7 @@ const matioCpp::Span<const T> matioCpp::Vector<T>::toSpan() const
 template<typename T>
 bool matioCpp::Vector<T>::setName(const std::string &newName)
 {
-    return createVector(newName, toSpan());
+    return initializeVector(newName, toSpan());
 }
 
 template<typename T>

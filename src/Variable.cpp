@@ -58,7 +58,7 @@ public:
     }
 };
 
-bool matioCpp::Variable::createVar(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void* data)
+bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void* data)
 {
     std::string errorPrefix = "[ERROR][matioCpp::Variable::createVar] ";
     if (name.empty())
@@ -101,7 +101,7 @@ bool matioCpp::Variable::createVar(const std::string& name, const VariableType& 
     return true;
 }
 
-bool matioCpp::Variable::createComplexVar(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData)
+bool matioCpp::Variable::initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData)
 {
     std::string errorPrefix = "[ERROR][matioCpp::Variable::createComplexVar] ";
     if (name.empty())

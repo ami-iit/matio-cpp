@@ -22,7 +22,7 @@ template<typename T>
 class matioCpp::Vector : public matioCpp::Variable
 {
 
-    bool createVector(const std::string& name, Span<T> inputVector);
+    bool initializeVector(const std::string& name, Span<T> inputVector);
 
 public:
 

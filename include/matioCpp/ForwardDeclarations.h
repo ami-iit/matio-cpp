@@ -72,6 +72,9 @@ namespace matioCpp
 template<typename... Ts> struct make_void { typedef void type;};
 template<typename... Ts> using void_t = typename make_void<Ts...>::type;
 
+/**
+ * @brief Define the type of variable
+ */
 enum class VariableType
 {
     Vector,
@@ -81,6 +84,9 @@ enum class VariableType
     Unsupported
 };
 
+/**
+ * @brief The list of types for an element of a certain variable type
+ */
 enum class ValueType
 {
     INT8,

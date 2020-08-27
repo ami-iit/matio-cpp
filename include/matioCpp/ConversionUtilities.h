@@ -14,15 +14,36 @@
 
 namespace matioCpp {
 
+/**
+ * @brief Utility function to get the matio type corresponding to a certain ValueType
+ * @param inputValueType The input ValueType
+ * @return the corresponding matio type.
+ */
 matio_types get_matio_value_type(const ValueType& inputValueType);
 
+/**
+ * @brief Get both the matio type and class from the input VariableType and ValueType
+ * @param inputVariableType The input VariableType.
+ * @param inputValueType The input ValueType.
+ * @param outputMatioClasses The corresponding matio class.
+ * @param outputMatioType The corresponding matio type
+ * @return True if a conversion was possible.
+ */
 bool get_matio_types(const VariableType& inputVariableType, const ValueType& inputValueType, matio_classes& outputMatioClasses, matio_types& outputMatioType);
 
+/**
+ * @brief Get the VariableType and the ValueType from a matvar_t pointer.
+ * @param input The matvar_t pointer.
+ * @param outputVariableType The output VariableType.
+ * @param outputValueType The output ValueType.
+ * @return False in case a conversion was not possible or the input pointere is null. True in case of success.
+ */
 bool get_types_from_matvart(const matvar_t* input, VariableType& outputVariableType, ValueType &outputValueType);
 
-// defaults
+/**
+ * @brief Utility metafunction to get the ValueType from a given primitive type.
+ */
 template <typename Tp> struct get_type;
-//template <typename Tp> struct cpp_to_matio_class;
 // specializations
 template <> struct get_type<int8_t>   { using type = int8_t;   static constexpr ValueType valueType = ValueType::INT8; };
 template <> struct get_type<uint8_t>  { using type = uint8_t;  static constexpr ValueType valueType = ValueType::UINT8; };
@@ -38,20 +59,11 @@ template <> struct get_type<char16_t> { using type = char16_t; static constexpr 
 template <> struct get_type<char32_t> { using type = char32_t; static constexpr ValueType valueType = ValueType::UTF32; };
 template <> struct get_type<std::string> { using type = std::string; static constexpr ValueType valueType = ValueType::STRING; };
 
-
-// reverse map from id to basic type
-template <int matio_type_id = -1> struct matio_type_to_cpp {};
-template <> struct matio_type_to_cpp<MAT_T_INT8>   { using type = int8_t; };
-template <> struct matio_type_to_cpp<MAT_T_UINT8>  { using type = uint8_t; };
-template <> struct matio_type_to_cpp<MAT_T_INT16>  { using type = int16_t; };
-template <> struct matio_type_to_cpp<MAT_T_UINT16> { using type = uint16_t; };
-template <> struct matio_type_to_cpp<MAT_T_INT32>  { using type = int32_t; };
-template <> struct matio_type_to_cpp<MAT_T_UINT32> { using type = uint32_t; };
-template <> struct matio_type_to_cpp<MAT_T_SINGLE> { using type = float; };
-template <> struct matio_type_to_cpp<MAT_T_DOUBLE> { using type = double; };
-template <> struct matio_type_to_cpp<MAT_T_INT64>  { using type = int64_t; };
-template <> struct matio_type_to_cpp<MAT_T_UINT64> { using type = uint64_t; };
-
+/**
+ * @brief Utility function to check if certain ValueType can be converted to a primitive type T.
+ * @param type The input ValueType to test.
+ * @return True in case it is possible to convert the input type to the primitive type T.
+ */
 template <typename T>
 bool is_convertible_to_primitive_type(matioCpp::ValueType type)
 {
