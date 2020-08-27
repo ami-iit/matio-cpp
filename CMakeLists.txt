@@ -87,7 +87,7 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
     endif()
 endif()
 
-find_package(matio REQUIRED)
+find_package(MATIO REQUIRED)
 
 set(MATIOCPP_SRC src/Variable.cpp
                  src/ConversionUtilities.cpp)
@@ -104,9 +104,9 @@ set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp)
 
 # Define the library target
 add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR} ${MATIOCPP_TPP})
-target_include_directories(matioCpp PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                                           $<INSTALL_INTERFACE:include>
-)
+
+target_include_directories(matioCpp PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
 target_link_libraries(matioCpp PUBLIC MATIO::MATIO)
 
@@ -128,14 +128,18 @@ install(TARGETS    matioCpp
   PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/matioCpp/"     COMPONENT dev
   PRIVATE_HEADER   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/matioCpp/impl" COMPONENT dev)
 
+install(FILES "cmake/FindMATIO.cmake" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/matioCpp/cmake")
+
 include(InstallBasicPackageFiles)
+
 install_basic_package_files(${PROJECT_NAME}
                             VERSION ${${PROJECT_NAME}_VERSION}
                             EXPORT matioCppTargets
                             COMPATIBILITY AnyNewerVersion
                             VARS_PREFIX ${PROJECT_NAME}
                             NO_CHECK_REQUIRED_COMPONENTS_MACRO
-                            DEPENDENCIES matio)
+                            DEPENDENCIES MATIO
+                            OVERRIDE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/share/matioCpp/cmake)
 # Add the uninstall target
 include(AddUninstallTarget)
 
