@@ -154,7 +154,7 @@ bool matioCpp::Vector<T>::setName(const std::string &newName)
 }
 
 template<typename T>
-size_t matioCpp::Vector<T>::size() const
+typename matioCpp::Vector<T>::index_type matioCpp::Vector<T>::size() const
 {
     //A vector should have the size of dimensions equal to 2
     assert(this->dimensions().size() == 2);
@@ -163,7 +163,7 @@ size_t matioCpp::Vector<T>::size() const
 }
 
 template<typename T>
-void matioCpp::Vector<T>::resize(size_t newSize)
+void matioCpp::Vector<T>::resize(typename matioCpp::Vector<T>::index_type newSize)
 {
     if (newSize != size())
     {
@@ -174,37 +174,37 @@ void matioCpp::Vector<T>::resize(size_t newSize)
 }
 
 template<typename T>
-T *matioCpp::Vector<T>::data()
+typename matioCpp::Vector<T>::pointer matioCpp::Vector<T>::data()
 {
     return static_cast<T*>(toMatio()->data);
 }
 
 template<typename T>
-const T *matioCpp::Vector<T>::data() const
+typename matioCpp::Vector<T>::const_pointer matioCpp::Vector<T>::data() const
 {
     return static_cast<const T*>(toMatio()->data);
 }
 
 template<typename T>
-T &matioCpp::Vector<T>::operator()(size_t el)
+typename matioCpp::Vector<T>::reference matioCpp::Vector<T>::operator()(typename matioCpp::Vector<T>::index_type el)
 {
     return toSpan()(el);
 }
 
 template<typename T>
-T matioCpp::Vector<T>::operator()(size_t el) const
+typename matioCpp::Vector<T>::value_type matioCpp::Vector<T>::operator()(typename matioCpp::Vector<T>::index_type el) const
 {
     return toSpan()(el);
 }
 
 template<typename T>
-T &matioCpp::Vector<T>::operator[](size_t el)
+typename matioCpp::Vector<T>::reference matioCpp::Vector<T>::operator[](typename matioCpp::Vector<T>::index_type el)
 {
     return this->operator()(el);
 }
 
 template<typename T>
-T matioCpp::Vector<T>::operator[](size_t el) const
+typename matioCpp::Vector<T>::value_type matioCpp::Vector<T>::operator[](typename matioCpp::Vector<T>::index_type el) const
 {
     return this->operator()(el);
 }
