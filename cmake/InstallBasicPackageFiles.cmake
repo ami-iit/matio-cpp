@@ -584,7 +584,15 @@ ${_compatibility_vars}
       string(APPEND PACKAGE_DEPENDENCIES "set(CMAKE_MODULE_PATH_BK \${CMAKE_MODULE_PATH})\n")
       set(_overridden_module_path "")
       foreach(_path ${_IBPF_OVERRIDE_MODULE_PATH})
-          string(APPEND _overridden_module_path " ${_path}")
+
+          if (IS_ABSOLUTE ${_path})
+              set(_absolute_module_path ${_path})
+          else()
+              set(_absolute_module_path "${CMAKE_CURRENT_SOURCE_DIR}/${_path}")
+          endif()
+
+          file(RELATIVE_PATH _relative_path ${CMAKE_INSTALL_PREFIX} ${_absolute_module_path})
+          string(APPEND _overridden_module_path " \${PACKAGE_PREFIX_DIR}/${_relative_path}")
       endforeach()
       string(APPEND PACKAGE_DEPENDENCIES "set(CMAKE_MODULE_PATH${_overridden_module_path})\n")
     endif()
