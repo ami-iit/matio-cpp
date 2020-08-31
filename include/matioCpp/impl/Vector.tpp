@@ -96,6 +96,12 @@ bool matioCpp::Vector<T>::fromOther(const matioCpp::Variable &other)
         return false;
     }
 
+    if (other.isComplex())
+    {
+        std::cerr << "[matioCpp::Vector::fromOther] The input variable is complex, this is not." << std::endl;
+        return false;
+    }
+
     if (!matioCpp::is_convertible_to_primitive_type<T>(other.valueType()))
     {
         std::cerr << "[matioCpp::Vector::fromOther] The input type is not convertible to " <<
@@ -111,6 +117,12 @@ bool matioCpp::Vector<T>::fromOther(matioCpp::Variable &&other)
     if (other.variableType() != matioCpp::VariableType::Vector)
     {
         std::cerr << "[matioCpp::Vector::fromOther] The input variable is not a vector." << std::endl;
+        return false;
+    }
+
+    if (other.isComplex())
+    {
+        std::cerr << "[matioCpp::Vector::fromOther] The input variable is complex, this is not." << std::endl;
         return false;
     }
 
