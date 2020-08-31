@@ -123,6 +123,10 @@ class Variable;
 
 template<typename T>
 class Vector;
+
+template<typename T>
+class MultiDimensionalArray;
+
 }
 
 #endif // MATIOCPP_FORWARDDECLARATIONS_H
