@@ -1,0 +1,10 @@
+# build folder
+build/*
+
+# emacs
+*~
+\#*\#
+
+# Qtcreator
+*.user*
+*.autosave
