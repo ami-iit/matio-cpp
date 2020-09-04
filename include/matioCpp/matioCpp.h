@@ -14,5 +14,6 @@
 #include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Variable.h>
 #include <matioCpp/Vector.h>
+#include <matioCpp/MultiDimensionalArray.h>
 
 #endif //MATIOCPP_H
