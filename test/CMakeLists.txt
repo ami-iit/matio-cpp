@@ -13,3 +13,7 @@ add_unit_test(NAME Variable
 add_unit_test(NAME Vector
               SOURCES VectorUnitTest.cpp
               LINKS matioCpp::matioCpp)
+
+add_unit_test(NAME MultiDimensionalArray
+              SOURCES MultiDimensionalArrayUnitTest.cpp
+              LINKS matioCpp::matioCpp)

@@ -84,6 +84,7 @@ public:
     /**
      * @brief Assignement operator (copy) from another MultiDimensionalArray.
      * @param other The other MultiDimensionalArray.
+     * @note Also the name is copied
      * @return A reference to this MultiDimensionalArray.
      */
     MultiDimensionalArray<T>& operator=(const MultiDimensionalArray<T>& other);
@@ -91,6 +92,7 @@ public:
     /**
      * @brief Assignement operator (move) from another MultiDimensionalArray.
      * @param other The other MultiDimensionalArray.
+     * @note Also the name is copied
      * @return A reference to this MultiDimensionalArray.
      */
     MultiDimensionalArray<T>& operator=(MultiDimensionalArray<T>&& other);
@@ -335,12 +337,14 @@ typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimension
     assert(el.size() == dimensions().size() && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The input vector el should have the same number of dimensions of the array.");
     assert(el[0] < dimensions()[0] && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
 
-    typename matioCpp::MultiDimensionalArray<T>::index_type index = el[0];
+    typename matioCpp::MultiDimensionalArray<T>::index_type index = 0;
+    typename matioCpp::MultiDimensionalArray<T>::index_type previousDimensionsFactorial = 1;
 
-    for (size_t i = 1; i < el.size(); ++i)
+    for (size_t i = 0; i < el.size(); ++i)
     {
         assert(el[i] < dimensions()[i] && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
-        index += el[i] * dimensions()[i - 1];
+        index += el[i] * previousDimensionsFactorial;
+        previousDimensionsFactorial *= dimensions()[i];
     }
 
     return index;
