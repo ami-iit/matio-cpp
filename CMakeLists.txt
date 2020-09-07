@@ -102,7 +102,8 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/Vector.h
                  include/matioCpp/MultiDimensionalArray.h)
 
-set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp)
+set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
+                 include/matioCpp/impl/MultiDimensionalArray.tpp)
 
 # Define the library target
 add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR} ${MATIOCPP_TPP})
