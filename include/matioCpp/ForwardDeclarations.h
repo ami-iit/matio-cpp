@@ -109,19 +109,25 @@ enum class ValueType
     UNSUPPORTED
 };
 
+/**
+ * @brief The available modes with which a file can be opened.
+ */
 enum class FileMode
 {
     ReadOnly,
     ReadAndWrite
 };
 
+/**
+ * @brief The supported file versions
+ */
 enum class FileVersion
 {
-    Default,
-    MAT4,
-    MAT5,
-    MAT7_3,
-    Undefined
+    Default,   /** @brief This is one of the following three depending on the matio installation. **/
+    MAT4,      /** @brief Matlab version 7.3 file             */
+    MAT5,      /** @brief Matlab version 5 file               */
+    MAT7_3,    /** @brief Matlab version 4 file               */
+    Undefined  /** @brief Undefined version                   */
 };
 
 // [views.constants], constants

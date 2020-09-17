@@ -123,7 +123,9 @@ matioCpp::File matioCpp::File::Create(const std::string &name, matioCpp::FileVer
         break;
     }
 
-    newFile.m_pimpl->reset(Mat_CreateVer(name.c_str(), header.c_str(), fileVer), matioCpp::FileMode::ReadAndWrite);
+    const char * matioHeader = header.size() ? header.c_str() : NULL;
+
+    newFile.m_pimpl->reset(Mat_CreateVer(name.c_str(), matioHeader, fileVer), matioCpp::FileMode::ReadAndWrite);
 
     if (!newFile.isOpen())
     {
@@ -193,7 +195,14 @@ matioCpp::Variable matioCpp::File::read(const std::string &name) const
         std::cerr << "[ERROR][matioCpp::File::read] The file is not open." <<std::endl;
         return matioCpp::Variable();
     }
-    return matioCpp::Variable(Mat_VarRead(m_pimpl->mat_ptr, name.c_str()));
+
+    matvar_t *matVar = Mat_VarRead(m_pimpl->mat_ptr, name.c_str());
+
+    matioCpp::Variable output(matVar);
+
+    Mat_VarFree(matVar); //The content of matvar has been deep copied in the Variable, thus we have to free manually the output of Mat_VarRead.
+
+    return output;
 }
 
 bool matioCpp::File::write(matioCpp::Variable &variable)
