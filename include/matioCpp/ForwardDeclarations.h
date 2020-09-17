@@ -109,6 +109,21 @@ enum class ValueType
     UNSUPPORTED
 };
 
+enum class FileMode
+{
+    ReadOnly,
+    ReadAndWrite
+};
+
+enum class FileVersion
+{
+    Default,
+    MAT4,
+    MAT5,
+    MAT7_3,
+    Undefined
+};
+
 // [views.constants], constants
 MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;
 
@@ -136,6 +151,8 @@ using String = Vector<char>;
 
 template<typename T>
 class MultiDimensionalArray;
+
+class File;
 
 }
 
