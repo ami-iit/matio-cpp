@@ -197,6 +197,11 @@ const matvar_t *matioCpp::Variable::toMatio() const
     return m_pimpl->matVar_ptr;
 }
 
+matvar_t *matioCpp::Variable::toMatio()
+{
+    return m_pimpl->matVar_ptr;
+}
+
 std::string matioCpp::Variable::name() const
 {
     if (isValid())

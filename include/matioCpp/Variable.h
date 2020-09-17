@@ -128,7 +128,7 @@ public:
      * @param other The Variable from which to copy the content (data, name, type, dimensions,..).
      * @return True if the cloning was successful.
      */
-    virtual bool fromOther(const Variable& other); //Child classes need to make sure that the types are correct
+    virtual bool fromOther(const Variable& other);
 
     /**
      * @brief Set this variable from another variable.
@@ -137,7 +137,7 @@ public:
      * @param other The source Variable. Content is moved.
      * @return True if the moving was successful.
      */
-    virtual bool fromOther(Variable&& other); //Child classes need to make sure that the types are correct
+    virtual bool fromOther(Variable&& other);
 
     /**
      * @brief Convert this Variable to a matio variable.
@@ -145,6 +145,13 @@ public:
      * @return A matvar_t pointer.
      */
     const matvar_t * toMatio() const;
+
+    /**
+     * @brief Convert this Variable to a matio variable.
+     * @warning Any modification to the matio variable is reflected to this Variable.
+     * @return A matvar_t pointer.
+     */
+    matvar_t * toMatio();
 
     /**
      * @brief Get the name of the Variable.
