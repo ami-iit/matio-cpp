@@ -132,6 +132,7 @@ install(TARGETS    matioCpp
   PRIVATE_HEADER   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/matioCpp/impl" COMPONENT dev)
 
 install(FILES "cmake/FindMATIO.cmake" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/matioCpp/cmake")
+file(COPY "cmake/FindMATIO.cmake" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/share/matioCpp/cmake")
 
 include(InstallBasicPackageFiles)
 
