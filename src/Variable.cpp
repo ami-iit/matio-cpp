@@ -167,9 +167,8 @@ matioCpp::Variable::Variable(const matioCpp::Variable &other)
 }
 
 matioCpp::Variable::Variable(matioCpp::Variable &&other)
-    : m_pimpl(std::make_unique<Impl>())
 {
-    m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
+    m_pimpl = std::move(other.m_pimpl);
 }
 
 matioCpp::Variable::~Variable()
@@ -200,7 +199,7 @@ const matvar_t *matioCpp::Variable::toMatio() const
 
 std::string matioCpp::Variable::name() const
 {
-    if (m_pimpl->matVar_ptr)
+    if (isValid())
     {
         return m_pimpl->matVar_ptr->name;
     }
@@ -228,7 +227,7 @@ matioCpp::ValueType matioCpp::Variable::valueType() const
 
 bool matioCpp::Variable::isComplex() const
 {
-    if (m_pimpl->matVar_ptr)
+    if (isValid())
     {
         return m_pimpl->matVar_ptr->isComplex;
     }
@@ -241,4 +240,9 @@ bool matioCpp::Variable::isComplex() const
 const std::vector<size_t> &matioCpp::Variable::dimensions() const
 {
     return m_pimpl->dimensions;
+}
+
+bool matioCpp::Variable::isValid() const
+{
+    return m_pimpl->matVar_ptr;
 }

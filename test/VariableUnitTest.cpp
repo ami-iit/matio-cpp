@@ -19,6 +19,7 @@ void checkVariable(const matioCpp::Variable& var,
                    bool complex,
                    const std::vector<size_t>& dimensions)
 {
+    REQUIRE(var.isValid());
     REQUIRE(var.name() == name);
     REQUIRE(var.variableType() == type);
     REQUIRE(var.valueType() == value);
@@ -32,12 +33,14 @@ void checkVariable(const matioCpp::Variable& var,
 
 void checkSameVariable(const matioCpp::Variable& a, const matioCpp::Variable& b)
 {
+    REQUIRE(b.isValid());
     checkVariable(a, b.name(), b.variableType(), b.valueType(), b.isComplex(), b.dimensions());
 }
 
 TEST_CASE("Default Constructor")
 {
     matioCpp::Variable var;
+    REQUIRE_FALSE(var.isValid());
 }
 
 TEST_CASE("From matio")
@@ -51,6 +54,7 @@ TEST_CASE("From matio")
 
     SECTION("Getters")
     {
+        REQUIRE(var.isValid());
         REQUIRE(var.name() == "test");
         REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
         REQUIRE(var.valueType() == matioCpp::ValueType::DOUBLE);

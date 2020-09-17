@@ -176,6 +176,15 @@ public:
      */
     const std::vector<size_t>& dimensions() const;
 
+    /**
+     * @brief Check if the variable is valid
+     *
+     * A Variable may not be valid if it does not point to any data, or the the dimensions().size() < 2.
+     *
+     * @return true if valid.
+     */
+    bool isValid() const;
+
 };
 
 #endif
