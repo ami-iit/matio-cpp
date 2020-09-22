@@ -110,6 +110,11 @@ public:
      * @brief Get the index in the vectorized array corresponding to the provided indices
      * @param el The desider element
      * @warning It checks if the element is in the bounds only in debug mode.
+     *
+     * Since the array is stored in column-major, an element (i,j,k,l,..) of an array
+     * of dimensions (n,m,p,k,...) corresponds to a row index
+     * equal to i + j*n + k*n*m + l*n*m*p +...
+     *
      * @return the index in the vectorized array corresponding to the provided indices
      */
     index_type rawIndexFromIndices(const std::vector<index_type>& el) const;
@@ -150,7 +155,7 @@ public:
 
     /**
      * @brief Resize the vector.
-     * @param newSize The new size.
+     * @param newDimensions The new dimensions.
      *
      * @warning This requires to allocate memory for twice the new size.
      * @warning Previous data is lost.

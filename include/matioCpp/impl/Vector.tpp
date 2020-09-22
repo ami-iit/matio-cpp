@@ -98,7 +98,7 @@ bool matioCpp::Vector<T>::fromOther(const matioCpp::Variable &other)
 
     if (other.isComplex())
     {
-        std::cerr << "[matioCpp::Vector::fromOther] The input variable is complex, this is not." << std::endl;
+        std::cerr << "[matioCpp::Vector::fromOther] Cannot copy a complex a variable to a non-complex one." << std::endl;
         return false;
     }
 
@@ -122,7 +122,7 @@ bool matioCpp::Vector<T>::fromOther(matioCpp::Variable &&other)
 
     if (other.isComplex())
     {
-        std::cerr << "[matioCpp::Vector::fromOther] The input variable is complex, this is not." << std::endl;
+        std::cerr << "[matioCpp::Vector::fromOther] Cannot copy a complex a variable to a non-complex one." << std::endl;
         return false;
     }
 

@@ -57,7 +57,6 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
 template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name, const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &dimensions, matioCpp::MultiDimensionalArray<T>::const_pointer inputVector)
 {
-    matioCpp::MultiDimensionalArray<T>::index_type totalElements = 1;
     for (matioCpp::MultiDimensionalArray<T>::index_type dim : dimensions)
     {
         if (dim == 0)
@@ -65,8 +64,6 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
             std::cerr << "[ERROR][matioCpp::MultiDimensionalArray::MultiDimensionalArray] Zero dimension detected." << std::endl;
             assert(false);
         }
-
-        totalElements *= dim;
     }
 
     initializeVariable(name,
@@ -131,8 +128,8 @@ bool matioCpp::MultiDimensionalArray<T>::fromVectorizedArray(const std::vector<t
 template<typename T>
 typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimensionalArray<T>::rawIndexFromIndices(const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &el) const
 {
-    assert(dimensions().size() && numberOfElements() && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The array is empty.");
-    assert(el.size() == dimensions().size() && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The input vector el should have the same number of dimensions of the array.");
+    assert(dimensions().size() > 0 && numberOfElements() > 0 && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The array is empty.");
+    assert(el.size() > 0 == dimensions().size() > 0 && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The input vector el should have the same number of dimensions of the array.");
     assert(el[0] < dimensions()[0] && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
 
     typename matioCpp::MultiDimensionalArray<T>::index_type index = 0;
@@ -159,7 +156,7 @@ bool matioCpp::MultiDimensionalArray<T>::fromOther(const matioCpp::Variable &oth
 
     if (other.isComplex())
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] The input variable is complex, this is not." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex a variable to a non-complex one." << std::endl;
         return false;
     }
 
@@ -183,7 +180,7 @@ bool matioCpp::MultiDimensionalArray<T>::fromOther(matioCpp::Variable &&other)
 
     if (other.isComplex())
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] The input variable is complex, this is not." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex a variable to a non-complex one." << std::endl;
         return false;
     }
 
