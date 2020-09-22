@@ -12,6 +12,31 @@
 #include <vector>
 #include <matioCpp/matioCpp.h>
 
+void checkSameDimensions(matioCpp::Span<const size_t> a, matioCpp::Span<const size_t> b)
+{
+    REQUIRE(a.size() == b.size());
+
+    for (size_t i = 0; i < static_cast<size_t>(a.size()); ++i)
+    {
+        REQUIRE(a[i] == b[i]);
+    }
+}
+
+void checkVariable(const matioCpp::Variable& var,
+                   const std::string& name,
+                   matioCpp::VariableType type,
+                   matioCpp::ValueType value,
+                   bool complex,
+                   matioCpp::Span<const size_t> dimensions)
+{
+    REQUIRE(var.name() == name);
+    REQUIRE(var.variableType() == type);
+    REQUIRE(var.valueType() == value);
+    REQUIRE(var.isComplex() == complex);
+    REQUIRE(var.dimensions().size() == dimensions.size());
+    checkSameDimensions(dimensions, var.dimensions());
+}
+
 void checkVariable(const matioCpp::Variable& var,
                    const std::string& name,
                    matioCpp::VariableType type,
@@ -19,15 +44,7 @@ void checkVariable(const matioCpp::Variable& var,
                    bool complex,
                    const std::vector<size_t>& dimensions)
 {
-    REQUIRE(var.name() == name);
-    REQUIRE(var.variableType() == type);
-    REQUIRE(var.valueType() == value);
-    REQUIRE(var.isComplex() == complex);
-    REQUIRE(var.dimensions().size() == dimensions.size());
-    for (size_t i = 0; i < var.dimensions().size(); ++i)
-    {
-        REQUIRE(var.dimensions()[i] == dimensions[i]);
-    }
+    checkVariable(var, name, type, value, complex, matioCpp::make_span(dimensions));
 }
 
 void REQUIRE_TRUE(bool value)

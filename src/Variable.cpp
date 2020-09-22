@@ -15,7 +15,6 @@ class matioCpp::Variable::Impl
 {
 public:
     matvar_t* matVar_ptr{nullptr};
-    std::vector<size_t> dimensions;
 
     void freePtr()
     {
@@ -41,9 +40,6 @@ public:
             return false;
         }
 
-        matioCpp::Span<size_t> dimensionsSpan = matioCpp::make_span(inputVar->dims, inputVar->rank);
-        dimensions.assign(dimensionsSpan.begin(), dimensionsSpan.end());
-
         resetPtr(Mat_VarDuplicate(inputVar, 1)); //0 Shallow copy, 1 Deep copy
 
         return true;
@@ -58,7 +54,7 @@ public:
     }
 };
 
-bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void* data)
+bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
     std::string errorPrefix = "[ERROR][matioCpp::Variable::createVar] ";
     if (name.empty())
@@ -88,9 +84,10 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
         return false;
     }
 
-    m_pimpl->dimensions = dimensions;
+    std::vector<size_t> dimensionsCopy;
+    dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensions.size(), m_pimpl->dimensions.data(), data, 0));
+    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0));
 
     if (!m_pimpl->matVar_ptr)
     {
@@ -101,7 +98,7 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     return true;
 }
 
-bool matioCpp::Variable::initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData)
+bool matioCpp::Variable::initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void *realData, void *imaginaryData)
 {
     std::string errorPrefix = "[ERROR][matioCpp::Variable::createComplexVar] ";
     if (name.empty())
@@ -141,9 +138,10 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     matioComplexSplit.Re = realData;
     matioComplexSplit.Im = imaginaryData;
 
-    m_pimpl->dimensions = dimensions;
+    std::vector<size_t> dimensionsCopy;
+    dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, m_pimpl->dimensions.size(), m_pimpl->dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
+    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
     return m_pimpl->matVar_ptr != nullptr;
 }
@@ -242,9 +240,9 @@ bool matioCpp::Variable::isComplex() const
     }
 }
 
-const std::vector<size_t> &matioCpp::Variable::dimensions() const
+matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 {
-    return m_pimpl->dimensions;
+    return matioCpp::make_span(m_pimpl->matVar_ptr->dims, m_pimpl->matVar_ptr->rank);
 }
 
 bool matioCpp::Variable::isValid() const

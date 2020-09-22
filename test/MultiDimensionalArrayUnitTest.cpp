@@ -12,7 +12,7 @@
 #include <vector>
 #include <matioCpp/matioCpp.h>
 
-void checkSameDimensions(const std::vector<size_t>& a, const std::vector<size_t>& b)
+void checkSameDimensions(matioCpp::Span<const size_t> a, matioCpp::Span<const size_t> b)
 {
     REQUIRE(a.size() == b.size());
 
@@ -27,7 +27,7 @@ void checkVariable(const matioCpp::Variable& var,
                    matioCpp::VariableType type,
                    matioCpp::ValueType value,
                    bool complex,
-                   const std::vector<size_t>& dimensions)
+                   matioCpp::Span<const size_t> dimensions)
 {
     REQUIRE(var.name() == name);
     REQUIRE(var.variableType() == type);
@@ -35,6 +35,16 @@ void checkVariable(const matioCpp::Variable& var,
     REQUIRE(var.isComplex() == complex);
     REQUIRE(var.dimensions().size() == dimensions.size());
     checkSameDimensions(dimensions, var.dimensions());
+}
+
+void checkVariable(const matioCpp::Variable& var,
+                   const std::string& name,
+                   matioCpp::VariableType type,
+                   matioCpp::ValueType value,
+                   bool complex,
+                   const std::vector<size_t>& dimensions)
+{
+    checkVariable(var, name, type, value, complex, matioCpp::make_span(dimensions));
 }
 
 void REQUIRE_TRUE(bool value)
@@ -60,13 +70,13 @@ void checkSameMultiDimensionalArray(const matioCpp::MultiDimensionalArray<T>& a,
     while (!scanned)
     {
         //Iterate over the first dimension
-        for (element.front() = 0; element.front() < a.dimensions().front(); ++element.front())
+        for (element.front() = 0; element.front() < a.dimensions()[0]; ++element.front())
         {
             REQUIRE(std::abs(a(element) - b(element)) < precision);
         }
 
         bool done = false;
-        size_t dimensionToBeIncreased = 1;
+        std::ptrdiff_t dimensionToBeIncreased = 1;
         while (!done && (dimensionToBeIncreased < a.dimensions().size())) //Find the smallest dimension to increase without going out of bounds
         {
             if (++element[dimensionToBeIncreased] < a.dimensions()[dimensionToBeIncreased])

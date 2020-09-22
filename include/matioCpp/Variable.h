@@ -40,7 +40,7 @@ protected:
      * @param data A void pointer to the (flattened) data.
      * @return true in case the variable was correctly initialized.
      */
-    bool initializeVariable(const std::string &name, const VariableType &variableType, const ValueType &valueType, const std::vector<size_t> &dimensions, void *data);
+    bool initializeVariable(const std::string &name, const VariableType &variableType, const ValueType &valueType, matioCpp::Span<const size_t> dimensions, void *data);
 
     /**
      * @brief Initialize a complex variable
@@ -52,7 +52,7 @@ protected:
      * @param imaginaryData A void pointer to the (flattened) imaginary data. Check the documentation of initializeVariable for understanding how to obtain/interpret this vector.
      * @return true in case the variable was correctly initialized.
      */
-    bool initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData);
+    bool initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void *realData, void *imaginaryData);
 
 
     /**
@@ -181,7 +181,7 @@ public:
      * @brief Get the dimensions of this object.
      * @return The dimensions of the object
      */
-    const std::vector<size_t>& dimensions() const;
+    matioCpp::Span<const size_t> dimensions() const;
 
     /**
      * @brief Check if the variable is valid
