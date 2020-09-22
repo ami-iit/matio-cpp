@@ -91,7 +91,9 @@ endif()
 find_package(MATIO REQUIRED)
 
 set(MATIOCPP_SRC src/Variable.cpp
-                 src/ConversionUtilities.cpp)
+                 src/ConversionUtilities.cpp
+                 src/SharedMatvar.cpp
+                 src/WeakMatvar.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/VectorIterator.h
@@ -100,10 +102,15 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/ForwardDeclarations.h
                  include/matioCpp/matioCpp.h
                  include/matioCpp/Vector.h
-                 include/matioCpp/MultiDimensionalArray.h)
+                 include/matioCpp/MultiDimensionalArray.h
+                 include/matioCpp/MatvarHandler.h
+                 include/matioCpp/SharedMatvar.h
+                 include/matioCpp/WeakMatvar.h)
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/MultiDimensionalArray.tpp)
+
+source_group("Template Implementation Files" FILES ${MATIOCPP_TPP})
 
 # Define the library target
 add_library(matioCpp ${MATIOCPP_SRC} ${MATIOCPP_HDR} ${MATIOCPP_TPP})

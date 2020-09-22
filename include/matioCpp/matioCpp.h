@@ -15,5 +15,8 @@
 #include <matioCpp/Variable.h>
 #include <matioCpp/Vector.h>
 #include <matioCpp/MultiDimensionalArray.h>
+#include <matioCpp/MatvarHandler.h>
+#include <matioCpp/SharedMatvar.h>
+#include <matioCpp/WeakMatvar.h>
 
 #endif //MATIOCPP_H
