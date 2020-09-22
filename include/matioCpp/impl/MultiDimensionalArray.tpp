@@ -107,7 +107,6 @@ matioCpp::MultiDimensionalArray<T> &matioCpp::MultiDimensionalArray<T>::operator
 template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::fromVectorizedArray(const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &dimensions, matioCpp::MultiDimensionalArray<T>::const_pointer inputVector)
 {
-    matioCpp::MultiDimensionalArray<T>::index_type totalElements = 1;
     for (matioCpp::MultiDimensionalArray<T>::index_type dim : dimensions)
     {
         if (dim == 0)
@@ -115,8 +114,6 @@ bool matioCpp::MultiDimensionalArray<T>::fromVectorizedArray(const std::vector<t
             std::cerr << "[ERROR][matioCpp::MultiDimensionalArray::fromVectorizedArray] Zero dimension detected." << std::endl;
             return false;
         }
-
-        totalElements *= dim;
     }
 
     return initializeVariable(name(),
@@ -156,7 +153,7 @@ bool matioCpp::MultiDimensionalArray<T>::fromOther(const matioCpp::Variable &oth
 
     if (other.isComplex())
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex a variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex variable to a non-complex one." << std::endl;
         return false;
     }
 
@@ -180,7 +177,7 @@ bool matioCpp::MultiDimensionalArray<T>::fromOther(matioCpp::Variable &&other)
 
     if (other.isComplex())
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex a variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex variable to a non-complex one." << std::endl;
         return false;
     }
 
