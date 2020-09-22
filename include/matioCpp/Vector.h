@@ -94,6 +94,7 @@ public:
     /**
      * @brief Assignement operator (copy) from another Vector.
      * @param other The other Vector.
+     * @note Also the name is copied
      * @return A reference to this Vector.
      */
     Vector<T>& operator=(const Vector<T>& other);
@@ -101,6 +102,7 @@ public:
     /**
      * @brief Assignement operator (move) from another Vector.
      * @param other The other Vector.
+     * @note Also the name is copied.
      * @return A reference to this Vector.
      */
     Vector<T>& operator=(Vector<T>&& other);

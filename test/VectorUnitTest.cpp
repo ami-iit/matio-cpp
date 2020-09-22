@@ -165,7 +165,7 @@ TEST_CASE("Assignments")
         checkSameVariable(var, vector);
     }
 
-    SECTION("From other variable (copy)")
+    SECTION("From other variable (move)")
     {
         matioCpp::Variable var(matioVar), var2;
         REQUIRE(var2.fromOther(var));

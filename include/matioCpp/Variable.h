@@ -125,7 +125,7 @@ public:
     /**
      * @brief Set this variable from another variable.
      * @note Child classes need to override this method to make sure that only compatible classes can be copied.
-     * @param other The Variable from which to copy the content.
+     * @param other The Variable from which to copy the content (data, name, type, dimensions,..).
      * @return True if the cloning was successful.
      */
     virtual bool fromOther(const Variable& other); //Child classes need to make sure that the types are correct
