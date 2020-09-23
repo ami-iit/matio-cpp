@@ -17,32 +17,94 @@
 
 class matioCpp::WeakMatvar : public matioCpp::MatvarHandler
 {
+    /**
+     * @brief A weak_ptr to the Ownership object.
+     */
     std::weak_ptr<MatvarHandler::Ownership> m_ownership;
 
 public:
 
+    /**
+     * @brief Default constructor.
+     *
+     * This objects points to no matvar_t.
+     */
     WeakMatvar();
 
+    /**
+     * @brief Copy constructor.
+     * @param other The other object from which to copy.
+     */
     WeakMatvar(const WeakMatvar& other);
 
+    /**
+     * @brief Move constructor.
+     * @param other The other object from which to get the context.
+     */
     WeakMatvar(WeakMatvar&& other);
 
+    /**
+     * @brief Construct a WeakMatvar from a SharedMatvar.
+     *
+     * The WeakMatvar object will have a weak_ptr to the same Ownership
+     * object of SharedMatvar.
+     * This object will point (in a shared way) to the same matvar_t pointer.
+     * The content of matvar_t may be deallocated if all the SharedMatvar
+     * objects are deallocated.
+     * @param other The input SharedMatvar object.
+     */
     WeakMatvar(const SharedMatvar& other);
 
+    /**
+     * @brief Import an already existing matvar_t pointer which is owned by owner.
+     *
+     * owner needs to make sure that inputPtr is deallocated.
+     * @param inputPtr The matvar_t pointer to import
+     * @param owner The owner of inputPtr (the one that takes care of deallocating it)
+     */
     WeakMatvar(matvar_t* inputPtr, const SharedMatvar& owner);
 
+    /**
+     * Destructor
+     */
     ~WeakMatvar();
 
+    /**
+     * Docs inherited
+     */
     virtual matvar_t* get() const final;
 
+    /**
+     * Docs inherited
+     */
     virtual bool isShared() const final;
 
+    /**
+     * Docs inherited
+     *
+     * This always returns false.
+     */
     virtual bool duplicateMatvar(matvar_t*) final;
 
+    /**
+     * @brief Copy assignement
+     * @param other The other object to copy.
+     * @return A reference to the current object.
+     */
     WeakMatvar& operator=(const WeakMatvar& other);
 
+    /**
+     * @brief Move assignement
+     * @param other The other object to get the context.
+     * @return A reference to the current object.
+     */
     WeakMatvar& operator=(WeakMatvar&& other);
 
+    /**
+     * @brief Assignement operator from a SharedMatvar
+     * @param other The SharedMatvar from which to share the ownership and import the matvar_t pointer.
+     * @return A reference to the current object.
+     */
     WeakMatvar& operator=(const SharedMatvar& other);
 
 };
