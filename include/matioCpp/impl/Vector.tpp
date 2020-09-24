@@ -14,8 +14,8 @@
 template<typename T>
 bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
 {
-    size_t emptyDimensions[] = {static_cast<size_t>(inputVector.size()), 1};
-    return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, emptyDimensions, (void*)inputVector.data());
+    size_t dimensions[] = {static_cast<size_t>(inputVector.size()), 1};
+    return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputVector.data());
 }
 
 template<typename T>

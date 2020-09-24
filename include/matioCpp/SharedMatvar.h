@@ -70,7 +70,7 @@ public:
     /**
      * Docs inherited
      */
-    virtual bool duplicateMatvar(matvar_t* inputPtr) final;
+    virtual bool duplicateMatvar(const matvar_t *inputPtr) final;
 
     /**
      * @brief Copy assignement

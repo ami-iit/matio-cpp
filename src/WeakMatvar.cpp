@@ -63,7 +63,7 @@ bool matioCpp::WeakMatvar::isShared() const
     return false;
 }
 
-bool matioCpp::WeakMatvar::duplicateMatvar(matvar_t *)
+bool matioCpp::WeakMatvar::duplicateMatvar(const matvar_t *)
 {
     std::cerr << "[ERROR][matioCpp::WeakMatvar::duplicateFromMatio] Cannot duplicate from inputPtr. A WeakMatvar cannot modify the matvar pointer." << std::endl;
 

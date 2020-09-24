@@ -14,6 +14,10 @@
 #include <matioCpp/ForwardDeclarations.h>
 #include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Span.h>
+#include <matioCpp/MatvarHandler.h>
+#include <matioCpp/SharedMatvar.h>
+#include <matioCpp/WeakMatvar.h>
+
 
 /**
  * @brief The matioCpp::Variable class is the equivalent of matvar_t in matio. It is supposed to be a basic access to object that are or need to be saved in a mat file.
@@ -21,9 +25,7 @@
 class matioCpp::Variable
 {
 
-    class Impl;
-
-    std::unique_ptr<Impl> m_pimpl;
+    matioCpp::MatvarHandler* m_handler;
 
 protected:
 

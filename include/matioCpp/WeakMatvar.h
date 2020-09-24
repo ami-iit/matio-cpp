@@ -84,7 +84,7 @@ public:
      *
      * This always returns false.
      */
-    virtual bool duplicateMatvar(matvar_t*) final;
+    virtual bool duplicateMatvar(const matvar_t*) final;
 
     /**
      * @brief Copy assignement

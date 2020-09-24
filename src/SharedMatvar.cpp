@@ -63,7 +63,7 @@ bool matioCpp::SharedMatvar::isShared() const
     return true;
 }
 
-bool matioCpp::SharedMatvar::duplicateMatvar(matvar_t *inputPtr)
+bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
 {
     std::string errorPrefix = "[ERROR][matioCpp::SharedMatvar::duplicateFromMatio] ";
     if (!inputPtr)
