@@ -166,3 +166,24 @@ TEST_CASE("Duplicate")
 
 }
 
+TEST_CASE("Pointer to duplicate")
+{
+    std::vector<double> vec(7);
+    std::vector<size_t> dimensions = {vec.size(), 1};
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    REQUIRE(matioVar);
+
+    matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar(matioVar);
+
+    matioCpp::MatvarHandler* duplicate = sharedPtr->pointerToDuplicate();
+
+    REQUIRE(duplicate->get() == sharedPtr->get());
+    REQUIRE(duplicate->isShared());
+
+    delete sharedPtr;
+    REQUIRE(duplicate->get());
+
+    delete duplicate;
+
+}
+

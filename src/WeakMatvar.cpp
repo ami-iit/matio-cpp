@@ -70,6 +70,11 @@ bool matioCpp::WeakMatvar::duplicateMatvar(const matvar_t *)
     return false;
 }
 
+matioCpp::MatvarHandler *matioCpp::WeakMatvar::pointerToDuplicate() const
+{
+    return new WeakMatvar(*this);
+}
+
 matioCpp::WeakMatvar &matioCpp::WeakMatvar::operator=(const matioCpp::WeakMatvar &other)
 {
     m_ownership = other.m_ownership;

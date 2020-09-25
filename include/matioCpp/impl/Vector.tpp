@@ -19,6 +19,40 @@ bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inpu
 }
 
 template<typename T>
+bool matioCpp::Vector<T>::checkCompatibility(const matvar_t *inputPtr) const
+{
+    if (!inputPtr)
+    {
+        std::cerr << "[matioCpp::Vector::isCompatible] The input pointer is null." << std::endl;
+        return false;
+    }
+
+    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
+    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
+
+    if (outputVariableType != matioCpp::VariableType::Vector)
+    {
+        std::cerr << "[matioCpp::Vector::isCompatible] The input variable is not a vector." << std::endl;
+        return false;
+    }
+
+    if (inputPtr->isComplex)
+    {
+        std::cerr << "[matioCpp::Vector::isCompatible] Cannot copy a complex variable to a non-complex one." << std::endl;
+        return false;
+    }
+
+    if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
+    {
+        std::cerr << "[matioCpp::Vector::isCompatible] The input type is not convertible to " <<
+            typeid(T).name() <<"." << std::endl;
+        return false;
+    }
+    return true;
+}
+
+template<typename T>
 matioCpp::Vector<T>::Vector()
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
@@ -51,6 +85,20 @@ template<typename T>
 matioCpp::Vector<T>::Vector(Vector<T> &&other)
 {
     fromOther(other);
+}
+
+template<typename T>
+matioCpp::Vector<T>::Vector(const MatvarHandler &handler)
+    : matioCpp::Variable(handler)
+{
+    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
+
+    if (!checkCompatibility(handler.get()))
+    {
+        assert(false);
+        std::vector<T> empty;
+        initializeVector("unnamed_vector", matioCpp::make_span(empty));
+    }
 }
 
 template<typename T>
@@ -91,61 +139,34 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
 template<typename T>
 bool matioCpp::Vector<T>::fromOther(const matioCpp::Variable &other)
 {
-    if (other.variableType() != matioCpp::VariableType::Vector)
+    if (!checkCompatibility(other.toMatio()))
     {
-        std::cerr << "[matioCpp::Vector::fromOther] The input variable is not a vector." << std::endl;
         return false;
     }
 
-    if (other.isComplex())
-    {
-        std::cerr << "[matioCpp::Vector::fromOther] Cannot copy a complex variable to a non-complex one." << std::endl;
-        return false;
-    }
-
-    if (!matioCpp::is_convertible_to_primitive_type<T>(other.valueType()))
-    {
-        std::cerr << "[matioCpp::Vector::fromOther] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl;
-        return false;
-    }
     return Variable::fromOther(other);
 }
 
 template<typename T>
 bool matioCpp::Vector<T>::fromOther(matioCpp::Variable &&other)
 {
-    if (other.variableType() != matioCpp::VariableType::Vector)
+    if (!checkCompatibility(other.toMatio()))
     {
-        std::cerr << "[matioCpp::Vector::fromOther] The input variable is not a vector." << std::endl;
         return false;
     }
 
-    if (other.isComplex())
-    {
-        std::cerr << "[matioCpp::Vector::fromOther] Cannot copy a complex variable to a non-complex one." << std::endl;
-        return false;
-    }
-
-    if (!matioCpp::is_convertible_to_primitive_type<T>(other.valueType()))
-    {
-        std::cerr << "[matioCpp::Vector::fromOther] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl;
-        return false;
-    }
     return Variable::fromOther(other);
 }
 
 template<typename T>
 bool matioCpp::Vector<T>::fromMatio(const matvar_t *inputVar)
 {
-    Variable dummy;
-    if (!dummy.fromMatio(inputVar))
+    if (!checkCompatibility(inputVar))
     {
         return false;
     }
 
-    return fromOther(dummy);
+    return Variable::fromMatio(inputVar);
 }
 
 template<typename T>

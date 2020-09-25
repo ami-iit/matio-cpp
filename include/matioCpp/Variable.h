@@ -103,6 +103,12 @@ public:
     Variable(Variable&& other);
 
     /**
+     * @brief Constructor to share the data ownership of another variable.
+     * @param handler The MatvarHandler handler to the matvar_t which has to be shared.
+     */
+    Variable(const MatvarHandler& handler);
+
+    /**
     * @brief Destructor
     */
     ~Variable();

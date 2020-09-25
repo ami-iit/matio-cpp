@@ -59,6 +59,29 @@ TEST_CASE("Default Constructor")
     REQUIRE_FALSE(var.isValid());
 }
 
+TEST_CASE("MatvarHandler")
+{
+    std::vector<double> vec(7);
+    std::vector<size_t> dimensions = {vec.size(), 1};
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    REQUIRE(matioVar);
+
+    matioCpp::SharedMatvar sharedMatvar(matioVar);
+    matioCpp::Variable sharedVar(sharedMatvar);
+    REQUIRE(sharedVar.isValid());
+    REQUIRE(sharedVar.toMatio() == matioVar);
+
+    checkVariable(sharedVar, "test", matioCpp::VariableType::Vector,
+                  matioCpp::ValueType::DOUBLE, false, dimensions);
+
+    matioCpp::Variable weakVar((matioCpp::WeakMatvar(sharedMatvar)));
+    REQUIRE(weakVar.isValid());
+    REQUIRE(weakVar.toMatio() == matioVar);
+
+    checkVariable(weakVar, "test", matioCpp::VariableType::Vector,
+                  matioCpp::ValueType::DOUBLE, false, dimensions);
+}
+
 TEST_CASE("From matio")
 {
     std::vector<double> vec(7);

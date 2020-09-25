@@ -118,6 +118,29 @@ TEST_CASE("Constructors")
         REQUIRE(b.valueType() == matioCpp::ValueType::UTF8);
     }
 
+    SECTION("Shared ownership")
+    {
+        std::vector<double> vec(7);
+        std::vector<size_t> dimensions = {vec.size(), 1};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::SharedMatvar sharedMatvar(matioVar);
+        matioCpp::Vector<double> sharedVar(sharedMatvar);
+        REQUIRE(sharedVar.isValid());
+        REQUIRE(sharedVar.toMatio() == matioVar);
+
+        checkVariable(sharedVar, "test", matioCpp::VariableType::Vector,
+                      matioCpp::ValueType::DOUBLE, false, dimensions);
+
+        matioCpp::Vector<double> weakVar((matioCpp::WeakMatvar(sharedMatvar)));
+        REQUIRE(weakVar.isValid());
+        REQUIRE(weakVar.toMatio() == matioVar);
+
+        checkVariable(weakVar, "test", matioCpp::VariableType::Vector,
+                      matioCpp::ValueType::DOUBLE, false, dimensions);
+    }
+
 }
 
 TEST_CASE("Assignments")

@@ -84,6 +84,11 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
     return true;
 }
 
+matioCpp::MatvarHandler *matioCpp::SharedMatvar::pointerToDuplicate() const
+{
+    return new SharedMatvar(*this);
+}
+
 matioCpp::SharedMatvar &matioCpp::SharedMatvar::operator=(const matioCpp::SharedMatvar &other)
 {
     m_ownership = other.m_ownership;

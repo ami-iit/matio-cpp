@@ -56,6 +56,12 @@ public:
      */
     virtual bool duplicateMatvar(const matvar_t* inputPtr) = 0;
 
+    /**
+     * @brief Get a pointer to a duplicate of the MatvarHandler. The pointed object has to be deallocated manually
+     * @return A pointer to a copy of the MatvarHandler.
+     */
+    virtual MatvarHandler* pointerToDuplicate() const = 0;
+
 };
 
 

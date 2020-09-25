@@ -73,6 +73,11 @@ public:
     virtual bool duplicateMatvar(const matvar_t *inputPtr) final;
 
     /**
+     * Docs inherited
+     */
+    virtual MatvarHandler* pointerToDuplicate() const final;
+
+    /**
      * @brief Copy assignement
      * @param other The other object to copy.
      * @return A reference to the current object.

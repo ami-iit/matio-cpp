@@ -146,6 +146,12 @@ matioCpp::Variable::Variable(matioCpp::Variable &&other)
     other.m_handler = nullptr;
 }
 
+matioCpp::Variable::Variable(const MatvarHandler &handler)
+    : m_handler(handler.pointerToDuplicate())
+{
+
+}
+
 matioCpp::Variable::~Variable()
 {
     if (m_handler)
