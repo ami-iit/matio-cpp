@@ -200,6 +200,38 @@ public:
      */
     bool isValid() const;
 
+    /**
+     * @brief Cast the variable as a Vector.
+     *
+     * The implementation is in Vector.tpp
+     */
+    template<typename T>
+    matioCpp::Vector<T> asVector();
+
+    /**
+     * @brief Cast the variable as a const Vector
+     *
+     * The implementation is in Vector.tpp
+     */
+    template<typename T>
+    const matioCpp::Vector<T> asVector() const;
+
+    /**
+     * @brief Cast the variable as a MultiDimensionalArray.
+     *
+     * The implementation is in MultiDimensionalArray.tpp
+     */
+    template<typename T>
+    matioCpp::MultiDimensionalArray<T> asMultiDimensionalArray();
+
+    /**
+     * @brief Cast the variable as a const MultiDimensionalArray.
+     *
+     * The implementation is in MultiDimensionalArray.tpp
+     */
+    template<typename T>
+    const matioCpp::MultiDimensionalArray<T> asMultiDimensionalArray() const;
+
 };
 
 #endif

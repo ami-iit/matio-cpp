@@ -315,7 +315,16 @@ typename matioCpp::Vector<T>::const_reverse_iterator matioCpp::Vector<T>::crend(
     return const_reverse_iterator{cbegin()};
 }
 
+template<typename T>
+matioCpp::Vector<T> matioCpp::Variable::asVector()
+{
+    return matioCpp::Vector<T>(*m_handler);
+}
 
-
+template<typename T>
+const matioCpp::Vector<T> matioCpp::Variable::asVector() const
+{
+    return matioCpp::Vector<T>(*m_handler);
+}
 
 #endif // MATIOCPP_VECTOR_TPP

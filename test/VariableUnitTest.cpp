@@ -171,6 +171,44 @@ TEST_CASE("Complex int")
     Mat_VarFree(matioVar);
 }
 
+TEST_CASE("Conversions")
+{
+    SECTION("To Vector")
+    {
+        std::vector<double> vec(7);
+        std::vector<size_t> dimensions = {vec.size(), 1};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+        matioCpp::Vector<double> asVector = sharedVar.asVector<double>();
+        checkSameVariable(sharedVar, asVector);
+        asVector(0) = 3.14;
+        REQUIRE((((double *)(matioVar->data))[0]) == 3.14);
+
+        const matioCpp::Variable& constRef = sharedVar;
+        const matioCpp::Vector<double> asConstVector = constRef.asVector<double>();
+        REQUIRE(asConstVector(0) == 3.14);
+    }
+
+    SECTION("To Multidimensional array")
+    {
+        std::vector<double> vec(8);
+        std::vector<size_t> dimensions = {4,2};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+        matioCpp::MultiDimensionalArray<double> asArray = sharedVar.asMultiDimensionalArray<double>();
+        checkSameVariable(sharedVar, asArray);
+        asArray({0,0}) = 3.14;
+        REQUIRE((((double *)(matioVar->data))[0]) == 3.14);
+
+        const matioCpp::Variable& constRef = sharedVar;
+        const matioCpp::MultiDimensionalArray<double> asConstArray = constRef.asMultiDimensionalArray<double>();
+        REQUIRE(asConstArray({0,0}) == 3.14);
+    }
+}
 
 
 

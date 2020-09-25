@@ -303,4 +303,16 @@ typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimension
     return data()[rawIndexFromIndices(el)];
 }
 
+template<typename T>
+matioCpp::MultiDimensionalArray<T> matioCpp::Variable::asMultiDimensionalArray()
+{
+    return matioCpp::MultiDimensionalArray<T>(*m_handler);
+}
+
+template<typename T>
+const matioCpp::MultiDimensionalArray<T> matioCpp::Variable::asMultiDimensionalArray() const
+{
+    return matioCpp::MultiDimensionalArray<T>(*m_handler);
+}
+
 #endif // MATIOCPP_MULTIDIMENSIONALARRAY_TPP
