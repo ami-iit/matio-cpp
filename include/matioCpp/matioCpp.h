@@ -18,5 +18,6 @@
 #include <matioCpp/MatvarHandler.h>
 #include <matioCpp/SharedMatvar.h>
 #include <matioCpp/WeakMatvar.h>
+#include <matioCpp/Element.h>
 
 #endif //MATIOCPP_H

@@ -50,7 +50,6 @@ template <> struct get_type<int64_t>  { using type = int64_t;  static constexpr 
 template <> struct get_type<char> { using type = char; static constexpr ValueType valueType = ValueType::UTF8; };
 template <> struct get_type<char16_t> { using type = char16_t; static constexpr ValueType valueType = ValueType::UTF16; };
 template <> struct get_type<char32_t> { using type = char32_t; static constexpr ValueType valueType = ValueType::UTF32; };
-template <> struct get_type<std::string> { using type = std::string; static constexpr ValueType valueType = ValueType::STRING; };
 
 /**
  * @brief Utility function to check if certain ValueType can be converted to a primitive type T.

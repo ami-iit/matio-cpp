@@ -127,6 +127,9 @@ class WeakMatvar;
 class Variable;
 
 template<typename T>
+class Element;
+
+template<typename T>
 class Vector;
 
 template<typename T>
