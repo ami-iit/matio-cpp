@@ -208,6 +208,22 @@ public:
     bool isValid() const;
 
     /**
+     * @brief Cast the variable as a Element.
+     *
+     * The implementation is in Element.tpp
+     */
+    template<typename T>
+    matioCpp::Element<T> asElement();
+
+    /**
+     * @brief Cast the variable as a const Element
+     *
+     * The implementation is in Element.tpp
+     */
+    template<typename T>
+    const matioCpp::Element<T> asElement() const;
+
+    /**
      * @brief Cast the variable as a Vector.
      *
      * The implementation is in Vector.tpp

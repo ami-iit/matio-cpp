@@ -164,4 +164,16 @@ matioCpp::Element<T>::operator T() const
     return (((typename matioCpp::Element<T>::const_pointer)(toMatio()->data))[0]);
 }
 
+template<typename T>
+matioCpp::Element<T> matioCpp::Variable::asElement()
+{
+    return matioCpp::Element<T>(*m_handler);
+}
+
+template<typename T>
+const matioCpp::Element<T> matioCpp::Variable::asElement() const
+{
+    return matioCpp::Element<T>(*m_handler);
+}
+
 #endif // MATIOCPP_ELEMENT_TPP

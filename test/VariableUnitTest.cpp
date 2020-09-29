@@ -208,6 +208,19 @@ TEST_CASE("Conversions")
         const matioCpp::MultiDimensionalArray<double> asConstArray = constRef.asMultiDimensionalArray<double>();
         REQUIRE(asConstArray({0,0}) == 3.14);
     }
+
+    SECTION("To Element")
+    {
+        double input = 3.14;
+        std::vector<size_t> dimensions = {1,1};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), &input, 0);
+        REQUIRE(matioVar);
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::Element<double> asElement = sharedVar.asElement<double>();
+
+        REQUIRE(asElement == 3.14);
+    }
 }
 
 
