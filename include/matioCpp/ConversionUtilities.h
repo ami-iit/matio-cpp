@@ -15,13 +15,6 @@
 namespace matioCpp {
 
 /**
- * @brief Utility function to get the matio type corresponding to a certain ValueType
- * @param inputValueType The input ValueType
- * @return the corresponding matio type.
- */
-matio_types get_matio_value_type(const ValueType& inputValueType);
-
-/**
  * @brief Get both the matio type and class from the input VariableType and ValueType
  * @param inputVariableType The input VariableType.
  * @param inputValueType The input ValueType.
@@ -109,10 +102,7 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
         return std::is_convertible<T, char32_t>::value;
         break;
     case matioCpp::ValueType::STRING:
-    case matioCpp::ValueType::CELL:
-    case matioCpp::ValueType::STRUCT:
-    case matioCpp::ValueType::VECTOR:
-    case matioCpp::ValueType::MULTI_DIMENSIONAL_ARRAY:
+    case matioCpp::ValueType::VARIABLE:
     case matioCpp::ValueType::UNSUPPORTED:
         return false;
     }
