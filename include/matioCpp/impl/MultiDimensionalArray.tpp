@@ -16,7 +16,7 @@ bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t *inpu
 {
     if (!inputPtr)
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] The input pointer is null." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The input pointer is null." << std::endl;
         return false;
     }
 
@@ -26,19 +26,19 @@ bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t *inpu
 
     if (outputVariableType != matioCpp::VariableType::MultiDimensionalArray)
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] The input variable is not a multidimensional array." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The input variable is not a multidimensional array." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
         return false;
     }
 
     if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] The input type is not convertible to " <<
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The input type is not convertible to " <<
             typeid(T).name() <<"." << std::endl;
         return false;
     }
@@ -192,39 +192,6 @@ typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimension
     }
 
     return index;
-}
-
-template<typename T>
-bool matioCpp::MultiDimensionalArray<T>::fromOther(const matioCpp::Variable &other)
-{
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return Variable::fromOther(other);
-}
-
-template<typename T>
-bool matioCpp::MultiDimensionalArray<T>::fromOther(matioCpp::Variable &&other)
-{
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return Variable::fromOther(other);
-}
-
-template<typename T>
-bool matioCpp::MultiDimensionalArray<T>::fromMatio(const matvar_t *inputVar)
-{
-    if (!checkCompatibility(inputVar))
-    {
-        return false;
-    }
-
-    return Variable::fromMatio(inputVar);
 }
 
 template<typename T>

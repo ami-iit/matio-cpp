@@ -23,7 +23,7 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t *inputPtr) const
 {
     if (!inputPtr)
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] The input pointer is null." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The input pointer is null." << std::endl;
         return false;
     }
 
@@ -33,19 +33,19 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t *inputPtr) const
 
     if (outputVariableType != matioCpp::VariableType::Vector)
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] The input variable is not a vector." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The input variable is not a vector." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
         return false;
     }
 
     if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] The input type is not convertible to " <<
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The input type is not convertible to " <<
             typeid(T).name() <<"." << std::endl;
         return false;
     }
@@ -134,39 +134,6 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
     }
 
     return *this;
-}
-
-template<typename T>
-bool matioCpp::Vector<T>::fromOther(const matioCpp::Variable &other)
-{
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return Variable::fromOther(other);
-}
-
-template<typename T>
-bool matioCpp::Vector<T>::fromOther(matioCpp::Variable &&other)
-{
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return Variable::fromOther(other);
-}
-
-template<typename T>
-bool matioCpp::Vector<T>::fromMatio(const matvar_t *inputVar)
-{
-    if (!checkCompatibility(inputVar))
-    {
-        return false;
-    }
-
-    return Variable::fromMatio(inputVar);
 }
 
 template<typename T>

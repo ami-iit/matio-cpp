@@ -79,6 +79,13 @@ protected:
         return initializeComplexVariable(name, VariableType::Vector, get_type<T>::valuetype, {realInputVector.size(), 1}, (void*)realInputVector.data(), (void*)imaginaryInputVector.data());
     }
 
+    /**
+     * @brief Check if an input matio pointer is compatible with the specified variable.
+     * @param inputPtr The input matvar_t pointer.
+     * @return True if compatible. False otherwise, throwing errors.
+     */
+    virtual bool checkCompatibility(const matvar_t* inputPtr) const;
+
 public:
 
     /**

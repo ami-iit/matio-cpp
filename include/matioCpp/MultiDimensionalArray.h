@@ -29,13 +29,13 @@ class matioCpp::MultiDimensionalArray : public matioCpp::Variable
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
      */
-    bool checkCompatibility(const matvar_t* inputPtr) const;
+    virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
 
 public:
 
-    using element_type = T; /** Defines the type of an element of the Vector. Needed to use the iterator. **/
+    using element_type = T; /** Defines the type of an element of the MultiDimensionalArray. **/
 
-    using value_type = std::remove_cv_t<T>; /** Defines the type of an element of the Vector without "const". Useful to use make_span. **/
+    using value_type = std::remove_cv_t<T>; /** Defines the type of an element of the MultiDimensionalArray without "const". Useful to use make_span. **/
 
     using allocator_type = std::allocator<T>; /** Defines how to allocate T. **/
 
@@ -132,21 +132,6 @@ public:
      * @return the index in the vectorized array corresponding to the provided indices
      */
     index_type rawIndexFromIndices(const std::vector<index_type>& el) const;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromOther(const Variable& other) final;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromOther(Variable&& other) final;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromMatio(const matvar_t * inputVar) final;
 
     /**
      * @brief Get this MultiDimensionalArray as a Span

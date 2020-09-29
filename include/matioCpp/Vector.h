@@ -38,7 +38,7 @@ class matioCpp::Vector : public matioCpp::Variable
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
      */
-    bool checkCompatibility(const matvar_t* inputPtr) const;
+    virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
 
 public:
 
@@ -126,21 +126,6 @@ public:
      * @return A reference to this Vector.
      */
     Vector<T>& operator=(const Span<T>& other);
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromOther(const Variable& other) final;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromOther(Variable&& other) final;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromMatio(const matvar_t * inputVar) final;
 
     /**
      * @brief Get this Vector as a Span
