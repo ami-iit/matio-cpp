@@ -198,9 +198,7 @@ matioCpp::Variable matioCpp::File::read(const std::string &name) const
 
     matvar_t *matVar = Mat_VarRead(m_pimpl->mat_ptr, name.c_str());
 
-    matioCpp::Variable output(matVar);
-
-    Mat_VarFree(matVar); //The content of matvar has been deep copied in the Variable, thus we have to free manually the output of Mat_VarRead.
+    matioCpp::Variable output((matioCpp::SharedMatvar(matVar)));
 
     return output;
 }
