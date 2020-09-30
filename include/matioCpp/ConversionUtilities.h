@@ -62,43 +62,43 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
     switch (type)
     {
     case matioCpp::ValueType::INT8:
-        return std::is_convertible<T, int8_t>::value;
+        return std::is_same<T, int8_t>::value;
         break;
     case matioCpp::ValueType::UINT8:
-        return std::is_convertible<T, uint8_t>::value;
+        return std::is_same<T, uint8_t>::value;
         break;
     case matioCpp::ValueType::INT16:
-        return std::is_convertible<T, int16_t>::value;
+        return std::is_same<T, int16_t>::value;
         break;
     case matioCpp::ValueType::UINT16:
-        return std::is_convertible<T, uint16_t>::value;
+        return std::is_same<T, uint16_t>::value;
         break;
     case matioCpp::ValueType::INT32:
-        return std::is_convertible<T, int32_t>::value;
+        return std::is_same<T, int32_t>::value;
         break;
     case matioCpp::ValueType::UINT32:
-        return std::is_convertible<T, uint32_t>::value;
+        return std::is_same<T, uint32_t>::value;
         break;
     case matioCpp::ValueType::SINGLE:
-        return std::is_convertible<T, float>::value;
+        return std::is_same<T, float>::value;
         break;
     case matioCpp::ValueType::DOUBLE:
-        return std::is_convertible<T, double>::value;
+        return std::is_same<T, double>::value;
         break;
     case matioCpp::ValueType::INT64:
-        return std::is_convertible<T, int64_t>::value;
+        return std::is_same<T, int64_t>::value;
         break;
     case matioCpp::ValueType::UINT64:
-        return std::is_convertible<T, uint64_t>::value;
+        return std::is_same<T, uint64_t>::value;
         break;
     case matioCpp::ValueType::UTF8:
-        return std::is_convertible<T, char>::value;
+        return std::is_same<T, char>::value;
         break;
     case matioCpp::ValueType::UTF16:
-        return std::is_convertible<T, char16_t>::value;
+        return std::is_same<T, char16_t>::value;
         break;
     case matioCpp::ValueType::UTF32:
-        return std::is_convertible<T, char32_t>::value;
+        return std::is_same<T, char32_t>::value;
         break;
     case matioCpp::ValueType::STRING:
     case matioCpp::ValueType::VARIABLE:

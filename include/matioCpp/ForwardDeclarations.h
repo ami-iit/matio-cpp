@@ -132,6 +132,8 @@ class Element;
 template<typename T>
 class Vector;
 
+using String = Vector<char>;
+
 template<typename T>
 class MultiDimensionalArray;
 

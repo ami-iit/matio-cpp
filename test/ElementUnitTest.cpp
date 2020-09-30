@@ -75,6 +75,10 @@ TEST_CASE("Constructors")
         REQUIRE(i32.isValid());
         REQUIRE(i32.valueType() == matioCpp::ValueType::INT32);
 
+        matioCpp::Element<int> i;
+        REQUIRE(i.isValid());
+        REQUIRE(i.valueType() == matioCpp::ValueType::INT32);
+
         matioCpp::Element<uint32_t> ui32;
         REQUIRE(ui32.isValid());
         REQUIRE(ui32.valueType() == matioCpp::ValueType::UINT32);

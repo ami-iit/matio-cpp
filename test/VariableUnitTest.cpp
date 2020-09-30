@@ -221,6 +221,19 @@ TEST_CASE("Conversions")
 
         REQUIRE(asElement == 3.14);
     }
+
+    SECTION("To String")
+    {
+        std::string inputString = "test_string";
+        std::vector<size_t> dimensions = {1,inputString.size()};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CHAR, matio_types::MAT_T_UTF8, dimensions.size(), dimensions.data(), inputString.data(), 0);
+        REQUIRE(matioVar);
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::String asElement = sharedVar.asString();
+
+        REQUIRE(asElement() == "test_string");
+    }
 }
 
 

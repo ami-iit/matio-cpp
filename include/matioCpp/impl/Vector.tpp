@@ -14,7 +14,7 @@
 template<typename T>
 bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
 {
-    size_t dimensions[] = {static_cast<size_t>(inputVector.size()), 1};
+    size_t dimensions[] = {1, static_cast<size_t>(inputVector.size())};
     return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputVector.data());
 }
 
@@ -73,6 +73,14 @@ matioCpp::Vector<T>::Vector(const std::string& name, Span<T> inputVector)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     initializeVector(name, inputVector);
+}
+
+template <typename T>
+matioCpp::Vector<T>::Vector(const std::string &name, const std::string &inputString)
+{
+    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    size_t dimensions[] = {1, static_cast<size_t>(inputString.size())};
+    initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputString.c_str());
 }
 
 template<typename T>
@@ -137,6 +145,24 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
 }
 
 template<typename T>
+matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::string &other)
+{
+    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    if (size() == other.size())
+    {
+        memcpy(toMatio()->data, other.data(), size() * sizeof(T));
+    }
+    else
+    {
+        size_t dimensions[] = {1, static_cast<size_t>(other.size())};
+        initializeVariable(name(), VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)other.c_str());
+    }
+
+    return *this;
+
+}
+
+template<typename T>
 matioCpp::Span<T> matioCpp::Vector<T>::toSpan()
 {
     return matioCpp::make_span(*this);
@@ -196,6 +222,13 @@ template<typename T>
 typename matioCpp::Vector<T>::value_type matioCpp::Vector<T>::operator()(typename matioCpp::Vector<T>::index_type el) const
 {
     return toSpan()(el);
+}
+
+template<typename T>
+std::string matioCpp::Vector<T>::operator()() const
+{
+    static_assert (std::is_same<T, char>::value,"The operator () to convert to a string is available only if the type of the vector is char");
+    return std::string(data(), size());
 }
 
 template<typename T>
@@ -292,6 +325,16 @@ template<typename T>
 const matioCpp::Vector<T> matioCpp::Variable::asVector() const
 {
     return matioCpp::Vector<T>(*m_handler);
+}
+
+matioCpp::String matioCpp::Variable::asString()
+{
+    return matioCpp::Vector<char>(*m_handler);
+}
+
+const matioCpp::String matioCpp::Variable::asString() const
+{
+    return matioCpp::Vector<char>(*m_handler);
 }
 
 #endif // MATIOCPP_VECTOR_TPP

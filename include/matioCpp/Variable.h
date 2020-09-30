@@ -240,6 +240,20 @@ public:
     const matioCpp::Vector<T> asVector() const;
 
     /**
+     * @brief Cast the variable as a String.
+     *
+     * The implementation is in Vector.tpp
+     */
+    matioCpp::String asString();
+
+    /**
+     * @brief Cast the variable as a const Vector
+     *
+     * The implementation is in Vector.tpp
+     */
+    const matioCpp::String asString() const;
+
+    /**
      * @brief Cast the variable as a MultiDimensionalArray.
      *
      * The implementation is in MultiDimensionalArray.tpp

@@ -165,7 +165,6 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
         (input->class_type == matio_classes::MAT_C_FUNCTION) ||
         (input->class_type == matio_classes::MAT_C_OPAQUE) ||
         (outputValueType == matioCpp::ValueType::UNSUPPORTED) ||
-        (input->compression != matio_compression::MAT_COMPRESSION_NONE) ||
         (input->rank < 2)) //Matio requires the rank to be at least 2
     {
         outputVariableType = matioCpp::VariableType::Unsupported;
