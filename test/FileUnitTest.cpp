@@ -18,6 +18,20 @@ TEST_CASE("Open file")
 
     REQUIRE(input.open(getMatPath("input.mat")));
 
+    auto test = input.read("struct_array");
+
+    matioCpp::String string = input.read("string").asString();
+    REQUIRE(string.isValid());
+    REQUIRE(string() == "test");
+
+    matioCpp::Element<double> doubleVar = input.read("double").asElement<double>();
+    REQUIRE(doubleVar.isValid());
+    REQUIRE(doubleVar() == 3.14);
+
+    matioCpp::Element<int> intVar = input.read("int").asElement<int>();
+    REQUIRE(intVar.isValid());
+    REQUIRE(intVar() == 5);
+
     for (const std::string& variable : input.variableNames())
     {
         std::cout << variable <<std::endl;
