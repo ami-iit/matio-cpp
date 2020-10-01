@@ -186,14 +186,14 @@ typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimension
 {
     assert(dimensions().size() > 0 && numberOfElements() > 0 && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The array is empty.");
     assert(el.size() > 0 == dimensions().size() > 0 && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The input vector el should have the same number of dimensions of the array.");
-    assert(el[0] < dimensions()[0] && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
+    assert(el[0] < dimensions()[0] && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The required element is out of bounds.");
 
     typename matioCpp::MultiDimensionalArray<T>::index_type index = 0;
     typename matioCpp::MultiDimensionalArray<T>::index_type previousDimensionsFactorial = 1;
 
     for (size_t i = 0; i < el.size(); ++i)
     {
-        assert(el[i] < dimensions()[i] && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
+        assert(el[i] < dimensions()[i] && "[matioCpp::MultiDimensionalArray::rawIndexFromIndices] The required element is out of bounds.");
         index += el[i] * previousDimensionsFactorial;
         previousDimensionsFactorial *= dimensions()[i];
     }

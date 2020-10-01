@@ -58,7 +58,7 @@ public:
 
     using iterator = vector_iterator<Vector<T>, false>; /** The iterator type. **/
 
-    using const_iterator = vector_iterator<Vector<T>, true>; /** The const iterator tyep. **/
+    using const_iterator = vector_iterator<Vector<T>, true>; /** The const iterator type. **/
 
     using reverse_iterator = std::reverse_iterator<iterator>; /** The reverse iterator type. **/
 
