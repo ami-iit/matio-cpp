@@ -101,6 +101,13 @@ public:
      */
     virtual MatvarHandler* pointerToDuplicate() const = 0;
 
+    /**
+     * @brief Get a WeakMatvar version of the current MatvarHandler
+     * @return A WeakMatvar version of the current MatvarHandler.
+     */
+    virtual WeakMatvar weakOwnership() const = 0;
+
+
 };
 
 

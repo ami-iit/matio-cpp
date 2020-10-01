@@ -9,6 +9,7 @@
  */
 
 #include <matioCpp/SharedMatvar.h>
+#include <matioCpp/WeakMatvar.h>
 #include <matioCpp/Span.h>
 
 
@@ -80,6 +81,14 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
 matioCpp::MatvarHandler *matioCpp::SharedMatvar::pointerToDuplicate() const
 {
     return new SharedMatvar(*this);
+}
+
+matioCpp::WeakMatvar matioCpp::SharedMatvar::weakOwnership() const
+{
+    matioCpp::WeakMatvar weak;
+    weak.m_ownership = m_ownership;
+    weak.m_ptr = m_ptr;
+    return weak;
 }
 
 matioCpp::SharedMatvar &matioCpp::SharedMatvar::operator=(const matioCpp::SharedMatvar &other)
