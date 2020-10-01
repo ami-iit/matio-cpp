@@ -42,13 +42,18 @@ TEST_CASE("Constructors")
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar;
+        matioCpp::MatvarHandler* upcasted = sharedPtr;
         matioCpp::WeakMatvar weak(matioVar, *sharedPtr); //shared does not own matioVar, but weak checks if shared is alive before accessing matioVar
 
+        matioCpp::WeakMatvar weakFromUpcasted(matioVar, upcasted);
+
         REQUIRE(weak.get() == matioVar);
+        REQUIRE(weakFromUpcasted.get() == matioVar);
 
         delete sharedPtr;
 
         REQUIRE(weak.get() == nullptr);
+        REQUIRE(weakFromUpcasted.get() == nullptr);
 
         Mat_VarFree(matioVar);
     }
@@ -187,3 +192,29 @@ TEST_CASE("Pointer to duplicate")
 
 }
 
+TEST_CASE("Weak ownership")
+{
+    std::vector<double> vec(7);
+    std::vector<size_t> dimensions = {vec.size(), 1};
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    REQUIRE(matioVar);
+
+    matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar(matioVar);
+    matioCpp::MatvarHandler* upcasted = sharedPtr;
+    matioCpp::WeakMatvar* weak = new matioCpp::WeakMatvar(*sharedPtr);
+
+    matioCpp::WeakMatvar weakFromShared = upcasted->weakOwnership();
+    upcasted = weak;
+    matioCpp::WeakMatvar weakFromWeak = upcasted->weakOwnership();
+
+    REQUIRE(weakFromShared.get() == sharedPtr->get());
+    REQUIRE_FALSE(weakFromShared.isShared());
+
+    REQUIRE(weakFromWeak.get() == weak->get());
+    REQUIRE_FALSE(weakFromWeak.isShared());
+
+    delete sharedPtr;
+    delete weak;
+    REQUIRE_FALSE(weakFromShared.get());
+    REQUIRE_FALSE(weakFromWeak.get());
+}
