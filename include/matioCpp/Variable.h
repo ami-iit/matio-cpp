@@ -81,11 +81,26 @@ protected:
 
     /**
      * @brief Set a cell element at a specified linear position
-     * @param el The linear index of the specified element
+     * @param linearIndex The linear index of the specified element
      * @param newValue The Variable that will be copied in the specified location
      * @return True if successfull, false otherwise
      */
     bool setCellElement(size_t linearIndex, const Variable& newValue);
+
+    /**
+     * @brief Get a cell element at a specified linear position
+     * @param linearIndex The linear index of the specified element
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    Variable getCellElement(size_t linearIndex);
+
+    /**
+     * @brief Get a cell element at a specified linear position
+     * @param linearIndex The linear index of the specified element
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     */
+    Variable getCellElement(size_t linearIndex) const;
 
     /**
      * @brief Check if an input matio pointer is compatible with the specified variable.

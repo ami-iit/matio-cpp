@@ -135,6 +135,16 @@ bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Vari
     return Mat_VarGetCell(m_handler->get(), linearIndex);
 }
 
+matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex)
+{
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+}
+
+matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
+{
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+}
+
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
 {
     return inputPtr;
