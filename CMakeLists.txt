@@ -95,6 +95,7 @@ set(MATIOCPP_SRC src/Variable.cpp
                  src/MatvarHandler.cpp
                  src/SharedMatvar.cpp
                  src/WeakMatvar.cpp
+                 src/CellArray.cpp
                  src/File.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
@@ -109,6 +110,7 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/SharedMatvar.h
                  include/matioCpp/WeakMatvar.h
                  include/matioCpp/Element.h
+                 include/matioCpp/CellArray.h
                  include/matioCpp/File.h)
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
