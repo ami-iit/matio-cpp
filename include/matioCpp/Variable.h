@@ -80,6 +80,14 @@ protected:
     }
 
     /**
+     * @brief Set a cell element at a specified linear position
+     * @param el The linear index of the specified element
+     * @param newValue The Variable that will be copied in the specified location
+     * @return True if successfull, false otherwise
+     */
+    bool setCellElement(size_t linearIndex, const Variable& newValue);
+
+    /**
      * @brief Check if an input matio pointer is compatible with the specified variable.
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
