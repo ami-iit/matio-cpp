@@ -91,7 +91,11 @@ matioCpp::CellArray::CellArray(const std::string &name, const std::vector<matioC
     std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
     for (size_t i = 0; i < totalElements; ++i)
     {
-        vectorOfPointers[i] = elements[i].toMatio();
+        matvar_t* internalPointer = elements[i].toMatio();
+        if (internalPointer)
+        {
+            vectorOfPointers[i] = Mat_VarDuplicate(elements[i].toMatio(), 1); //0 Shallow copy, 1 Deep copy
+        }
     }
 
     initializeVariable(name,
@@ -107,7 +111,7 @@ matioCpp::CellArray::CellArray(const CellArray &other)
 
 matioCpp::CellArray::CellArray(CellArray &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<CellArray>(other));
 }
 
 matioCpp::CellArray::CellArray(const MatvarHandler &handler)
@@ -137,7 +141,7 @@ matioCpp::CellArray &matioCpp::CellArray::operator=(const matioCpp::CellArray &o
 
 matioCpp::CellArray &matioCpp::CellArray::operator=(matioCpp::CellArray &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<CellArray>(other));
     return *this;
 }
 
