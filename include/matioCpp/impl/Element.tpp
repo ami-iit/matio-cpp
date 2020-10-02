@@ -90,7 +90,7 @@ matioCpp::Element<T>::Element(const Element<T> &other)
 template<typename T>
 matioCpp::Element<T>::Element(Element<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::Element<T>>(other));
 }
 
 template<typename T>
@@ -125,7 +125,7 @@ matioCpp::Element<T> &matioCpp::Element<T>::operator=(const Element<T> &other)
 template<typename T>
 matioCpp::Element<T> &matioCpp::Element<T>::operator=(Element<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::Element<T>>(other));
     return *this;
 }
 

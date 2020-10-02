@@ -92,7 +92,7 @@ matioCpp::Vector<T>::Vector(const Vector<T> &other)
 template<typename T>
 matioCpp::Vector<T>::Vector(Vector<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::Vector<T>>(other));
 }
 
 template<typename T>
@@ -125,7 +125,7 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const matioCpp::Vector<T> &o
 template<typename T>
 matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(matioCpp::Vector<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::Vector<T>>(other));
     return *this;
 }
 

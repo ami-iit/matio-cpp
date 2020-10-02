@@ -117,7 +117,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const MultiDimensional
 template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(MultiDimensionalArray<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::MultiDimensionalArray<T>>(other));
 }
 
 template<typename T>
@@ -152,7 +152,7 @@ matioCpp::MultiDimensionalArray<T> &matioCpp::MultiDimensionalArray<T>::operator
 template<typename T>
 matioCpp::MultiDimensionalArray<T> &matioCpp::MultiDimensionalArray<T>::operator=(matioCpp::MultiDimensionalArray<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::MultiDimensionalArray<T>>(other));
     return *this;
 }
 
