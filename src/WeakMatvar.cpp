@@ -12,31 +12,36 @@
 
 matioCpp::WeakMatvar::WeakMatvar()
 {
-    m_ptr = std::make_shared<matvar_t*>(nullptr);
+
 }
 
 matioCpp::WeakMatvar::WeakMatvar(const matioCpp::WeakMatvar &other)
-    : m_ownership(other.m_ownership)
+    : matioCpp::MatvarHandler(other)
+    , m_ownership(other.m_ownership)
 {
-    m_ptr = other.m_ptr;
+
 }
 
 matioCpp::WeakMatvar::WeakMatvar(matioCpp::WeakMatvar &&other)
-    : m_ownership(other.m_ownership)
+    : matioCpp::MatvarHandler(other)
+    , m_ownership(other.m_ownership)
 {
-    m_ptr = other.m_ptr;
+
 }
 
 matioCpp::WeakMatvar::WeakMatvar(const SharedMatvar &other)
+    : matioCpp::MatvarHandler(other)
+    , m_ownership(other.ownership())
 {
-    m_ownership = other.ownership();
-    m_ptr = other.m_ptr;
+
 }
 
 matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const SharedMatvar &owner)
+    : matioCpp::MatvarHandler(inputPtr)
+    , m_ownership(owner.ownership())
+
 {
-    m_ownership = owner.ownership();
-    m_ptr = std::make_shared<matvar_t*>(inputPtr);
+
 }
 
 matioCpp::WeakMatvar::~WeakMatvar()

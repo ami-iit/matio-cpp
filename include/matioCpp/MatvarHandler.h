@@ -18,19 +18,58 @@ class matioCpp::MatvarHandler
 protected:
 
     /**
-     * @brief The Ownership struct is an empty struct used to define the ownership of a matvar. SharedMatvar and WeakMatvar have a shared_ptr and a weak_ptr to it respectively.
+     * @brief The Ownership class is used to define the ownership of a matvar. SharedMatvar and WeakMatvar have a shared_ptr and a weak_ptr to it respectively.
      */
-    struct Ownership
-    { };
+    class Ownership
+    {
+        std::weak_ptr<matvar_t*> m_pointerToDeallocate; /** A pointer to the matvar_t* that needs to be freed when the corresponding ownership is deallocated **/
+    public:
+
+        /**
+         * @brief Constructor
+         * @param ponterToDeallocate A weak pointer toward the matvar_t* that needs to be freed.
+         */
+        Ownership(std::weak_ptr<matvar_t*> ponterToDeallocate);
+
+        /**
+         * @brief Destructor
+         */
+        ~Ownership();
+    };
 
     /**
      * @brief Shared pointer to a matvar_t pointer. This allows sharing the same matvar_t across several objects.
      *
-     * Since it is separate from the ownership, it is possible to avoid deallocating the matvar_t pointer if necessary (e.g. when getting an element from a struct).
+     * Since it is separate from the ownership, it is possible to avoid deallocating this pointer if necessary (e.g. when getting an element from a struct).
      */
     std::shared_ptr<matvar_t*> m_ptr;
 
 public:
+
+    /**
+     * @brief Default constructor
+     *
+     * Initializes matvar_t* to nullptr
+     */
+    MatvarHandler();
+
+    /**
+     * @brief Constructor from an already existing matvar_t pointer
+     * @param inputPtr The input matvar_t pointer
+     */
+    MatvarHandler(matvar_t *inputPtr);
+
+    /**
+     * @brief Copy constructor
+     * @param other The other MatvarHandler to copy
+     */
+    MatvarHandler(const MatvarHandler& other);
+
+    /**
+     * @brief Move constructor
+     * @param other The other MatvarHandler to move
+     */
+    MatvarHandler(MatvarHandler&& other);
 
     /**
      * @brief Default destructor

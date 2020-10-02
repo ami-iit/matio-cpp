@@ -13,42 +13,35 @@
 
 
 matioCpp::SharedMatvar::SharedMatvar()
-    : m_ownership(std::make_shared<MatvarHandler::Ownership>())
+    : matioCpp::MatvarHandler()
+    , m_ownership(std::make_shared<MatvarHandler::Ownership>(m_ptr))
 {
-    m_ptr = std::make_shared<matvar_t*>(nullptr);
+
 }
 
 matioCpp::SharedMatvar::SharedMatvar(const matioCpp::SharedMatvar &other)
-    : m_ownership(other.m_ownership)
+    : matioCpp::MatvarHandler(other)
+    , m_ownership(other.m_ownership)
 {
-    m_ptr = other.m_ptr;
+
 }
 
 matioCpp::SharedMatvar::SharedMatvar(matioCpp::SharedMatvar &&other)
-    : m_ownership(other.m_ownership)
+    : matioCpp::MatvarHandler(other)
+    , m_ownership(other.m_ownership)
 {
-    m_ptr = other.m_ptr;
+
 }
 
 matioCpp::SharedMatvar::SharedMatvar(matvar_t *inputPtr)
-    : m_ownership(std::make_shared<MatvarHandler::Ownership>())
+    : matioCpp::MatvarHandler(inputPtr)
+    , m_ownership(std::make_shared<MatvarHandler::Ownership>(m_ptr))
 {
-    m_ptr = std::make_shared<matvar_t*>(inputPtr);
+
 }
 
 matioCpp::SharedMatvar::~SharedMatvar()
 {
-    if (m_ownership.use_count() == 1) //This object is the last one pointing to the same matvar
-    {
-        if (m_ptr)
-        {
-            if (*m_ptr)
-            {
-                Mat_VarFree(*m_ptr);
-            }
-            *m_ptr = nullptr;
-        }
-    }
 
 }
 

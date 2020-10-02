@@ -92,6 +92,7 @@ find_package(MATIO REQUIRED)
 
 set(MATIOCPP_SRC src/Variable.cpp
                  src/ConversionUtilities.cpp
+                 src/MatvarHandler.cpp
                  src/SharedMatvar.cpp
                  src/WeakMatvar.cpp)
 
