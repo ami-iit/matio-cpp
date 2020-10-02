@@ -26,12 +26,6 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
         return false;
     }
 
-    if (*std::min_element(dimensions.begin(), dimensions.end()) && !data)
-    {
-        std::cerr << errorPrefix << "The min dimension is not zero, but the data pointer is empty." << std::endl;
-        return false;
-    }
-
     matio_types matioType;
     matio_classes matioClass;
 
@@ -165,7 +159,10 @@ matioCpp::Variable::Variable(const matvar_t *inputVar)
 matioCpp::Variable::Variable(const matioCpp::Variable &other)
     : m_handler(new matioCpp::SharedMatvar())
 {
-    m_handler->duplicateMatvar(other.toMatio());
+    if (other.isValid())
+    {
+        m_handler->duplicateMatvar(other.toMatio());
+    }
 }
 
 matioCpp::Variable::Variable(matioCpp::Variable &&other)

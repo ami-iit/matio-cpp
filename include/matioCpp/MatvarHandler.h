@@ -107,7 +107,6 @@ public:
      */
     virtual WeakMatvar weakOwnership() const = 0;
 
-
 };
 
 
