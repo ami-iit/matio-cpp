@@ -49,7 +49,7 @@ template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray()
 {
     std::vector<T> empty;
-    size_t emptyDimensions[] = {0, 0, 0};
+    constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable("unnamed_multidimensional_array",
                        VariableType::MultiDimensionalArray,
                        matioCpp::get_type<T>::valueType, emptyDimensions,
@@ -60,7 +60,7 @@ template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name)
 {
     std::vector<T> empty;
-    size_t emptyDimensions[] = {0, 0, 0};
+    constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
                        matioCpp::get_type<T>::valueType, emptyDimensions,
@@ -128,7 +128,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const MatvarHandler &h
     {
         assert(false);
         std::vector<T> empty;
-        size_t emptyDimensions[] = {0, 0, 0};
+        constexpr size_t emptyDimensions[] = {0, 0, 0};
         initializeVariable("unnamed_multidimensional_array",
                            VariableType::MultiDimensionalArray,
                            matioCpp::get_type<T>::valueType, emptyDimensions,
