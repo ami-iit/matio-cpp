@@ -144,22 +144,22 @@ TEST_CASE("Constructors")
                       matioCpp::ValueType::VARIABLE, false, {1,2,3});
     }
 
-//    SECTION("Copy constructor")
-//    {
-//        std::vector<matioCpp::Variable> data;
-//        data.emplace_back(matioCpp::Vector<double>("vector"));
-//        data.emplace_back(matioCpp::Element<int>("element"));
-//        data.emplace_back(matioCpp::Variable());
-//        data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
-//        data.emplace_back(matioCpp::String("name", "content"));
-//        data.emplace_back(matioCpp::CellArray("otherCell"));
+    SECTION("Copy constructor")
+    {
+        std::vector<matioCpp::Variable> data;
+        data.emplace_back(matioCpp::Vector<double>("vector"));
+        data.emplace_back(matioCpp::Element<int>("element"));
+        data.emplace_back(matioCpp::Variable());
+        data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+        data.emplace_back(matioCpp::String("name", "content"));
+        data.emplace_back(matioCpp::CellArray("otherCell"));
 
-//        matioCpp::CellArray a("test", {1,2,3}, data);
+        matioCpp::CellArray a("test", {1,2,3}, data);
 
-//        matioCpp::CellArray b(a);
-//        REQUIRE(b.variableType() == matioCpp::VariableType::CellArray);
-//        REQUIRE(b.valueType() == matioCpp::ValueType::VARIABLE);
-//    }
+        matioCpp::CellArray b(a);
+        REQUIRE(b.variableType() == matioCpp::VariableType::CellArray);
+        REQUIRE(b.valueType() == matioCpp::ValueType::VARIABLE);
+    }
 
     SECTION("Move constructor")
     {
