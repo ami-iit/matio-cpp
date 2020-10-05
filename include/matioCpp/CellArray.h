@@ -84,16 +84,6 @@ public:
     ~CellArray();
 
     /**
-     * Docs Inherited
-     */
-    virtual bool fromMatio(const matvar_t * inputVar) final;
-
-    /**
-     * Docs Inherited
-     */
-    virtual bool fromOther(const Variable& other) final;
-
-    /**
      * @brief Assignement operator (copy) from another CellArray.
      * @param other The other CellArray.
      * @note Also the name is copied

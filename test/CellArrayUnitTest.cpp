@@ -57,7 +57,6 @@ void checkSameVariable(const matioCpp::Variable& a, const matioCpp::Variable& b)
     checkVariable(a, b.name(), b.variableType(), b.valueType(), b.isComplex(), b.dimensions());
 }
 
-template <typename T>
 void checkSameCellArray(const matioCpp::CellArray& a, const matioCpp::CellArray& b)
 {
     checkVariable(a, b.name(), b.variableType(), b.valueType(), b.isComplex(), b.dimensions());
@@ -178,121 +177,113 @@ TEST_CASE("Constructors")
         REQUIRE(b.valueType() == matioCpp::ValueType::VARIABLE);
     }
 
-//    SECTION("Shared ownership")
-//    {
-//        std::vector<double> vec(8);
-//        std::vector<size_t> dimensions = {4,2};
-//        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
-//        REQUIRE(matioVar);
+    SECTION("Shared ownership")
+    {
+        std::vector<matvar_t*> data;
+        std::vector<size_t> dimensions = {1,2,3};
+        data.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
+        data.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
+        data.emplace_back(nullptr);
+        data.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
+        data.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
+        data.emplace_back(Mat_VarDuplicate(matioCpp::CellArray("otherCell").toMatio(), 1));
 
-//        matioCpp::SharedMatvar sharedMatvar(matioVar);
-//        matioCpp::MultiDimensionalArray<double> sharedVar(sharedMatvar);
-//        REQUIRE(sharedVar.isValid());
-//        REQUIRE(sharedVar.toMatio() == matioVar);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), data.data(), 0);
+        REQUIRE(matioVar);
 
-//        checkVariable(sharedVar, "test", matioCpp::VariableType::MultiDimensionalArray, matioCpp::ValueType::DOUBLE, false, dimensions);
+        matioCpp::SharedMatvar sharedMatvar(matioVar);
+        matioCpp::CellArray sharedVar(sharedMatvar);
+        REQUIRE(sharedVar.isValid());
+        REQUIRE(sharedVar.toMatio() == matioVar);
 
-//        matioCpp::MultiDimensionalArray<double> weakVar((matioCpp::WeakMatvar(sharedMatvar)));
-//        REQUIRE(weakVar.isValid());
-//        REQUIRE(weakVar.toMatio() == matioVar);
+        checkVariable(sharedVar, "test", matioCpp::VariableType::CellArray, matioCpp::ValueType::VARIABLE, false, dimensions);
 
-//        checkVariable(weakVar, "test", matioCpp::VariableType::MultiDimensionalArray, matioCpp::ValueType::DOUBLE, false, dimensions);
-//    }
+        matioCpp::CellArray weakVar((matioCpp::WeakMatvar(sharedMatvar)));
+        REQUIRE(weakVar.isValid());
+        REQUIRE(weakVar.toMatio() == matioVar);
+
+        checkVariable(weakVar, "test", matioCpp::VariableType::CellArray, matioCpp::ValueType::VARIABLE, false, dimensions);
+    }
 
 }
 
-//TEST_CASE("Assignments")
-//{
-//    std::vector<int> dataVec = {2,4,6,8};
-//    matioCpp::MultiDimensionalArray<int> in("test", {2,2}, dataVec.data());
-//    matioCpp::MultiDimensionalArray<int> out;
+TEST_CASE("Assignments")
+{
+    std::vector<matioCpp::Variable> data;
+    data.emplace_back(matioCpp::Vector<double>("vector"));
+    data.emplace_back(matioCpp::Element<int>("element"));
+    data.emplace_back(matioCpp::Variable());
+    data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    data.emplace_back(matioCpp::String("name", "content"));
+    data.emplace_back(matioCpp::CellArray("otherCell"));
 
-//    std::vector<double> vec(8);
-//    std::vector<size_t> dimensions = {4,2};
-//    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
-//    REQUIRE(matioVar);
+    matioCpp::CellArray in("test", {1,2,3}, data);
+    matioCpp::CellArray out;
 
-//    SECTION("From matio")
-//    {
+    std::vector<matvar_t*> pointers;
+    std::vector<size_t> dimensions = {1,2,3};
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
+    pointers.emplace_back(nullptr);
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::CellArray("otherCell").toMatio(), 1));
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), pointers.data(), 0);
+    REQUIRE(matioVar);
 
-//        matioCpp::MultiDimensionalArray<double> var;
+    SECTION("From matio")
+    {
 
-//        REQUIRE(var.fromMatio(matioVar));
+        matioCpp::CellArray var;
 
-//        checkVariable(var, "test", matioCpp::VariableType::MultiDimensionalArray, matioCpp::ValueType::DOUBLE, false, dimensions);
-//    }
+        REQUIRE(var.fromMatio(matioVar));
 
-//    SECTION("From existing vector")
-//    {
-//        REQUIRE(out.fromVectorizedArray({2,2}, dataVec.data()));
-//        checkSameDimensions(in.dimensions(), out.dimensions());
-//        matioCpp::Span<int> correspondingSpan = out.toSpan();
-//        REQUIRE(dataVec.size() == static_cast<size_t>(correspondingSpan.size()));
+        checkVariable(var, "test", matioCpp::VariableType::CellArray, matioCpp::ValueType::VARIABLE, false, dimensions);
+    }
 
-//        for (size_t i = 0; i < dataVec.size(); ++i)
-//        {
-//            REQUIRE(dataVec[i] == correspondingSpan(i));
-//        }
-//        REQUIRE(out.numberOfElements() == dataVec.size());
-//    }
+    SECTION("Copy assignement")
+    {
+        matioCpp::CellArray another;
 
-//    SECTION("Copy assignement")
-//    {
-//        matioCpp::MultiDimensionalArray<int> another;
+        another = in;
 
-//        another = in;
+        checkSameCellArray(another, in);
+    }
 
-//        checkSameMultiDimensionalArray(another, in);
-//    }
+    SECTION("Move assignement")
+    {
+        matioCpp::CellArray another, yetAnother;
 
-//    SECTION("Move assignement")
-//    {
-//        matioCpp::MultiDimensionalArray<int> another, yetAnother;
+        yetAnother = in;
+        another = std::move(yetAnother);
 
-//        yetAnother = in;
-//        another = std::move(yetAnother);
+        checkSameCellArray(another, in);
+    }
 
-//        checkSameMultiDimensionalArray(another, in);
-//    }
+    SECTION("From other variable (copy)")
+    {
+        matioCpp::Variable var(matioVar);
+        matioCpp::CellArray array;
+        REQUIRE(array.fromOther(var));
+        checkSameVariable(var, array);
+    }
 
-//    SECTION("From other variable (copy)")
-//    {
-//        matioCpp::Variable var(matioVar);
-//        matioCpp::MultiDimensionalArray<double> array;
-//        REQUIRE(array.fromOther(var));
-//        checkSameVariable(var, array);
-//    }
+    SECTION("From other variable (move)")
+    {
+        matioCpp::Variable var(matioVar), var2;
+        REQUIRE(var2.fromOther(var));
+        matioCpp::CellArray array;
+        REQUIRE(array.fromOther(std::move(var2)));
+        checkSameVariable(var, array);
+    }
 
-//    SECTION("From other variable (move)")
-//    {
-//        matioCpp::Variable var(matioVar), var2;
-//        REQUIRE(var2.fromOther(var));
-//        matioCpp::MultiDimensionalArray<double> array;
-//        REQUIRE(array.fromOther(std::move(var2)));
-//        checkSameVariable(var, array);
-//    }
+    SECTION("From vector of Variables")
+    {
 
-//    Mat_VarFree(matioVar);
-//}
+    }
 
-//TEST_CASE("Span")
-//{
-//    std::vector<int> in = {2,4,6,8};
-//    matioCpp::MultiDimensionalArray<int> out;
-//    REQUIRE(out.fromVectorizedArray({2,2}, in.data()));
-
-//    checkSameVector(matioCpp::make_span(in), out.toSpan());
-
-//    REQUIRE(out({0,0}) == 2);
-//    REQUIRE(out({1,0}) == 4);
-//    REQUIRE(out({0,1}) == 6);
-//    REQUIRE(out({1,1}) == 8);
-
-//    in[0] = 3;
-//    out.toSpan()[0] = 3;
-
-//    checkSameVector(matioCpp::make_span(in), out.toSpan());
-//}
+    Mat_VarFree(matioVar);
+}
 
 //TEST_CASE("Modifications")
 //{

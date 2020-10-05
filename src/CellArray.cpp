@@ -94,7 +94,7 @@ matioCpp::CellArray::CellArray(const std::string &name, const std::vector<matioC
         matvar_t* internalPointer = elements[i].toMatio();
         if (internalPointer)
         {
-            vectorOfPointers[i] = Mat_VarDuplicate(internalPointer, 1); //0 Shallow copy, 1 Deep copy
+            vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(internalPointer);
         }
     }
 
@@ -131,51 +131,6 @@ matioCpp::CellArray::CellArray(const MatvarHandler &handler)
 matioCpp::CellArray::~CellArray()
 {
 
-}
-
-bool matioCpp::CellArray::fromMatio(const matvar_t *inputVar)
-{
-    if (!checkCompatibility(inputVar))
-    {
-        return false;
-    }
-    matvar_t * shallowCopy = Mat_VarDuplicate(inputVar, 0); // Shallow copy to remove const
-
-    matioCpp::CellArray::index_type totalElements = 1;
-
-    for (int i = 0; i < inputVar->rank; ++i)
-    {
-        totalElements *= inputVar->dims[i];
-    }
-
-    std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
-    for (size_t i = 0; i < totalElements; ++i)
-    {
-        matvar_t* internalPointer = Mat_VarGetCell(shallowCopy, i);
-        if (internalPointer)
-        {
-            vectorOfPointers[i] = Mat_VarDuplicate(internalPointer, 1); //Deep copy
-        }
-    }
-
-    initializeVariable(inputVar->name,
-                       VariableType::CellArray,
-                       matioCpp::ValueType::VARIABLE,
-                       matioCpp::Span<size_t>(inputVar->dims, inputVar->rank),
-                       vectorOfPointers.data());
-
-    shallowCopy->data = nullptr; //This is a workaround for what it seems a matio problem.
-                                 //When doing a shallow copy, the data is not copied,
-                                 //but it will try to free it anyway with Mat_VarFree.
-                                 //This avoids matio to attempt freeing the data
-    Mat_VarFree(shallowCopy);
-
-    return isValid();
-}
-
-bool matioCpp::CellArray::fromOther(const matioCpp::Variable &other)
-{
-    return fromMatio(other.toMatio());
 }
 
 matioCpp::CellArray &matioCpp::CellArray::operator=(const matioCpp::CellArray &other)

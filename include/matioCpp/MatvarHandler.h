@@ -107,6 +107,8 @@ public:
      */
     virtual WeakMatvar weakOwnership() const = 0;
 
+    static matvar_t* GetMatvarDuplicate(const matvar_t* inputPtr);
+
 };
 
 

@@ -11,6 +11,7 @@
 #include <matioCpp/SharedMatvar.h>
 #include <matioCpp/WeakMatvar.h>
 #include <matioCpp/Span.h>
+#include <matioCpp/ConversionUtilities.h>
 
 
 matioCpp::SharedMatvar::SharedMatvar()
@@ -66,6 +67,15 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
         return false;
     }
 
+    VariableType outputVariableType;
+    ValueType outputValueType;
+
+    if (!matioCpp::get_types_from_matvart(inputPtr, outputVariableType, outputValueType))
+    {
+        std::cerr << errorPrefix << "The inputPtr is not supported." << std::endl;
+        return false;
+    }
+
     assert(m_ptr);
 
     if (*m_ptr)
@@ -73,7 +83,7 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
         Mat_VarFree(*m_ptr);
     }
 
-    *m_ptr = Mat_VarDuplicate(inputPtr, 1); //0 Shallow copy, 1 Deep copy
+    *m_ptr = matioCpp::MatvarHandler::GetMatvarDuplicate(inputPtr);
 
     return true;
 }
