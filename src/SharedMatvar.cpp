@@ -60,22 +60,11 @@ bool matioCpp::SharedMatvar::isShared() const
 
 bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
 {
-    std::string errorPrefix = "[ERROR][matioCpp::SharedMatvar::duplicateFromMatio] ";
-    if (!inputPtr)
-    {
-        std::cerr << errorPrefix << "Empty input variable." << std::endl;
-        return false;
-    }
+    return importMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(inputPtr));
+}
 
-    VariableType outputVariableType;
-    ValueType outputValueType;
-
-    if (!matioCpp::get_types_from_matvart(inputPtr, outputVariableType, outputValueType))
-    {
-        std::cerr << errorPrefix << "The inputPtr is not supported." << std::endl;
-        return false;
-    }
-
+bool matioCpp::SharedMatvar::importMatvar(matvar_t *inputPtr)
+{
     assert(m_ptr);
 
     if (*m_ptr)
@@ -83,7 +72,7 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
         Mat_VarFree(*m_ptr);
     }
 
-    *m_ptr = matioCpp::MatvarHandler::GetMatvarDuplicate(inputPtr);
+    *m_ptr = inputPtr;
 
     return true;
 }

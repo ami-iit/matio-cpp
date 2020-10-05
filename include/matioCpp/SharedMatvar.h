@@ -73,6 +73,11 @@ public:
     /**
      * Docs inherited
      */
+    virtual bool importMatvar(matvar_t *inputPtr) final;
+
+    /**
+     * Docs inherited
+     */
     virtual MatvarHandler* pointerToDuplicate() const final;
 
     /**

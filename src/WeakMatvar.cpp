@@ -81,6 +81,13 @@ bool matioCpp::WeakMatvar::duplicateMatvar(const matvar_t *)
     return false;
 }
 
+bool matioCpp::WeakMatvar::importMatvar(matvar_t *)
+{
+    std::cerr << "[ERROR][matioCpp::WeakMatvar::importMatvar] Cannot import inputPtr. A WeakMatvar cannot modify the matvar pointer." << std::endl;
+
+    return false;
+}
+
 matioCpp::MatvarHandler *matioCpp::WeakMatvar::pointerToDuplicate() const
 {
     return new WeakMatvar(*this);

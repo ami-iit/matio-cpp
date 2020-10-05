@@ -101,6 +101,13 @@ public:
 
     /**
      * Docs inherited
+     *
+     * This always returns false.
+     */
+    virtual bool importMatvar(matvar_t *) final;
+
+    /**
+     * Docs inherited
      */
     virtual MatvarHandler* pointerToDuplicate() const final;
 

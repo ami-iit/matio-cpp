@@ -142,6 +142,20 @@ TEST_CASE("isShared")
     REQUIRE_FALSE(weak.isShared());
 }
 
+TEST_CASE("Import")
+{
+    std::vector<double> vec(7);
+    std::vector<size_t> dimensions = {vec.size(), 1};
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    REQUIRE(matioVar);
+
+    matioCpp::SharedMatvar shared;
+    matioCpp::WeakMatvar weak;
+
+    REQUIRE(shared.importMatvar(matioVar));
+    REQUIRE_FALSE(weak.importMatvar(matioVar));
+}
+
 TEST_CASE("Duplicate")
 {
     std::vector<double> vec(7);
