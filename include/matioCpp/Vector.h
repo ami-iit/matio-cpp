@@ -82,6 +82,13 @@ public:
      * @param name The name of the Vector
      * @param inputVector The input data.
      */
+    Vector(const std::string& name, index_type dimensions);
+
+    /**
+     * @brief Constructor
+     * @param name The name of the Vector
+     * @param inputVector The input data.
+     */
     Vector(const std::string& name, Span<T> inputVector);
 
     /**

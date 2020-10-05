@@ -98,6 +98,14 @@ TEST_CASE("Constructors")
         REQUIRE(var() == "test");
     }
 
+    SECTION("Name and Dimensions")
+    {
+        matioCpp::Vector<int64_t> var("test", 7);
+
+        REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var.valueType() == matioCpp::ValueType::INT64);
+    }
+
     SECTION("Name and Span")
     {
         std::vector<int64_t> vec(7);
