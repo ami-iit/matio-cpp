@@ -126,14 +126,16 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
 
 bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Variable &newValue)
 {
-    Variable copied(newValue);
-    Variable copiedNonOwning(matioCpp::WeakMatvar(copied.toMatio(), m_handler));
+    Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
     if (!copiedNonOwning.isValid())
     {
         return false;
     }
 
-    Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
+    matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
+
+    Mat_VarFree(previousCell);
+
     return Mat_VarGetCell(m_handler->get(), linearIndex);
 }
 

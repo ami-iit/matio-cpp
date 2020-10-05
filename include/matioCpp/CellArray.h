@@ -152,6 +152,7 @@ public:
      * @param newValue The Variable that will be copied in the specified location
      * @return True if successfull, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode
+     * @warning The Variable previously in the same place will be freed. Any previous reference to this variable (obtained through the non-const version of the operator() and operator[]) are invalidated. Using them may result in a segfault.
      */
     bool setElement(const std::vector<index_type>& el, const Variable& newValue);
 

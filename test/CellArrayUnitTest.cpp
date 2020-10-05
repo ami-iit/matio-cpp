@@ -302,6 +302,16 @@ TEST_CASE("Modifications")
     REQUIRE(out.setName("test2"));
     REQUIRE(out.name() == "test2");
 
+    out.resize({2,2,2,2});
+
+    REQUIRE(out.dimensions().size() == 4);
+    REQUIRE(out.dimensions()[0] == 2);
+    REQUIRE(out.dimensions()[1] == 2);
+    REQUIRE(out.dimensions()[2] == 2);
+    REQUIRE(out.dimensions()[3] == 2);
+    REQUIRE(out.numberOfElements() == 16);
+
+
     std::vector<double> vectorIn;
     vectorIn.push_back(10);
     vectorIn.push_back(12);
@@ -312,26 +322,13 @@ TEST_CASE("Modifications")
 
     checkSameVector(in({0,0,0}).asVector<double>(), vectorIn);
 
-//    out.resize({2,2,2});
-//    REQUIRE(out.numberOfElements() == 8);
-//    out({0,0,0}) = 2;
-//    out({1,0,0}) = 4;
-//    out({0,1,0}) = 6;
-//    out({1,1,0}) = 8;
-//    out({0,0,1}) = 10;
-//    out({1,0,1}) = 12;
-//    out({0,1,1}) = 14;
-//    out({1,1,1}) = 16;
+    in[{0,1,0}].asElement<int>() = 7;
+    REQUIRE(in[{0,1,0}].asElement<int>() == 7);
 
-//    REQUIRE(out({0,0,0}) == 2);
-//    REQUIRE(out({1,0,0}) == 4);
-//    REQUIRE(out({0,1,0}) == 6);
-//    REQUIRE(out({1,1,0}) == 8);
-//    REQUIRE(out({0,0,1}) == 10);
-//    REQUIRE(out({1,0,1}) == 12);
-//    REQUIRE(out({0,1,1}) == 14);
-//    REQUIRE(out({1,1,1}) == 16);
+    matioCpp::String anotherString("another", "anotherString");
 
-//    checkSameVector(matioCpp::make_span(in), out.toSpan());
+    REQUIRE(in.setElement({0,0,2}, anotherString));
+    REQUIRE(in({0,0,2}).asString()() == "anotherString");
+
 }
 
