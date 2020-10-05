@@ -100,7 +100,7 @@ protected:
      * @param linearIndex The linear index of the specified element
      * @return A const Variable with a weak ownership to the underlying mat variable.
      */
-    Variable getCellElement(size_t linearIndex) const;
+    const Variable getCellElement(size_t linearIndex) const;
 
     /**
      * @brief Check if an input matio pointer is compatible with the specified variable.

@@ -93,14 +93,14 @@ void checkSameCellArray(const matioCpp::CellArray& a, const matioCpp::CellArray&
 
 }
 
-template <typename T>
-void checkSameVector(const T& a, const T& b, double precision = 1e-15)
+template <typename T1, typename T2>
+void checkSameVector(const T1& a, const T2& b, double precision = 1e-15)
 {
     REQUIRE(a.size() == b.size());
 
     for (size_t i = 0; i < static_cast<size_t>(a.size()); ++i)
     {
-        REQUIRE(std::abs(a(i) - b(i)) < precision);
+        REQUIRE(std::abs(a[i] - b[i]) < precision);
     }
 }
 
@@ -256,7 +256,6 @@ TEST_CASE("Assignments")
 
         yetAnother = in;
         another = std::move(yetAnother);
-
         checkSameCellArray(another, in);
     }
 
@@ -279,26 +278,39 @@ TEST_CASE("Assignments")
 
     SECTION("From vector of Variables")
     {
-
+        matioCpp::CellArray imported("test");
+        REQUIRE(imported.fromVectorOfVariables({1,2,3}, data));
+        checkSameCellArray(in, imported);
     }
 
     Mat_VarFree(matioVar);
 }
 
-//TEST_CASE("Modifications")
-//{
-//    std::vector<int> in = {2,4,6,8};
-//    matioCpp::MultiDimensionalArray<int> out("test");
-//    REQUIRE(out.fromVectorizedArray({2,2}, in.data()));
+TEST_CASE("Modifications")
+{
+    std::vector<matioCpp::Variable> data;
+    data.emplace_back(matioCpp::Vector<double>("vector", 4));
+    data.emplace_back(matioCpp::Element<int>("element"));
+    data.emplace_back(matioCpp::Variable());
+    data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    data.emplace_back(matioCpp::String("name", "content"));
+    data.emplace_back(matioCpp::CellArray("otherCell"));
 
-//    REQUIRE(out.setName("test2"));
-//    REQUIRE(out.name() == "test2");
-//    checkSameVector(matioCpp::make_span(in), out.toSpan());
+    matioCpp::CellArray in("test", {1,2,3}, data);
+    matioCpp::CellArray out;
 
-//    in.push_back(10);
-//    in.push_back(12);
-//    in.push_back(14);
-//    in.push_back(16);
+    REQUIRE(out.setName("test2"));
+    REQUIRE(out.name() == "test2");
+
+    std::vector<double> vectorIn;
+    vectorIn.push_back(10);
+    vectorIn.push_back(12);
+    vectorIn.push_back(14);
+    vectorIn.push_back(16);
+
+    in({0,0,0}).asVector<double>() = vectorIn;
+
+    checkSameVector(in({0,0,0}).asVector<double>(), vectorIn);
 
 //    out.resize({2,2,2});
 //    REQUIRE(out.numberOfElements() == 8);
@@ -321,17 +333,5 @@ TEST_CASE("Assignments")
 //    REQUIRE(out({1,1,1}) == 16);
 
 //    checkSameVector(matioCpp::make_span(in), out.toSpan());
-//}
-
-//TEST_CASE("Data")
-//{
-//    std::vector<int> in = {2,4,6,8};
-//    matioCpp::MultiDimensionalArray<int> out("test");
-//    REQUIRE(out.fromVectorizedArray({2,2}, in.data()));
-
-//    out.data()[2] = 7;
-//    in[2] = 7;
-
-//    checkSameVector(matioCpp::make_span(in), out.toSpan());
-//}
+}
 

@@ -161,7 +161,7 @@ bool matioCpp::CellArray::fromVectorOfVariables(const std::vector<matioCpp::Cell
     std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
     for (size_t i = 0; i < totalElements; ++i)
     {
-        vectorOfPointers[i] = elements[i].toMatio();
+        vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(elements[i].toMatio());
     }
 
     return initializeVariable(name(),

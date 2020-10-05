@@ -38,12 +38,20 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matioCpp::MatvarHandler* previousHandler = m_handler;
-    m_handler = new matioCpp::SharedMatvar(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0));
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0);
 
-    if (previousHandler)
+    if (m_handler)
     {
-        delete previousHandler;
+        if (!m_handler->importMatvar(newPtr))
+        {
+            std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
+            Mat_VarFree(newPtr);
+            return false;
+        }
+    }
+    else
+    {
+        m_handler = new matioCpp::SharedMatvar(newPtr);
     }
 
     if (!m_handler || !m_handler->get())
@@ -134,7 +142,7 @@ matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex)
     return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
 }
 
-matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
+const matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
 {
     return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
 }
