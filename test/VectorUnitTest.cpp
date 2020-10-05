@@ -12,6 +12,31 @@
 #include <vector>
 #include <matioCpp/matioCpp.h>
 
+void checkSameDimensions(matioCpp::Span<const size_t> a, matioCpp::Span<const size_t> b)
+{
+    REQUIRE(a.size() == b.size());
+
+    for (size_t i = 0; i < static_cast<size_t>(a.size()); ++i)
+    {
+        REQUIRE(a[i] == b[i]);
+    }
+}
+
+void checkVariable(const matioCpp::Variable& var,
+                   const std::string& name,
+                   matioCpp::VariableType type,
+                   matioCpp::ValueType value,
+                   bool complex,
+                   matioCpp::Span<const size_t> dimensions)
+{
+    REQUIRE(var.name() == name);
+    REQUIRE(var.variableType() == type);
+    REQUIRE(var.valueType() == value);
+    REQUIRE(var.isComplex() == complex);
+    REQUIRE(var.dimensions().size() == dimensions.size());
+    checkSameDimensions(dimensions, var.dimensions());
+}
+
 void checkVariable(const matioCpp::Variable& var,
                    const std::string& name,
                    matioCpp::VariableType type,
@@ -19,15 +44,7 @@ void checkVariable(const matioCpp::Variable& var,
                    bool complex,
                    const std::vector<size_t>& dimensions)
 {
-    REQUIRE(var.name() == name);
-    REQUIRE(var.variableType() == type);
-    REQUIRE(var.valueType() == value);
-    REQUIRE(var.isComplex() == complex);
-    REQUIRE(var.dimensions().size() == dimensions.size());
-    for (size_t i = 0; i < var.dimensions().size(); ++i)
-    {
-        REQUIRE(var.dimensions()[i] == dimensions[i]);
-    }
+    checkVariable(var, name, type, value, complex, matioCpp::make_span(dimensions));
 }
 
 void REQUIRE_TRUE(bool value)
@@ -99,6 +116,29 @@ TEST_CASE("Constructors")
         matioCpp::Vector<char> b(std::move(a));
         REQUIRE(b.variableType() == matioCpp::VariableType::Vector);
         REQUIRE(b.valueType() == matioCpp::ValueType::UTF8);
+    }
+
+    SECTION("Shared ownership")
+    {
+        std::vector<double> vec(7);
+        std::vector<size_t> dimensions = {vec.size(), 1};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::SharedMatvar sharedMatvar(matioVar);
+        matioCpp::Vector<double> sharedVar(sharedMatvar);
+        REQUIRE(sharedVar.isValid());
+        REQUIRE(sharedVar.toMatio() == matioVar);
+
+        checkVariable(sharedVar, "test", matioCpp::VariableType::Vector,
+                      matioCpp::ValueType::DOUBLE, false, dimensions);
+
+        matioCpp::Vector<double> weakVar((matioCpp::WeakMatvar(sharedMatvar)));
+        REQUIRE(weakVar.isValid());
+        REQUIRE(weakVar.toMatio() == matioVar);
+
+        checkVariable(weakVar, "test", matioCpp::VariableType::Vector,
+                      matioCpp::ValueType::DOUBLE, false, dimensions);
     }
 
 }

@@ -11,54 +11,7 @@
 
 #include <matioCpp/Variable.h>
 
-class matioCpp::Variable::Impl
-{
-public:
-    matvar_t* matVar_ptr{nullptr};
-    std::vector<size_t> dimensions;
-
-    void freePtr()
-    {
-        if (matVar_ptr)
-        {
-            Mat_VarFree(matVar_ptr);
-            matVar_ptr = nullptr;
-        }
-    }
-
-    void resetPtr(matvar_t* newPtr)
-    {
-        freePtr();
-        matVar_ptr = newPtr;
-    }
-
-    bool fromMatio(const matvar_t *inputVar)
-    {
-        std::string errorPrefix = "[ERROR][matioCpp::Variable::fromMatio] ";
-        if (!inputVar)
-        {
-            std::cerr << errorPrefix << "Empty input variable." << std::endl;
-            return false;
-        }
-
-        matioCpp::Span<size_t> dimensionsSpan = matioCpp::make_span(inputVar->dims, inputVar->rank);
-        dimensions.assign(dimensionsSpan.begin(), dimensionsSpan.end());
-
-        resetPtr(Mat_VarDuplicate(inputVar, 1)); //0 Shallow copy, 1 Deep copy
-
-        return true;
-    }
-
-    Impl()
-    { }
-
-    ~Impl()
-    {
-        freePtr();
-    }
-};
-
-bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void* data)
+bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
     std::string errorPrefix = "[ERROR][matioCpp::Variable::createVar] ";
     if (name.empty())
@@ -88,11 +41,18 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
         return false;
     }
 
-    m_pimpl->dimensions = dimensions;
+    std::vector<size_t> dimensionsCopy;
+    dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensions.size(), m_pimpl->dimensions.data(), data, 0));
+    matioCpp::MatvarHandler* previousHandler = m_handler;
+    m_handler = new matioCpp::SharedMatvar(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0));
 
-    if (!m_pimpl->matVar_ptr)
+    if (previousHandler)
+    {
+        delete previousHandler;
+    }
+
+    if (!m_handler || !m_handler->get())
     {
         std::cerr << errorPrefix << "Failed to create the variable." << std::endl;
         return false;
@@ -101,7 +61,7 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     return true;
 }
 
-bool matioCpp::Variable::initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData)
+bool matioCpp::Variable::initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void *realData, void *imaginaryData)
 {
     std::string errorPrefix = "[ERROR][matioCpp::Variable::createComplexVar] ";
     if (name.empty())
@@ -141,68 +101,102 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     matioComplexSplit.Re = realData;
     matioComplexSplit.Im = imaginaryData;
 
-    m_pimpl->dimensions = dimensions;
+    std::vector<size_t> dimensionsCopy;
+    dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    m_pimpl->resetPtr(Mat_VarCreate(name.c_str(), matioClass, matioType, m_pimpl->dimensions.size(), m_pimpl->dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
+    matioCpp::MatvarHandler* previousHandler = m_handler;
 
-    return m_pimpl->matVar_ptr != nullptr;
+    m_handler = new matioCpp::SharedMatvar(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
+
+    if (previousHandler)
+    {
+        delete previousHandler;
+    }
+
+    if (!m_handler || !m_handler->get())
+    {
+        std::cerr << errorPrefix << "Failed to create the variable." << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 matioCpp::Variable::Variable()
-    : m_pimpl(std::make_unique<Impl>())
+    : m_handler(new matioCpp::SharedMatvar())
 {
 
 }
 
 matioCpp::Variable::Variable(const matvar_t *inputVar)
-    : m_pimpl(std::make_unique<Impl>())
+    : m_handler(new matioCpp::SharedMatvar())
 {
-    m_pimpl->fromMatio(inputVar);
+    m_handler->duplicateMatvar(inputVar);
 }
 
 matioCpp::Variable::Variable(const matioCpp::Variable &other)
-    : m_pimpl(std::make_unique<Impl>())
+    : m_handler(new matioCpp::SharedMatvar())
 {
-    m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
+    m_handler->duplicateMatvar(other.toMatio());
 }
 
 matioCpp::Variable::Variable(matioCpp::Variable &&other)
-    : m_pimpl(std::make_unique<Impl>())
 {
-    m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
+    m_handler = other.m_handler;
+    other.m_handler = nullptr;
+}
+
+matioCpp::Variable::Variable(const MatvarHandler &handler)
+    : m_handler(handler.pointerToDuplicate())
+{
+
 }
 
 matioCpp::Variable::~Variable()
 {
-
+    if (m_handler)
+    {
+        delete m_handler;
+    }
+    m_handler = nullptr;
 }
 
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 {
-    return m_pimpl->fromMatio(inputVar);
+    return m_handler->duplicateMatvar(inputVar);
 }
 
 bool matioCpp::Variable::fromOther(const matioCpp::Variable &other)
 {
-    return m_pimpl->fromMatio(other.m_pimpl->matVar_ptr);
+    return m_handler->duplicateMatvar(other.toMatio());
 }
 
 bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
 {
-    m_pimpl = std::move(other.m_pimpl);
+    if (m_handler)
+    {
+        delete m_handler;
+    }
+    m_handler = other.m_handler;
+    other.m_handler = nullptr;
     return true;
 }
 
 const matvar_t *matioCpp::Variable::toMatio() const
 {
-    return m_pimpl->matVar_ptr;
+    return m_handler->get();
+}
+
+matvar_t *matioCpp::Variable::toMatio()
+{
+    return m_handler->get();
 }
 
 std::string matioCpp::Variable::name() const
 {
-    if (m_pimpl->matVar_ptr)
+    if (isValid())
     {
-        return m_pimpl->matVar_ptr->name;
+        return m_handler->get()->name;
     }
     else
     {
@@ -214,7 +208,7 @@ matioCpp::VariableType matioCpp::Variable::variableType() const
 {
     matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
     matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(m_pimpl->matVar_ptr, outputVariableType, outputValueType);
+    get_types_from_matvart(m_handler->get(), outputVariableType, outputValueType);
     return outputVariableType;
 }
 
@@ -222,15 +216,15 @@ matioCpp::ValueType matioCpp::Variable::valueType() const
 {
     matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
     matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(m_pimpl->matVar_ptr, outputVariableType, outputValueType);
+    get_types_from_matvart(m_handler->get(), outputVariableType, outputValueType);
     return outputValueType;
 }
 
 bool matioCpp::Variable::isComplex() const
 {
-    if (m_pimpl->matVar_ptr)
+    if (isValid())
     {
-        return m_pimpl->matVar_ptr->isComplex;
+        return m_handler->get()->isComplex;
     }
     else
     {
@@ -238,7 +232,19 @@ bool matioCpp::Variable::isComplex() const
     }
 }
 
-const std::vector<size_t> &matioCpp::Variable::dimensions() const
+matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 {
-    return m_pimpl->dimensions;
+    if (isValid())
+    {
+        return matioCpp::make_span(m_handler->get()->dims, m_handler->get()->rank);
+    }
+    else
+    {
+        return matioCpp::Span<const size_t>();
+    }
+}
+
+bool matioCpp::Variable::isValid() const
+{
+    return m_handler->get();
 }

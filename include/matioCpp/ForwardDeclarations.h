@@ -119,6 +119,12 @@ class vector_iterator;
 template <class ElementType, std::ptrdiff_t Extent = dynamic_extent>
 class Span;
 
+class MatvarHandler;
+
+class SharedMatvar;
+
+class WeakMatvar;
+
 class Variable;
 
 template<typename T>

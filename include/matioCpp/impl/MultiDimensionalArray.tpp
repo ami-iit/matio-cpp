@@ -12,12 +12,47 @@
  */
 
 template<typename T>
+bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t *inputPtr) const
+{
+    if (!inputPtr)
+    {
+        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] The input pointer is null." << std::endl;
+        return false;
+    }
+
+    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
+    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
+
+    if (outputVariableType != matioCpp::VariableType::MultiDimensionalArray)
+    {
+        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] The input variable is not a multidimensional array." << std::endl;
+        return false;
+    }
+
+    if (inputPtr->isComplex)
+    {
+        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] Cannot copy a complex variable to a non-complex one." << std::endl;
+        return false;
+    }
+
+    if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
+    {
+        std::cerr << "[matioCpp::MultiDimensionalArray::isCompatible] The input type is not convertible to " <<
+            typeid(T).name() <<"." << std::endl;
+        return false;
+    }
+    return true;
+}
+
+template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray()
 {
     std::vector<T> empty;
+    constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable("unnamed_multidimensional_array",
                        VariableType::MultiDimensionalArray,
-                       matioCpp::get_type<T>::valueType, {0, 0, 0},
+                       matioCpp::get_type<T>::valueType, emptyDimensions,
                        (void*)empty.data());
 }
 
@@ -25,9 +60,10 @@ template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name)
 {
     std::vector<T> empty;
+    constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
-                       matioCpp::get_type<T>::valueType, {0, 0, 0},
+                       matioCpp::get_type<T>::valueType, emptyDimensions,
                        (void*)empty.data());
 }
 
@@ -82,6 +118,22 @@ template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(MultiDimensionalArray<T> &&other)
 {
     fromOther(other);
+}
+
+template<typename T>
+matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const MatvarHandler &handler)
+    : matioCpp::Variable(handler)
+{
+    if (!checkCompatibility(handler.get()))
+    {
+        assert(false);
+        std::vector<T> empty;
+        constexpr size_t emptyDimensions[] = {0, 0, 0};
+        initializeVariable("unnamed_multidimensional_array",
+                           VariableType::MultiDimensionalArray,
+                           matioCpp::get_type<T>::valueType, emptyDimensions,
+                           (void*)empty.data());
+    }
 }
 
 template<typename T>
@@ -145,61 +197,34 @@ typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimension
 template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::fromOther(const matioCpp::Variable &other)
 {
-    if (other.variableType() != matioCpp::VariableType::MultiDimensionalArray)
+    if (!checkCompatibility(other.toMatio()))
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] The input variable is not a vector." << std::endl;
         return false;
     }
 
-    if (other.isComplex())
-    {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex variable to a non-complex one." << std::endl;
-        return false;
-    }
-
-    if (!matioCpp::is_convertible_to_primitive_type<T>(other.valueType()))
-    {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl;
-        return false;
-    }
     return Variable::fromOther(other);
 }
 
 template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::fromOther(matioCpp::Variable &&other)
 {
-    if (other.variableType() != matioCpp::VariableType::MultiDimensionalArray)
+    if (!checkCompatibility(other.toMatio()))
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] The input variable is not a vector." << std::endl;
         return false;
     }
 
-    if (other.isComplex())
-    {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] Cannot copy a complex variable to a non-complex one." << std::endl;
-        return false;
-    }
-
-    if (!matioCpp::is_convertible_to_primitive_type<T>(other.valueType()))
-    {
-        std::cerr << "[matioCpp::MultiDimensionalArray::fromOther] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl;
-        return false;
-    }
     return Variable::fromOther(other);
 }
 
 template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::fromMatio(const matvar_t *inputVar)
 {
-    Variable dummy;
-    if (!dummy.fromMatio(inputVar))
+    if (!checkCompatibility(inputVar))
     {
         return false;
     }
 
-    return fromOther(dummy);
+    return Variable::fromMatio(inputVar);
 }
 
 template<typename T>
@@ -276,6 +301,18 @@ template<typename T>
 typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator[](const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &el) const
 {
     return data()[rawIndexFromIndices(el)];
+}
+
+template<typename T>
+matioCpp::MultiDimensionalArray<T> matioCpp::Variable::asMultiDimensionalArray()
+{
+    return matioCpp::MultiDimensionalArray<T>(*m_handler);
+}
+
+template<typename T>
+const matioCpp::MultiDimensionalArray<T> matioCpp::Variable::asMultiDimensionalArray() const
+{
+    return matioCpp::MultiDimensionalArray<T>(*m_handler);
 }
 
 #endif // MATIOCPP_MULTIDIMENSIONALARRAY_TPP

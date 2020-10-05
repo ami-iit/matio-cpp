@@ -14,6 +14,10 @@
 #include <matioCpp/ForwardDeclarations.h>
 #include <matioCpp/ConversionUtilities.h>
 #include <matioCpp/Span.h>
+#include <matioCpp/MatvarHandler.h>
+#include <matioCpp/SharedMatvar.h>
+#include <matioCpp/WeakMatvar.h>
+
 
 /**
  * @brief The matioCpp::Variable class is the equivalent of matvar_t in matio. It is supposed to be a basic access to object that are or need to be saved in a mat file.
@@ -21,9 +25,7 @@
 class matioCpp::Variable
 {
 
-    class Impl;
-
-    std::unique_ptr<Impl> m_pimpl;
+    matioCpp::MatvarHandler* m_handler;
 
 protected:
 
@@ -40,7 +42,7 @@ protected:
      * @param data A void pointer to the (flattened) data.
      * @return true in case the variable was correctly initialized.
      */
-    bool initializeVariable(const std::string &name, const VariableType &variableType, const ValueType &valueType, const std::vector<size_t> &dimensions, void *data);
+    bool initializeVariable(const std::string &name, const VariableType &variableType, const ValueType &valueType, matioCpp::Span<const size_t> dimensions, void *data);
 
     /**
      * @brief Initialize a complex variable
@@ -52,7 +54,7 @@ protected:
      * @param imaginaryData A void pointer to the (flattened) imaginary data. Check the documentation of initializeVariable for understanding how to obtain/interpret this vector.
      * @return true in case the variable was correctly initialized.
      */
-    bool initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, const std::vector<size_t>& dimensions, void *realData, void *imaginaryData);
+    bool initializeComplexVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void *realData, void *imaginaryData);
 
 
     /**
@@ -101,6 +103,12 @@ public:
     Variable(Variable&& other);
 
     /**
+     * @brief Constructor to share the data ownership of another variable.
+     * @param handler The MatvarHandler handler to the matvar_t which has to be shared.
+     */
+    Variable(const MatvarHandler& handler);
+
+    /**
     * @brief Destructor
     */
     ~Variable();
@@ -128,7 +136,7 @@ public:
      * @param other The Variable from which to copy the content (data, name, type, dimensions,..).
      * @return True if the cloning was successful.
      */
-    virtual bool fromOther(const Variable& other); //Child classes need to make sure that the types are correct
+    virtual bool fromOther(const Variable& other);
 
     /**
      * @brief Set this variable from another variable.
@@ -137,7 +145,7 @@ public:
      * @param other The source Variable. Content is moved.
      * @return True if the moving was successful.
      */
-    virtual bool fromOther(Variable&& other); //Child classes need to make sure that the types are correct
+    virtual bool fromOther(Variable&& other);
 
     /**
      * @brief Convert this Variable to a matio variable.
@@ -145,6 +153,13 @@ public:
      * @return A matvar_t pointer.
      */
     const matvar_t * toMatio() const;
+
+    /**
+     * @brief Convert this Variable to a matio variable.
+     * @warning Any modification to the matio variable is reflected to this Variable.
+     * @return A matvar_t pointer.
+     */
+    matvar_t * toMatio();
 
     /**
      * @brief Get the name of the Variable.
@@ -174,7 +189,48 @@ public:
      * @brief Get the dimensions of this object.
      * @return The dimensions of the object
      */
-    const std::vector<size_t>& dimensions() const;
+    matioCpp::Span<const size_t> dimensions() const;
+
+    /**
+     * @brief Check if the variable is valid
+     *
+     * A Variable may not be valid if it does not point to any data, or the the dimensions().size() < 2.
+     *
+     * @return true if valid.
+     */
+    bool isValid() const;
+
+    /**
+     * @brief Cast the variable as a Vector.
+     *
+     * The implementation is in Vector.tpp
+     */
+    template<typename T>
+    matioCpp::Vector<T> asVector();
+
+    /**
+     * @brief Cast the variable as a const Vector
+     *
+     * The implementation is in Vector.tpp
+     */
+    template<typename T>
+    const matioCpp::Vector<T> asVector() const;
+
+    /**
+     * @brief Cast the variable as a MultiDimensionalArray.
+     *
+     * The implementation is in MultiDimensionalArray.tpp
+     */
+    template<typename T>
+    matioCpp::MultiDimensionalArray<T> asMultiDimensionalArray();
+
+    /**
+     * @brief Cast the variable as a const MultiDimensionalArray.
+     *
+     * The implementation is in MultiDimensionalArray.tpp
+     */
+    template<typename T>
+    const matioCpp::MultiDimensionalArray<T> asMultiDimensionalArray() const;
 
 };
 

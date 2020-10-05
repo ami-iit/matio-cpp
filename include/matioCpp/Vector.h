@@ -33,6 +33,13 @@ class matioCpp::Vector : public matioCpp::Variable
      */
     bool initializeVector(const std::string& name, Span<T> inputVector);
 
+    /**
+     * @brief Check if an input matio pointer is compatible with the vector class.
+     * @param inputPtr The input matvar_t pointer.
+     * @return True if compatible. False otherwise, throwing errors.
+     */
+    bool checkCompatibility(const matvar_t* inputPtr) const;
+
 public:
 
     using element_type = T; /** Defines the type of an element of the Vector. Needed to use the iterator. **/
@@ -85,6 +92,12 @@ public:
      * @brief Move constructor
      */
     Vector(Vector<T>&& other);
+
+    /**
+     * @brief Constructor to share the data ownership of another variable.
+     * @param handler The MatvarHandler handler to the matvar_t which has to be shared.
+     */
+    Vector(const MatvarHandler& handler);
 
     /**
     * Destructor.
