@@ -1,0 +1,106 @@
+name: C++ CI Workflow
+
+on:
+  push:
+  pull_request:
+  schedule:
+  # * is a special character in YAML so you have to quote this string
+  # Execute a "nightly" build at 2 AM UTC
+  - cron:  '0 2 * * *'
+
+jobs:
+  build:
+    name: '[${{ matrix.os }}@${{ matrix.build_type }}]'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build_type: [Release, Debug]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@master
+
+    # Print environment variables to simplify development and debugging
+    - name: Environment Variables
+      shell: bash
+      run: env
+
+    # ============
+    # DEPENDENCIES
+    # ============
+
+    # Remove apt repos that are known to break from time to time
+    # See https://github.com/actions/virtual-environments/issues/323
+    - name: Remove broken apt repos [Ubuntu]
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
+
+    - name: Dependencies [Windows]
+      if: matrix.os == 'windows-latest'
+      run: |
+        vcpkg.exe install matio:x64-windows
+
+
+    - name: Dependencies [macOS]
+      if: matrix.os == 'macOS-latest'
+      run: |
+        brew update
+        brew install libmatio
+
+    - name: Dependencies [Ubuntu]
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install libmatio-dev valgrind
+
+    # ===================
+    # CMAKE-BASED PROJECT
+    # ===================
+
+    - name: Configure [Windows]
+      # Use bash also on Windows (otherwise cd, mkdir, ... do not work)
+      if: matrix.os == 'windows-latest'
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake -A x64 -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake \
+              -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
+              -DBUILD_TESTING:BOOL=ON ..
+
+    - name: Configure [Ubuntu]
+      if: matrix.os == 'ubuntu-latest'
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
+              -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
+              -DBUILD_TESTING:BOOL=ON \
+              -DFRAMEWORK_RUN_Valgrind_tests:BOOL=ON ..
+
+    - name: Configure [macOS]
+      if: matrix.os == 'macOS-latest'
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
+              -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
+              -DBUILD_TESTING:BOOL=ON ..
+
+    - name: Build
+      shell: bash
+      run: |
+        cd build
+        cmake --build . --config ${{ matrix.build_type }}
+
+    - name: Test
+      shell: bash
+      run: |
+        cd build
+        ctest --output-on-failure -C ${{ matrix.build_type }} .
+        
