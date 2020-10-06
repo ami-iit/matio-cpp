@@ -38,8 +38,15 @@ bool matioCpp::Element<T>::checkCompatibility(const matvar_t *inputPtr) const
 
     if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
     {
+        std::string dataType = "";
+        std::string classType = "";
+
+        get_types_names_from_matvart(inputPtr, classType, dataType);
+
         std::cerr << "[matioCpp::Element::checkCompatibility] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl;
+            typeid(T).name() <<"." << std::endl <<
+            "                                        Input class type: " << classType << std::endl <<
+            "                                        Input data type: " << dataType << std::endl;
         return false;
     }
     return true;
