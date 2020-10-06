@@ -205,6 +205,11 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
         else if ((input->rank == 2) && ((input->dims[0] == 1) || (input->dims[1] == 1)))
         {
             outputVariableType = matioCpp::VariableType::Vector;
+
+            if (input->class_type == matio_classes::MAT_C_CHAR) //If it is a vector and the class type is char, then it is a string
+            {
+                outputValueType = matioCpp::ValueType::UTF8;
+            }
         }
         else
         {
