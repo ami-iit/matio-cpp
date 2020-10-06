@@ -7,6 +7,9 @@ on:
   # * is a special character in YAML so you have to quote this string
   # Execute a "nightly" build at 2 AM UTC
   - cron:  '0 2 * * *'
+  
+env:
+  Catch2_TAG: v2.11.3
 
 jobs:
   build:
@@ -40,20 +43,44 @@ jobs:
     - name: Dependencies [Windows]
       if: matrix.os == 'windows-latest'
       run: |
-        vcpkg.exe install matio:x64-windows
+        vcpkg.exe install matio:x64-windows catch2:x64-windows
 
 
     - name: Dependencies [macOS]
       if: matrix.os == 'macOS-latest'
       run: |
         brew update
-        brew install libmatio
+        brew install libmatio catch2
 
     - name: Dependencies [Ubuntu]
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install libmatio-dev valgrind
+        
+    - name: Cache Source-based Dependencies
+      id: cache-source-deps
+      uses: actions/cache@v1
+      with:
+        path: ${{ github.workspace }}/install/deps
+        # Including ${{ runner.temp }} is a workaround taken from https://github.com/robotology/whole-body-estimators/pull/62 to fix macos configuration failure on https://github.com/dic-iit/bipedal-locomotion-framework/pull/45
+        key: source-deps-${{ runner.os }}-${{runner.temp}}-build-type-${{ matrix.build_type }}-catch2-${{ env.Catch2_TAG }}
+        
+        
+    - name: Source-based Dependencies [Ubuntu]
+      if: steps.cache-source-deps.outputs.cache-hit != 'true' && matrix.os == 'ubuntu-latest'
+      shell: bash
+      run: |
+        # Catch2
+        git clone -b ${Catch2_TAG} https://github.com/catchorg/Catch2.git
+        cd Catch2
+        mkdir -p build
+        cd build
+        cmake  -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
+               -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install/deps \
+               -DBUILD_TESTING=OFF ..
+
+        cmake --build . --config ${{ matrix.build_type }} --target install
 
     # ===================
     # CMAKE-BASED PROJECT
