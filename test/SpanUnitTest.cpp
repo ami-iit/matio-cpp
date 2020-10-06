@@ -1216,15 +1216,19 @@ TEST_CASE("interop_with_std_regex")
     REQUIRE(match.ready());
     REQUIRE(!match.empty());
     REQUIRE(match[0].matched);
-    REQUIRE(match[0].first == s.begin());
-    REQUIRE(match[0].second == s.end());
+    bool ok = (match[0].first == s.begin());
+    REQUIRE(ok);
+    ok = (match[0].second == s.end());
+    REQUIRE(ok);
 
     std::regex_search(s.begin(), s.end(), match, std::regex("F"));
     REQUIRE(match.ready());
     REQUIRE(!match.empty());
     REQUIRE(match[0].matched);
-    REQUIRE(match[0].first == f_it);
-    REQUIRE(match[0].second == (f_it + 1));
+    ok = (match[0].first == f_it);
+    REQUIRE(ok);
+    ok = (match[0].second == (f_it + 1));
+    REQUIRE(ok);
 }
 
 TEST_CASE("default_constructible")
