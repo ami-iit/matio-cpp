@@ -58,6 +58,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # extensions off.
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -120,6 +122,8 @@ target_include_directories(matioCpp PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SO
   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
 target_link_libraries(matioCpp PUBLIC MATIO::MATIO)
+
+target_compile_features(matioCpp PUBLIC cxx_constexpr)
 
 set_target_properties(matioCpp PROPERTIES
   OUTPUT_NAME matioCpp
