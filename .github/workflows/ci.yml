@@ -50,9 +50,7 @@ jobs:
       uses: lukka/run-vcpkg@v3
       with:
         vcpkgArguments: '--triplet x64-windows matio catch2'
-        vcpkgGitCommitId: $env:vcpkg_TAG
-        # Location of the vcpkg as submodule of the repository.
-        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        vcpkgGitCommitId: ${{ env.vcpkg_TAG }}
 
     - name: Dependencies [macOS]
       if: matrix.os == 'macOS-latest'
@@ -101,7 +99,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -A x64 -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake \
+        cmake -A x64 -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake \
               -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
               -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
               -DBUILD_TESTING:BOOL=ON ..
