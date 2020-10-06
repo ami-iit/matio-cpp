@@ -40,10 +40,19 @@ jobs:
       run: |
         for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
+ 
+    # Restore from cache the previously built ports. If "cache miss"
+    # then provision vcpkg, install desired ports, finally cache everything for the next run.
     - name: Dependencies [Windows]
       if: matrix.os == 'windows-latest'
-      run: |
-        vcpkg.exe install matio:x64-windows catch2:x64-windows
+      uses: lukka/run-vcpkg@v3
+      with:
+        vcpkgArguments: '--triplet x64-windows matio catch2'
+        # commit from vcpkg's master branch on 2020/06/01
+        vcpkgGitCommitId: 6d36e2a86baf8d227fc6dce587bd69997d67fb5e
+        # Workaround for https://github.com/ros-industrial/abb_libegm/pull/101#discussion_r433370614
+        # This line can be removed once protobuf is  linked via its imported CMake targets
+        vcpkgDirectory: '${{ github.workspace }}/../vcpkg'  
 
 
     - name: Dependencies [macOS]
