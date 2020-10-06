@@ -2,7 +2,7 @@
 # This software may be modified and distributed under the terms of the
 # GNU Lesser General Public License v2.1 or any later version.
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(matioCpp VERSION 1.0 LANGUAGES CXX)
 
 # Defines the CMAKE_INSTALL_LIBDIR, CMAKE_INSTALL_BINDIR and many other useful macros.
@@ -120,6 +120,8 @@ target_include_directories(matioCpp PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SO
   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
 target_link_libraries(matioCpp PUBLIC MATIO::MATIO)
+
+target_compile_features(matioCpp PUBLIC cxx_std_14)
 
 set_target_properties(matioCpp PROPERTIES
   OUTPUT_NAME matioCpp
