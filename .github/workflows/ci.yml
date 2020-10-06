@@ -3,10 +3,6 @@ name: C++ CI Workflow
 on:
   push:
   pull_request:
-  schedule:
-  # * is a special character in YAML so you have to quote this string
-  # Execute a "nightly" build at 2 AM UTC
-  - cron:  '0 2 * * *'
   
 env:
   # commit from vcpkg's master branch on 2020/10/06
