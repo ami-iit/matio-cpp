@@ -81,6 +81,7 @@ public:
      * @brief The file header
      *
      * This is an optional string that is added inside the MAT file. You can view the text in a MAT-file header using the cat command on the file on UNIX.
+     * @warning This is available only if the matio version is >= 1.5.15
      *
      * @return The file header
      */

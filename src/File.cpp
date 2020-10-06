@@ -152,7 +152,12 @@ std::string matioCpp::File::header() const
         return "";
     }
 
+#if MATIO_VERSION >= 1515
     return Mat_GetHeader(m_pimpl->mat_ptr);
+#else
+    std::cerr << "[ERROR][matioCpp::File::header] The file header can be retrieved only with matio >= 1.5.15" << std::endl;
+    return "";
+#endif
 }
 
 matioCpp::FileVersion matioCpp::File::version() const
