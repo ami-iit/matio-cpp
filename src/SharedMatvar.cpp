@@ -90,6 +90,11 @@ matioCpp::WeakMatvar matioCpp::SharedMatvar::weakOwnership() const
     return weak;
 }
 
+void matioCpp::SharedMatvar::dropOwnedPointer(matvar_t *previouslyOwnedPointer)
+{
+    m_ownership->drop(previouslyOwnedPointer);
+}
+
 matioCpp::SharedMatvar &matioCpp::SharedMatvar::operator=(const matioCpp::SharedMatvar &other)
 {
     m_ownership = other.m_ownership;

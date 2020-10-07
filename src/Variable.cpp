@@ -135,6 +135,7 @@ bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Vari
 
     matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
 
+    m_handler->dropOwnedPointer(previousCell);
     Mat_VarFree(previousCell);
 
     return Mat_VarGetCell(m_handler->get(), linearIndex);

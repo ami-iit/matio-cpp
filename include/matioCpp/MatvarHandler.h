@@ -23,18 +23,40 @@ protected:
     class Ownership
     {
         std::weak_ptr<matvar_t*> m_pointerToDeallocate; /** A pointer to the matvar_t* that needs to be freed when the corresponding ownership is deallocated **/
+
+        std::unordered_set<matvar_t*> m_ownedPointers;  /** The set of pointers, owned by the handler. **/
     public:
 
         /**
          * @brief Constructor
          * @param ponterToDeallocate A weak pointer toward the matvar_t* that needs to be freed.
          */
-        Ownership(std::weak_ptr<matvar_t*> ponterToDeallocate);
+        Ownership(std::weak_ptr<matvar_t*> pointerToDeallocate);
 
         /**
          * @brief Destructor
          */
         ~Ownership();
+
+        /**
+         * @brief Check if an input pointer is owned by this ownership object
+         * @param test The pointer to test
+         * @return true if the ownership objects owns the pointer
+         */
+        bool isOwning(matvar_t* test);
+
+        /**
+         * @brief Add a pointer to the list of owned pointers.
+         * This will not be deallocated as it is supposed to be part of the matvar_t pointer stored in m_ptr.
+         * @param owned The pointer to be considered owned.
+         */
+        void own(matvar_t* owned);
+
+        /**
+         * @brief Drop a previously owned pointer
+         * @param previouslyOwned The pointer that is not own anymore
+         */
+        void drop(matvar_t* previouslyOwned);
     };
 
     /**
@@ -113,6 +135,12 @@ public:
      * @return A WeakMatvar version of the current MatvarHandler.
      */
     virtual WeakMatvar weakOwnership() const = 0;
+
+    /**
+     * @brief Drop a pointer from the list of owned pointers.
+     * @param previouslyOwnedPointer The pointer that is not owned anymore
+     */
+    virtual void dropOwnedPointer(matvar_t* previouslyOwnedPointer) = 0;
 
     /**
      * @brief Get a duplicate of the input matvar pointer/

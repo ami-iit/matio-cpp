@@ -11,9 +11,29 @@
 #include <matioCpp/MatvarHandler.h>
 #include <matioCpp/ConversionUtilities.h>
 
-matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<matvar_t *> ponterToDeallocate)
-    : m_pointerToDeallocate(ponterToDeallocate)
+matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<matvar_t *> pointerToDeallocate)
+    : m_pointerToDeallocate(pointerToDeallocate)
 {
+    std::shared_ptr<matvar_t*> locked = pointerToDeallocate.lock();
+    if (locked && *locked)
+    {
+        VariableType outputVariableType;
+        ValueType outputValueType;
+        if (matioCpp::get_types_from_matvart(*locked, outputVariableType, outputValueType))
+        {
+            if (outputVariableType == matioCpp::VariableType::CellArray)
+            {
+                size_t totalElements = 1;
+                for (int dim = 0; dim < (*locked)->rank; ++dim)
+                {
+                    totalElements *= (*locked)->dims[dim];
+                }
+
+                m_ownedPointers.reserve(totalElements);
+            }
+        }
+        m_ownedPointers.emplace(*locked);
+    }
 
 }
 
@@ -26,6 +46,31 @@ matioCpp::MatvarHandler::Ownership::~Ownership()
         {
             Mat_VarFree(*locked);
             *locked = nullptr;
+        }
+    }
+}
+
+bool matioCpp::MatvarHandler::Ownership::isOwning(matvar_t *test)
+{
+    return (test && (m_ownedPointers.find(test) != m_ownedPointers.end()));
+}
+
+void matioCpp::MatvarHandler::Ownership::own(matvar_t *owned)
+{
+    if (owned)
+    {
+        m_ownedPointers.insert(owned);
+    }
+}
+
+void matioCpp::MatvarHandler::Ownership::drop(matvar_t *previouslyOwned)
+{
+    std::shared_ptr<matvar_t*> locked = m_pointerToDeallocate.lock();
+    if (locked)
+    {
+        if (previouslyOwned != *locked) //Cannot drop the pointer that corresponds to the one to deallocate
+        {
+            m_ownedPointers.erase(previouslyOwned);
         }
     }
 }

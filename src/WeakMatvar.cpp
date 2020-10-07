@@ -41,17 +41,28 @@ matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const SharedMatvar &owner)
     , m_ownership(owner.ownership())
 
 {
-
+    auto locked = m_ownership.lock();
+    if (locked)
+    {
+        locked->own(inputPtr);
+    }
 }
 
 matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const matioCpp::MatvarHandler *owner)
 {
     m_ownership = owner->weakOwnership().m_ownership;
     m_ptr = std::make_shared<matvar_t*>(inputPtr);
+
+    auto locked = m_ownership.lock();
+    if (locked)
+    {
+        locked->own(inputPtr);
+    }
 }
 
 matioCpp::WeakMatvar::~WeakMatvar()
 {
+
 }
 
 matvar_t *matioCpp::WeakMatvar::get() const
@@ -59,7 +70,7 @@ matvar_t *matioCpp::WeakMatvar::get() const
     assert(m_ptr);
     auto locked = m_ownership.lock();
 
-    if (locked)
+    if (locked && locked->isOwning(*m_ptr))
     {
         return *m_ptr;
     }
@@ -96,6 +107,15 @@ matioCpp::MatvarHandler *matioCpp::WeakMatvar::pointerToDuplicate() const
 matioCpp::WeakMatvar matioCpp::WeakMatvar::weakOwnership() const
 {
     return *this;
+}
+
+void matioCpp::WeakMatvar::dropOwnedPointer(matvar_t *previouslyOwnedPointer)
+{
+    auto locked = m_ownership.lock();
+    if (locked)
+    {
+        locked->drop(previouslyOwnedPointer);
+    }
 }
 
 matioCpp::WeakMatvar &matioCpp::WeakMatvar::operator=(const matioCpp::WeakMatvar &other)
