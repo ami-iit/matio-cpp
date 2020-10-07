@@ -73,6 +73,12 @@ matioCpp::File::File()
 
 }
 
+matioCpp::File::File(const std::string &name, matioCpp::FileMode mode)
+    : m_pimpl(std::make_unique<Impl>())
+{
+    open(name, mode);
+}
+
 matioCpp::File::File(matioCpp::File &&other)
 {
     m_pimpl = std::move(other.m_pimpl);
@@ -133,6 +139,11 @@ matioCpp::File matioCpp::File::Create(const std::string &name, matioCpp::FileVer
     }
 
     return newFile;
+}
+
+bool matioCpp::File::Delete(const std::string &name)
+{
+    return std::remove(name.c_str()) == 0;
 }
 
 std::string matioCpp::File::name() const

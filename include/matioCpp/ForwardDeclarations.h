@@ -15,6 +15,7 @@
 #include <cassert>
 #include <complex>
 #include <cstddef>   // for ptrdiff_t, size_t, nullptr_t
+#include <cstdio>  //for remove
 #include <cstring> //for memcpy
 #include <initializer_list>
 #include <iostream>

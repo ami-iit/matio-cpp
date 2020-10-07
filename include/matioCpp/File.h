@@ -29,6 +29,14 @@ public:
     File();
 
     /**
+     * @brief Constructor opening the specified file
+     * @param name The name of the file to open.
+     * @param mode The mode with which to open the file. By default, both reading and writing are allowed.
+     * @note If the mode is ReadAndWrite, a file with the same name is created if not found
+     */
+    File(const std::string& name, matioCpp::FileMode mode = matioCpp::FileMode::ReadAndWrite);
+
+    /**
      * @brief Deleted copy constructor, to avoid confusion on whether the content has been copied or not
      */
     File(const File& other) = delete;
@@ -54,7 +62,6 @@ public:
      * @param name The name of the file to open.
      * @param mode The mode with which to open the file. By default, both reading and writing are allowed.
      * @return false in case of failure (the file does not exist, the file exist but cannot be written, ..)
-     * @note If the mode is ReadAndWrite, a file with the same name is created if not found
      */
     bool open(const std::string& name, matioCpp::FileMode mode = matioCpp::FileMode::ReadAndWrite);
 
@@ -70,6 +77,13 @@ public:
     static File Create(const std::string& name,
                        matioCpp::FileVersion version = matioCpp::FileVersion::Default,
                        const std::string& header = "");
+
+    /**
+     * @brief Delete the specified file
+     * @param name Name of the file to delete.
+     * @return True if successfull, false otherwise.
+     */
+    static bool Delete(const std::string& name);
 
     /**
      * @brief The file name
@@ -110,6 +124,7 @@ public:
      * @brief Read a variable given the name
      * @param name The name of the variable to be read
      * @return The desired Variable. The method isValid() would return false if something went wrong.
+     * @note Modifying the output variable will not change the file.
      */
     matioCpp::Variable read(const std::string& name) const;
 
