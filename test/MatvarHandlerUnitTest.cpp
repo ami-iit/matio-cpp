@@ -232,3 +232,22 @@ TEST_CASE("Weak ownership")
     REQUIRE_FALSE(weakFromShared.get());
     REQUIRE_FALSE(weakFromWeak.get());
 }
+
+TEST_CASE("Weak ownership register")
+{
+    std::vector<double> vec(7);
+    std::vector<size_t> dimensions = {vec.size(), 1};
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    REQUIRE(matioVar);
+
+    matioCpp::SharedMatvar shared;
+    matioCpp::WeakMatvar weak(matioVar, shared); //shared does not own matioVar, but weak checks if shared is alive before accessing matioVar
+
+    REQUIRE(weak.get() == matioVar);
+
+    shared.dropOwnedPointer(matioVar); //This is the case when setting a cell for example.
+
+    REQUIRE_FALSE(weak.get());
+
+    Mat_VarFree(matioVar);
+}

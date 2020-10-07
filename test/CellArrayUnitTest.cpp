@@ -342,8 +342,11 @@ TEST_CASE("Modifications")
 
     matioCpp::String anotherString("another", "anotherString");
 
+    matioCpp::Variable previousElement = in({0,0,2});
+    REQUIRE(previousElement.isValid());
+
     REQUIRE(in.setElement(4, anotherString));
     REQUIRE(in(4).asString()() == "anotherString");
-
+    REQUIRE_FALSE(previousElement.isValid());
 }
 
