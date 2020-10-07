@@ -16,8 +16,7 @@
 #include <matioCpp/Variable.h>
 
 /**
- * @brief MultiDimensionalArray is a particular type of Variable specialized for multidimensional arrays of a generic type T.
- * @note The underlying array is in column-major format.
+ * @brief Element allows having a 1x1 variable (like double, int,..) castable to a primitive type.
  */
 template<typename T>
 class matioCpp::Element : public matioCpp::Variable

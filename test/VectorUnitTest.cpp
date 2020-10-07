@@ -89,6 +89,15 @@ TEST_CASE("Constructors")
         REQUIRE(var.valueType() == matioCpp::ValueType::DOUBLE);
     }
 
+    SECTION("Name in case of string")
+    {
+        matioCpp::String var("test");
+
+        REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var.valueType() == matioCpp::ValueType::UTF8);
+        REQUIRE(var() == "test");
+    }
+
     SECTION("Name and Span")
     {
         std::vector<int64_t> vec(7);

@@ -65,6 +65,16 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<T> empty;
+
+    if (std::is_same<T, char>::value) //If the type is char, the name corresponds to the content
+    {
+        empty.resize(name.size());
+        for (size_t i = 0; i < name.size(); ++i)
+        {
+            empty[i] = name[i];
+        }
+    }
+
     initializeVector(name, matioCpp::make_span(empty));
 }
 

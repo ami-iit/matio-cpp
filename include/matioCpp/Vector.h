@@ -73,6 +73,7 @@ public:
     /**
      * @brief Constructor
      * @param name The name of the Vector
+     * @note If the type is char, the name is also copied in the content.
      */
     Vector(const std::string& name);
 
