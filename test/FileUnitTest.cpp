@@ -139,6 +139,7 @@ TEST_CASE("Create and delete file")
     matioCpp::File newFile = matioCpp::File::Create("test.mat");
     REQUIRE(newFile.isOpen());
     REQUIRE(newFile.variableNames().size() == 0);
+    newFile.close();
     REQUIRE(matioCpp::File::Delete("test.mat"));
     REQUIRE_FALSE(test.open("test.mat", matioCpp::FileMode::ReadOnly));
 }

@@ -81,7 +81,7 @@ public:
     /**
      * @brief Delete the specified file
      * @param name Name of the file to delete.
-     * @return True if successfull, false otherwise.
+     * @return True if successfull, false otherwise (for example, in Windows the file will not be deleted if open).
      */
     static bool Delete(const std::string& name);
 
