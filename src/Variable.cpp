@@ -10,6 +10,7 @@
 
 
 #include <matioCpp/Variable.h>
+#include <matioCpp/CellArray.h>
 
 bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
@@ -297,4 +298,14 @@ matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 bool matioCpp::Variable::isValid() const
 {
     return m_handler->get();
+}
+
+matioCpp::CellArray matioCpp::Variable::asCellArray()
+{
+    return matioCpp::CellArray(*m_handler);
+}
+
+const matioCpp::CellArray matioCpp::Variable::asCellArray() const
+{
+    return matioCpp::CellArray(*m_handler);
 }

@@ -292,6 +292,16 @@ public:
     template<typename T>
     const matioCpp::MultiDimensionalArray<T> asMultiDimensionalArray() const;
 
+    /**
+     * @brief Cast the variable as a CellArray.
+     */
+    matioCpp::CellArray asCellArray();
+
+    /**
+     * @brief Cast the variable as a const CellArray.
+     */
+    const matioCpp::CellArray asCellArray() const;
+
 };
 
 #endif
