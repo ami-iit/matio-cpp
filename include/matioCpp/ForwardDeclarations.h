@@ -77,10 +77,12 @@ template<typename... Ts> using void_t = typename make_void<Ts...>::type;
  */
 enum class VariableType
 {
+    Element,
     Vector,
     MultiDimensionalArray,
-    StructContainer,
-    CellContainer,
+    Struct,
+    CellArray,
+    VariableArray, //Array of other variables which are not primitive types
     Unsupported
 };
 
@@ -103,10 +105,7 @@ enum class ValueType
     UTF16,
     UTF32,
     STRING,
-    CELL,
-    STRUCT,
-    VECTOR, //This is the case when an element of a struct is a vector for example
-    MULTI_DIMENSIONAL_ARRAY,
+    VARIABLE, //This is the case of composite containers, like Struct, CellArray, and Container
     UNSUPPORTED
 };
 
@@ -128,7 +127,12 @@ class WeakMatvar;
 class Variable;
 
 template<typename T>
+class Element;
+
+template<typename T>
 class Vector;
+
+using String = Vector<char>;
 
 template<typename T>
 class MultiDimensionalArray;

@@ -15,13 +15,6 @@
 namespace matioCpp {
 
 /**
- * @brief Utility function to get the matio type corresponding to a certain ValueType
- * @param inputValueType The input ValueType
- * @return the corresponding matio type.
- */
-matio_types get_matio_value_type(const ValueType& inputValueType);
-
-/**
  * @brief Get both the matio type and class from the input VariableType and ValueType
  * @param inputVariableType The input VariableType.
  * @param inputValueType The input ValueType.
@@ -57,7 +50,6 @@ template <> struct get_type<int64_t>  { using type = int64_t;  static constexpr 
 template <> struct get_type<char> { using type = char; static constexpr ValueType valueType = ValueType::UTF8; };
 template <> struct get_type<char16_t> { using type = char16_t; static constexpr ValueType valueType = ValueType::UTF16; };
 template <> struct get_type<char32_t> { using type = char32_t; static constexpr ValueType valueType = ValueType::UTF32; };
-template <> struct get_type<std::string> { using type = std::string; static constexpr ValueType valueType = ValueType::STRING; };
 
 /**
  * @brief Utility function to check if certain ValueType can be converted to a primitive type T.
@@ -70,49 +62,46 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
     switch (type)
     {
     case matioCpp::ValueType::INT8:
-        return std::is_convertible<T, int8_t>::value;
+        return std::is_same<T, int8_t>::value;
         break;
     case matioCpp::ValueType::UINT8:
-        return std::is_convertible<T, uint8_t>::value;
+        return std::is_same<T, uint8_t>::value;
         break;
     case matioCpp::ValueType::INT16:
-        return std::is_convertible<T, int16_t>::value;
+        return std::is_same<T, int16_t>::value;
         break;
     case matioCpp::ValueType::UINT16:
-        return std::is_convertible<T, uint16_t>::value;
+        return std::is_same<T, uint16_t>::value;
         break;
     case matioCpp::ValueType::INT32:
-        return std::is_convertible<T, int32_t>::value;
+        return std::is_same<T, int32_t>::value;
         break;
     case matioCpp::ValueType::UINT32:
-        return std::is_convertible<T, uint32_t>::value;
+        return std::is_same<T, uint32_t>::value;
         break;
     case matioCpp::ValueType::SINGLE:
-        return std::is_convertible<T, float>::value;
+        return std::is_same<T, float>::value;
         break;
     case matioCpp::ValueType::DOUBLE:
-        return std::is_convertible<T, double>::value;
+        return std::is_same<T, double>::value;
         break;
     case matioCpp::ValueType::INT64:
-        return std::is_convertible<T, int64_t>::value;
+        return std::is_same<T, int64_t>::value;
         break;
     case matioCpp::ValueType::UINT64:
-        return std::is_convertible<T, uint64_t>::value;
+        return std::is_same<T, uint64_t>::value;
         break;
     case matioCpp::ValueType::UTF8:
-        return std::is_convertible<T, char>::value;
+        return std::is_same<T, char>::value;
         break;
     case matioCpp::ValueType::UTF16:
-        return std::is_convertible<T, char16_t>::value;
+        return std::is_same<T, char16_t>::value;
         break;
     case matioCpp::ValueType::UTF32:
-        return std::is_convertible<T, char32_t>::value;
+        return std::is_same<T, char32_t>::value;
         break;
     case matioCpp::ValueType::STRING:
-    case matioCpp::ValueType::CELL:
-    case matioCpp::ValueType::STRUCT:
-    case matioCpp::ValueType::VECTOR:
-    case matioCpp::ValueType::MULTI_DIMENSIONAL_ARRAY:
+    case matioCpp::ValueType::VARIABLE:
     case matioCpp::ValueType::UNSUPPORTED:
         return false;
     }

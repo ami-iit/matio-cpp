@@ -14,7 +14,7 @@
 template<typename T>
 bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
 {
-    size_t dimensions[] = {static_cast<size_t>(inputVector.size()), 1};
+    size_t dimensions[] = {1, static_cast<size_t>(inputVector.size())};
     return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputVector.data());
 }
 
@@ -23,7 +23,7 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t *inputPtr) const
 {
     if (!inputPtr)
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] The input pointer is null." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The input pointer is null." << std::endl;
         return false;
     }
 
@@ -33,19 +33,19 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t *inputPtr) const
 
     if (outputVariableType != matioCpp::VariableType::Vector)
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] The input variable is not a vector." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The input variable is not a vector." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
         return false;
     }
 
     if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
     {
-        std::cerr << "[matioCpp::Vector::isCompatible] The input type is not convertible to " <<
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The input type is not convertible to " <<
             typeid(T).name() <<"." << std::endl;
         return false;
     }
@@ -65,6 +65,16 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<T> empty;
+
+    if (std::is_same<T, char>::value) //If the type is char, the name corresponds to the content
+    {
+        empty.resize(name.size());
+        for (size_t i = 0; i < name.size(); ++i)
+        {
+            empty[i] = name[i];
+        }
+    }
+
     initializeVector(name, matioCpp::make_span(empty));
 }
 
@@ -73,6 +83,14 @@ matioCpp::Vector<T>::Vector(const std::string& name, Span<T> inputVector)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     initializeVector(name, inputVector);
+}
+
+template <typename T>
+matioCpp::Vector<T>::Vector(const std::string &name, const std::string &inputString)
+{
+    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    size_t dimensions[] = {1, static_cast<size_t>(inputString.size())};
+    initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputString.c_str());
 }
 
 template<typename T>
@@ -84,7 +102,7 @@ matioCpp::Vector<T>::Vector(const Vector<T> &other)
 template<typename T>
 matioCpp::Vector<T>::Vector(Vector<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::Vector<T>>(other));
 }
 
 template<typename T>
@@ -117,7 +135,7 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const matioCpp::Vector<T> &o
 template<typename T>
 matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(matioCpp::Vector<T> &&other)
 {
-    fromOther(other);
+    fromOther(std::forward<matioCpp::Vector<T>>(other));
     return *this;
 }
 
@@ -137,36 +155,21 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
 }
 
 template<typename T>
-bool matioCpp::Vector<T>::fromOther(const matioCpp::Variable &other)
+matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::string &other)
 {
-    if (!checkCompatibility(other.toMatio()))
+    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    if (size() == other.size())
     {
-        return false;
+        memcpy(toMatio()->data, other.data(), size() * sizeof(T));
+    }
+    else
+    {
+        size_t dimensions[] = {1, static_cast<size_t>(other.size())};
+        initializeVariable(name(), VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)other.c_str());
     }
 
-    return Variable::fromOther(other);
-}
+    return *this;
 
-template<typename T>
-bool matioCpp::Vector<T>::fromOther(matioCpp::Variable &&other)
-{
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return Variable::fromOther(other);
-}
-
-template<typename T>
-bool matioCpp::Vector<T>::fromMatio(const matvar_t *inputVar)
-{
-    if (!checkCompatibility(inputVar))
-    {
-        return false;
-    }
-
-    return Variable::fromMatio(inputVar);
 }
 
 template<typename T>
@@ -229,6 +232,13 @@ template<typename T>
 typename matioCpp::Vector<T>::value_type matioCpp::Vector<T>::operator()(typename matioCpp::Vector<T>::index_type el) const
 {
     return toSpan()(el);
+}
+
+template<typename T>
+std::string matioCpp::Vector<T>::operator()() const
+{
+    static_assert (std::is_same<T, char>::value,"The operator () to convert to a string is available only if the type of the vector is char");
+    return std::string(data(), size());
 }
 
 template<typename T>
@@ -325,6 +335,16 @@ template<typename T>
 const matioCpp::Vector<T> matioCpp::Variable::asVector() const
 {
     return matioCpp::Vector<T>(*m_handler);
+}
+
+matioCpp::String matioCpp::Variable::asString()
+{
+    return matioCpp::Vector<char>(*m_handler);
+}
+
+const matioCpp::String matioCpp::Variable::asString() const
+{
+    return matioCpp::Vector<char>(*m_handler);
 }
 
 #endif // MATIOCPP_VECTOR_TPP

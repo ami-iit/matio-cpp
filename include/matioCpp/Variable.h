@@ -79,6 +79,13 @@ protected:
         return initializeComplexVariable(name, VariableType::Vector, get_type<T>::valuetype, {realInputVector.size(), 1}, (void*)realInputVector.data(), (void*)imaginaryInputVector.data());
     }
 
+    /**
+     * @brief Check if an input matio pointer is compatible with the specified variable.
+     * @param inputPtr The input matvar_t pointer.
+     * @return True if compatible. False otherwise, throwing errors.
+     */
+    virtual bool checkCompatibility(const matvar_t* inputPtr) const;
+
 public:
 
     /**
@@ -201,6 +208,22 @@ public:
     bool isValid() const;
 
     /**
+     * @brief Cast the variable as a Element.
+     *
+     * The implementation is in Element.tpp
+     */
+    template<typename T>
+    matioCpp::Element<T> asElement();
+
+    /**
+     * @brief Cast the variable as a const Element
+     *
+     * The implementation is in Element.tpp
+     */
+    template<typename T>
+    const matioCpp::Element<T> asElement() const;
+
+    /**
      * @brief Cast the variable as a Vector.
      *
      * The implementation is in Vector.tpp
@@ -215,6 +238,20 @@ public:
      */
     template<typename T>
     const matioCpp::Vector<T> asVector() const;
+
+    /**
+     * @brief Cast the variable as a String.
+     *
+     * The implementation is in Vector.tpp
+     */
+    matioCpp::String asString();
+
+    /**
+     * @brief Cast the variable as a const Vector
+     *
+     * The implementation is in Vector.tpp
+     */
+    const matioCpp::String asString() const;
 
     /**
      * @brief Cast the variable as a MultiDimensionalArray.

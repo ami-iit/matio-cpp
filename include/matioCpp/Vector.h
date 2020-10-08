@@ -38,7 +38,7 @@ class matioCpp::Vector : public matioCpp::Variable
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
      */
-    bool checkCompatibility(const matvar_t* inputPtr) const;
+    virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
 
 public:
 
@@ -73,6 +73,7 @@ public:
     /**
      * @brief Constructor
      * @param name The name of the Vector
+     * @note If the type is char, the name is also copied in the content.
      */
     Vector(const std::string& name);
 
@@ -82,6 +83,13 @@ public:
      * @param inputVector The input data.
      */
     Vector(const std::string& name, Span<T> inputVector);
+
+    /**
+     * @brief Constructor
+     * @param name The name of the Vector
+     * @param inputString The input string.
+     */
+    Vector(const std::string& name, const std::string& inputString);
 
     /**
      * @brief Copy constructor
@@ -128,19 +136,12 @@ public:
     Vector<T>& operator=(const Span<T>& other);
 
     /**
-     * Inherited from matioCpp::Variable
+     * @brief Assignement operator from another string.
+     * @param other The input string.
+     * @note This is available only if the type is char.
+     * @return A reference to this Vector.
      */
-    virtual bool fromOther(const Variable& other) final;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromOther(Variable&& other) final;
-
-    /**
-     * Inherited from matioCpp::Variable
-     */
-    virtual bool fromMatio(const matvar_t * inputVar) final;
+    Vector<T>& operator=(const std::string& other);
 
     /**
      * @brief Get this Vector as a Span
@@ -204,6 +205,13 @@ public:
     value_type operator()(index_type el) const;
 
     /**
+     * @brief Get the Vector as a string
+     * @return A string that copies the internal data.
+     * @note This is available only if the type is char.
+     */
+    std::string operator()() const;
+
+    /**
      * @brief Access specified element.
      * @param el The element to be accessed.
      * @warning el has to be structly smaller than size.
@@ -239,7 +247,7 @@ public:
     const_iterator begin() const;
 
     /**
-     * @brief end Iterator
+     * @brief end Iteratorspan
      * @return A const iterator to the end of the sequence
      * @warning This element acts as a placeholder; attempting to access it results in undefined behavior.
      */
@@ -305,6 +313,5 @@ public:
 };
 
 #include "impl/Vector.tpp"
-
 
 #endif // MATIOCPP_VECTOR_H

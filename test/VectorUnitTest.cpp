@@ -89,6 +89,15 @@ TEST_CASE("Constructors")
         REQUIRE(var.valueType() == matioCpp::ValueType::DOUBLE);
     }
 
+    SECTION("Name in case of string")
+    {
+        matioCpp::String var("test");
+
+        REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var.valueType() == matioCpp::ValueType::UTF8);
+        REQUIRE(var() == "test");
+    }
+
     SECTION("Name and Span")
     {
         std::vector<int64_t> vec(7);
@@ -96,6 +105,15 @@ TEST_CASE("Constructors")
 
         REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
         REQUIRE(var.valueType() == matioCpp::ValueType::INT64);
+    }
+
+    SECTION("Name and String")
+    {
+        matioCpp::Vector<char> var("test", "test_string");
+
+        REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var.valueType() == matioCpp::ValueType::UTF8);
+        REQUIRE(var() == "test_string");
     }
 
     SECTION("Copy constructor")
@@ -212,6 +230,13 @@ TEST_CASE("Assignments")
         matioCpp::Vector<double> vector;
         REQUIRE(vector.fromOther(std::move(var2)));
         checkSameVariable(var, vector);
+    }
+
+    SECTION("String")
+    {
+        matioCpp::Vector<char> string;
+        string = "test";
+        REQUIRE(string() == "test");
     }
 
     Mat_VarFree(matioVar);

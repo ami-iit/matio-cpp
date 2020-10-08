@@ -106,10 +106,12 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/MultiDimensionalArray.h
                  include/matioCpp/MatvarHandler.h
                  include/matioCpp/SharedMatvar.h
-                 include/matioCpp/WeakMatvar.h)
+                 include/matioCpp/WeakMatvar.h
+                 include/matioCpp/Element.h)
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
-                 include/matioCpp/impl/MultiDimensionalArray.tpp)
+                 include/matioCpp/impl/MultiDimensionalArray.tpp
+                 include/matioCpp/impl/Element.tpp)
 
 source_group("Template Implementation Files" FILES ${MATIOCPP_TPP})
 

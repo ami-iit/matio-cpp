@@ -122,6 +122,11 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     return true;
 }
 
+bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
+{
+    return inputPtr;
+}
+
 matioCpp::Variable::Variable()
     : m_handler(new matioCpp::SharedMatvar())
 {
@@ -163,16 +168,31 @@ matioCpp::Variable::~Variable()
 
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 {
+    if (!checkCompatibility(inputVar))
+    {
+        return false;
+    }
+
     return m_handler->duplicateMatvar(inputVar);
 }
 
 bool matioCpp::Variable::fromOther(const matioCpp::Variable &other)
 {
+    if (!checkCompatibility(other.toMatio()))
+    {
+        return false;
+    }
+
     return m_handler->duplicateMatvar(other.toMatio());
 }
 
 bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
 {
+    if (!checkCompatibility(other.toMatio()))
+    {
+        return false;
+    }
+
     if (m_handler)
     {
         delete m_handler;

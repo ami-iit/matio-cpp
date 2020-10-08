@@ -21,3 +21,8 @@ add_unit_test(NAME Vector
 add_unit_test(NAME MultiDimensionalArray
               SOURCES MultiDimensionalArrayUnitTest.cpp
               LINKS matioCpp::matioCpp)
+
+add_unit_test(NAME Element
+            SOURCES ElementUnitTest.cpp
+            LINKS matioCpp::matioCpp)
+
