@@ -234,6 +234,33 @@ TEST_CASE("Conversions")
 
         REQUIRE(asElement() == "test_string");
     }
+
+    SECTION("To Cell Array")
+    {
+        std::vector<matvar_t*> pointers;
+        std::vector<size_t> dimensions = {1,2,3};
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
+        pointers.emplace_back(nullptr);
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::CellArray("otherCell").toMatio(), 1));
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), pointers.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::CellArray cellArray = sharedVar.asCellArray();
+
+        matioCpp::String anotherString("another", "anotherString");
+
+        REQUIRE(cellArray.setElement({0,0,2}, anotherString));
+        REQUIRE(cellArray({0,0,2}).asString()() == "anotherString");
+
+        matvar_t* cell = Mat_VarGetCell(matioVar, cellArray.rawIndexFromIndices({0,0,2}));
+        std::string expected = "anotherString";
+        REQUIRE(strncmp((char*)cell->data, expected.c_str(), expected.size()) == 0);
+    }
 }
 
 
