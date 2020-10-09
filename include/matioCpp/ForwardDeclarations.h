@@ -125,9 +125,9 @@ enum class FileMode
 enum class FileVersion
 {
     Default,   /** @brief This is one of the following three depending on the matio installation. **/
-    MAT4,      /** @brief Matlab version 7.3 file             */
+    MAT4,      /** @brief Matlab version 4 file             */
     MAT5,      /** @brief Matlab version 5 file               */
-    MAT7_3,    /** @brief Matlab version 4 file               */
+    MAT7_3,    /** @brief Matlab version 7.3 file               */
     Undefined  /** @brief Undefined version                   */
 };
 
