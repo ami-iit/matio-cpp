@@ -94,7 +94,8 @@ set(MATIOCPP_SRC src/Variable.cpp
                  src/ConversionUtilities.cpp
                  src/MatvarHandler.cpp
                  src/SharedMatvar.cpp
-                 src/WeakMatvar.cpp)
+                 src/WeakMatvar.cpp
+                 src/File.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/VectorIterator.h
@@ -107,7 +108,8 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/MatvarHandler.h
                  include/matioCpp/SharedMatvar.h
                  include/matioCpp/WeakMatvar.h
-                 include/matioCpp/Element.h)
+                 include/matioCpp/Element.h
+                 include/matioCpp/File.h)
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/MultiDimensionalArray.tpp

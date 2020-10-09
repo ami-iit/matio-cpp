@@ -205,11 +205,151 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
         else if ((input->rank == 2) && ((input->dims[0] == 1) || (input->dims[1] == 1)))
         {
             outputVariableType = matioCpp::VariableType::Vector;
+
+            if (input->class_type == matio_classes::MAT_C_CHAR) //If it is a vector and the class type is char, then it is a string
+            {
+                outputValueType = matioCpp::ValueType::UTF8;
+            }
         }
         else
         {
             outputVariableType = matioCpp::VariableType::MultiDimensionalArray;
         }
+    }
+
+    return true;
+}
+
+bool matioCpp::get_types_names_from_matvart(const matvar_t *input, std::string &classType, std::string &dataType)
+{
+    if (!input)
+    {
+        return false;
+    }
+
+    switch (input->data_type)
+    {
+    case matio_types::MAT_T_INT8:
+        dataType = "INT8";
+        break;
+    case matio_types::MAT_T_UINT8:
+        dataType = "UINT8";
+        break;
+    case matio_types::MAT_T_INT16:
+        dataType = "INT16";
+        break;
+    case matio_types::MAT_T_UINT16:
+        dataType = "UINT16";
+        break;
+    case matio_types::MAT_T_INT32:
+        dataType = "INT32";
+        break;
+    case matio_types::MAT_T_UINT32:
+        dataType = "UINT32";
+        break;
+    case matio_types::MAT_T_SINGLE:
+        dataType = "SINGLE";
+        break;
+    case matio_types::MAT_T_DOUBLE:
+        dataType = "DOUBLE";
+        break;
+    case matio_types::MAT_T_INT64:
+        dataType = "INT64";
+        break;
+    case matio_types::MAT_T_UINT64:
+        dataType = "UINT64";
+        break;
+    case matio_types::MAT_T_UTF8:
+        dataType = "UTF8";
+        break;
+    case matio_types::MAT_T_UTF16:
+        dataType = "UTF16";
+        break;
+    case matio_types::MAT_T_UTF32:
+        dataType = "UTF32";
+        break;
+    case matio_types::MAT_T_STRING:
+        dataType = "STRING";
+        break;
+    case matio_types::MAT_T_CELL:
+        dataType = "CELL";
+        break;
+    case matio_types::MAT_T_STRUCT:
+        dataType = "STRUCT";
+        break;
+    case matio_types::MAT_T_ARRAY:
+        dataType = "ARRAY";
+        break;
+    case matio_types::MAT_T_MATRIX:
+        dataType = "MATRIX";
+        break;
+    case matio_types::MAT_T_COMPRESSED:
+        dataType = "COMPRESSED";
+        break;
+    case matio_types::MAT_T_FUNCTION:
+        dataType = "FUNCTION";
+        break;
+    case matio_types::MAT_T_UNKNOWN:
+        dataType = "UNKNOWN";
+        break;
+    }
+
+    switch (input->class_type)
+    {
+    case MAT_C_EMPTY:
+        classType = "EMPTY";
+        break;
+    case MAT_C_CELL:
+        classType = "CELL";
+        break;
+    case MAT_C_STRUCT:
+        classType = "STRUCT";
+        break;
+    case MAT_C_OBJECT:
+        classType = "OBJECT";
+        break;
+    case MAT_C_CHAR:
+        classType = "CHAR";
+        break;
+    case MAT_C_SPARSE:
+        classType = "SPARSE";
+        break;
+    case MAT_C_DOUBLE:
+        classType = "DOUBLE";
+        break;
+    case MAT_C_SINGLE:
+        classType = "SINGLE";
+        break;
+    case MAT_C_INT8:
+        classType = "INT8";
+        break;
+    case MAT_C_UINT8:
+        classType = "UINT8";
+        break;
+    case MAT_C_INT16:
+        classType = "INT16";
+        break;
+    case MAT_C_UINT16:
+        classType = "UINT16";
+        break;
+    case MAT_C_INT32:
+        classType = "INT32";
+        break;
+    case MAT_C_UINT32:
+        classType = "UINT32";
+        break;
+    case MAT_C_INT64:
+        classType = "INT64";
+        break;
+    case MAT_C_UINT64:
+        classType = "UINT64";
+        break;
+    case MAT_C_FUNCTION:
+        classType = "FUNCTION";
+        break;
+    case MAT_C_OPAQUE:
+        classType = "OPAQUE";
+        break;
     }
 
     return true;

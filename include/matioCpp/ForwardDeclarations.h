@@ -15,6 +15,7 @@
 #include <cassert>
 #include <complex>
 #include <cstddef>   // for ptrdiff_t, size_t, nullptr_t
+#include <cstdio>  //for remove
 #include <cstring> //for memcpy
 #include <initializer_list>
 #include <iostream>
@@ -109,6 +110,27 @@ enum class ValueType
     UNSUPPORTED
 };
 
+/**
+ * @brief The available modes with which a file can be opened.
+ */
+enum class FileMode
+{
+    ReadOnly,
+    ReadAndWrite
+};
+
+/**
+ * @brief The supported file versions
+ */
+enum class FileVersion
+{
+    Default,   /** @brief This is one of the following three depending on the matio installation. **/
+    MAT4,      /** @brief Matlab version 4 file             */
+    MAT5,      /** @brief Matlab version 5 file               */
+    MAT7_3,    /** @brief Matlab version 7.3 file               */
+    Undefined  /** @brief Undefined version                   */
+};
+
 // [views.constants], constants
 MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;
 
@@ -136,6 +158,8 @@ using String = Vector<char>;
 
 template<typename T>
 class MultiDimensionalArray;
+
+class File;
 
 }
 

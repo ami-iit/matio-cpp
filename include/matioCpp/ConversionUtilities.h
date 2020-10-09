@@ -34,6 +34,14 @@ bool get_matio_types(const VariableType& inputVariableType, const ValueType& inp
 bool get_types_from_matvart(const matvar_t* input, VariableType& outputVariableType, ValueType &outputValueType);
 
 /**
+ * @brief Get the type names from the input pointer
+ * @param input The input pointer
+ * @param classType The class type
+ * @param valueType The value type
+ */
+bool get_types_names_from_matvart(const matvar_t* input, std::string &classType, std::string &dataType);
+
+/**
  * @brief Utility metafunction to get the ValueType from a given primitive type.
  */
 template <typename Tp> struct get_type;
