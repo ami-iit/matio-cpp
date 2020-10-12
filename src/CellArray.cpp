@@ -91,11 +91,12 @@ matioCpp::CellArray::CellArray(const std::string &name, const std::vector<matioC
     std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
     for (size_t i = 0; i < totalElements; ++i)
     {
-        matvar_t* internalPointer = elements[i].toMatio();
-        if (internalPointer)
+        if (!elements[i].isValid())
         {
-            vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(internalPointer);
+            std::cerr << "[ERROR][matioCpp::CellArray::fromVectorOfVariables] The element at index "<< i << " (0-based) is not valid." << std::endl;
+            assert(false);
         }
+        vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(elements[i].toMatio());
     }
 
     initializeVariable(name,
@@ -161,6 +162,11 @@ bool matioCpp::CellArray::fromVectorOfVariables(const std::vector<matioCpp::Cell
     std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
     for (size_t i = 0; i < totalElements; ++i)
     {
+        if (!elements[i].isValid())
+        {
+            std::cerr << "[ERROR][matioCpp::CellArray::fromVectorOfVariables] The element at index "<< i << " (0-based) is not valid." << std::endl;
+            return false;
+        }
         vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(elements[i].toMatio());
     }
 

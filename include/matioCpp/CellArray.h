@@ -103,7 +103,7 @@ public:
      * @note The name of the variables is not used
      * @param dimensions The input dimensions
      * @param elements The input vector of variables.
-     * @return True if successfull.
+     * @return True if successfull. False otherwise, for example if one of the input variables is not valid.
      */
     bool fromVectorOfVariables(const std::vector<index_type>& dimensions, std::vector<Variable> &elements);
 

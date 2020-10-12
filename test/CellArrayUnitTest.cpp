@@ -132,7 +132,7 @@ TEST_CASE("Constructors")
         std::vector<matioCpp::Variable> data;
         data.emplace_back(matioCpp::Vector<double>("vector"));
         data.emplace_back(matioCpp::Element<int>("element"));
-        data.emplace_back(matioCpp::Variable());
+        data.emplace_back(matioCpp::Vector<double>());
         data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
         data.emplace_back(matioCpp::String("name", "content"));
         data.emplace_back(matioCpp::CellArray("otherCell"));
@@ -148,7 +148,7 @@ TEST_CASE("Constructors")
         std::vector<matioCpp::Variable> data;
         data.emplace_back(matioCpp::Vector<double>("vector"));
         data.emplace_back(matioCpp::Element<int>("element"));
-        data.emplace_back(matioCpp::Variable());
+        data.emplace_back(matioCpp::Vector<double>());
         data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
         data.emplace_back(matioCpp::String("name", "content"));
         data.emplace_back(matioCpp::CellArray("otherCell"));
@@ -165,7 +165,7 @@ TEST_CASE("Constructors")
         std::vector<matioCpp::Variable> data;
         data.emplace_back(matioCpp::Vector<double>("vector"));
         data.emplace_back(matioCpp::Element<int>("element"));
-        data.emplace_back(matioCpp::Variable());
+        data.emplace_back(matioCpp::Vector<double>());
         data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
         data.emplace_back(matioCpp::String("name", "content"));
         data.emplace_back(matioCpp::CellArray("otherCell"));
@@ -227,7 +227,7 @@ TEST_CASE("Assignments")
     std::vector<matioCpp::Variable> data;
     data.emplace_back(matioCpp::Vector<double>("vector"));
     data.emplace_back(matioCpp::Element<int>("element"));
-    data.emplace_back(matioCpp::Variable());
+    data.emplace_back(matioCpp::Vector<double>());
     data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
     data.emplace_back(matioCpp::String("name", "content"));
     data.emplace_back(matioCpp::CellArray("otherCell"));
@@ -306,7 +306,7 @@ TEST_CASE("Modifications")
     std::vector<matioCpp::Variable> data;
     data.emplace_back(matioCpp::Vector<double>("vector", 4));
     data.emplace_back(matioCpp::Element<int>("element"));
-    data.emplace_back(matioCpp::Variable());
+    data.emplace_back(matioCpp::Vector<double>());
     data.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
     data.emplace_back(matioCpp::String("name", "content"));
     data.emplace_back(matioCpp::CellArray("otherCell"));
