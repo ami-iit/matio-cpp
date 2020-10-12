@@ -78,7 +78,7 @@ bool matioCpp::get_matio_types(const matioCpp::VariableType &inputVariableType, 
             return false;
         }
     }
-    else if (inputVariableType == VariableType::Struct || inputVariableType == VariableType::VariableArray)
+    else if (inputVariableType == VariableType::Struct || inputVariableType == VariableType::StructArray)
     {
         outputMatioClasses = matio_classes::MAT_C_STRUCT;
         outputMatioType =  matio_types::MAT_T_STRUCT;
@@ -189,7 +189,7 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
         }
         else if ((input->data_type == MAT_T_ARRAY) || (input->data_type == MAT_T_MATRIX)) //This would be a weird case where the variable has dimension 1x1, it is not a cell nor a struct, yet it contains an array
         {
-            outputVariableType = matioCpp::VariableType::VariableArray;
+            outputVariableType = matioCpp::VariableType::Unsupported;
         }
         else
         {
@@ -198,9 +198,13 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
     }
     else
     {
-        if ((input->data_type == matio_types::MAT_T_STRUCT) || (input->data_type == MAT_T_ARRAY) || (input->data_type == MAT_T_MATRIX))
+        if (input->data_type == matio_types::MAT_T_STRUCT)
         {
-            outputVariableType = matioCpp::VariableType::VariableArray;
+            outputVariableType = matioCpp::VariableType::StructArray;
+        }
+        else if ((input->data_type == MAT_T_ARRAY) || (input->data_type == MAT_T_MATRIX))
+        {
+            outputVariableType = matioCpp::VariableType::Unsupported;
         }
         else if ((input->rank == 2) && ((input->dims[0] == 1) || (input->dims[1] == 1)))
         {
