@@ -12,8 +12,6 @@
  */
 
 #include <matioCpp/ForwardDeclarations.h>
-#include <matioCpp/ConversionUtilities.h>
-#include <matioCpp/Span.h>
 #include <matioCpp/Variable.h>
 
 /**
@@ -104,7 +102,7 @@ public:
      * @note The vector is supposed to contain the variables in column-major format.
      * @note The name of the variables is not used
      * @param dimensions The input dimensions
-     * @param inputVector The input pointer.
+     * @param elements The input vector of variables.
      * @return True if successfull.
      */
     bool fromVectorOfVariables(const std::vector<index_type>& dimensions, std::vector<Variable> &elements);
@@ -121,6 +119,15 @@ public:
      * @return the linear index corresponding to the provided indices
      */
     index_type rawIndexFromIndices(const std::vector<index_type>& el) const;
+
+    /**
+     * @brief Get the indices given the raw index
+     * @paragraph rawIndex The input raw index from which to compute the indices
+     * @param el The output indices
+
+    * @return True if successfull, false otherwise (for example if rawIndex is out of bounds)
+     */
+    bool indicesFromRawIndex(size_t rawIndex, std::vector<index_type>& el) const;
 
     /**
      * @brief Change the name of the Variable
@@ -157,6 +164,16 @@ public:
     bool setElement(const std::vector<index_type>& el, const Variable& newValue);
 
     /**
+     * @brief Set the element at the specified position
+     * @param el The raw index of the specified element
+     * @param newValue The Variable that will be copied in the specified location
+     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @note An assertion is thrown if el is out of bounds, but only in debug mode
+     * @warning The Variable previously in the same place will be freed. Any previous reference to this variable (obtained through the non-const version of the operator() and operator[]) are invalidated. Using them may result in a segfault.
+     */
+    bool setElement(index_type el, const Variable& newValue);
+
+    /**
      * @brief Access specified element.
      * @param el The element to be accessed.
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
@@ -175,6 +192,21 @@ public:
 
     /**
      * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    matioCpp::Variable operator()(index_type el);
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     */
+    const matioCpp::Variable operator()(index_type el) const;
+
+    /**
+     * @brief Access specified element.
      * @param el The element to be accessed.
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
      * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
@@ -189,6 +221,21 @@ public:
      * @return A const Variable with a weak ownership to the underlying mat variable.
      */
     const matioCpp::Variable operator[](const std::vector<index_type>& el) const;
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed.
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    matioCpp::Variable operator[](index_type el);
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed.
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     */
+    const matioCpp::Variable operator[](index_type el) const;
 };
 
 #endif // MATIOCPP_CELLARRAY_H

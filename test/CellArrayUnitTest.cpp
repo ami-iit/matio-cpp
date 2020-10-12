@@ -207,6 +207,21 @@ TEST_CASE("Constructors")
 
 }
 
+TEST_CASE("Indeces from raw index")
+{
+    matioCpp::CellArray var("test", {3,4,5});
+
+    REQUIRE(var.numberOfElements() == 60);
+
+    for (size_t i = 0; i < var.numberOfElements(); ++i)
+    {
+        std::vector<size_t> el;
+        REQUIRE(var.indicesFromRawIndex(i, el));
+        REQUIRE(var.rawIndexFromIndices(el) == i);
+    }
+
+}
+
 TEST_CASE("Assignments")
 {
     std::vector<matioCpp::Variable> data;
@@ -323,12 +338,12 @@ TEST_CASE("Modifications")
     checkSameVector(in({0,0,0}).asVector<double>(), vectorIn);
 
     in[{0,1,0}].asElement<int>() = 7;
-    REQUIRE(in[{0,1,0}].asElement<int>() == 7);
+    REQUIRE(in[1].asElement<int>() == 7);
 
     matioCpp::String anotherString("another", "anotherString");
 
-    REQUIRE(in.setElement({0,0,2}, anotherString));
-    REQUIRE(in({0,0,2}).asString()() == "anotherString");
+    REQUIRE(in.setElement(4, anotherString));
+    REQUIRE(in(4).asString()() == "anotherString");
 
 }
 

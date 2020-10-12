@@ -202,6 +202,39 @@ typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimension
 }
 
 template<typename T>
+bool matioCpp::MultiDimensionalArray<T>::indicesFromRawIndex(size_t rawIndex, std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &el) const
+{
+    el.resize(dimensions().size());
+
+    if (rawIndex >= numberOfElements())
+    {
+        std::cerr << "[ERROR][matioCpp::MultiDimensionalArray::indicesFromRawIndex] rawIndex is greater than the number of elements." << std::endl;
+        return false;
+    }
+
+    typename matioCpp::MultiDimensionalArray<T>::index_type previousDimensionsFactorial = dimensions()[0];
+
+    //First we fill el with the factorial of the dimensions
+
+    for (size_t i = 1; i < el.size(); ++i)
+    {
+        el[i - 1] = previousDimensionsFactorial;
+        previousDimensionsFactorial *= dimensions()[i];
+    }
+
+    typename matioCpp::MultiDimensionalArray<T>::index_type remainder = rawIndex;
+
+    for (size_t i = el.size() - 1; i > 0; --i)
+    {
+        el[i] = remainder / el[i - 1];
+        remainder -= el[i] * el[i - 1];
+    }
+    el[0] = remainder;
+
+    return true;
+}
+
+template<typename T>
 matioCpp::Span<T> matioCpp::MultiDimensionalArray<T>::toSpan()
 {
     return matioCpp::make_span(data(), numberOfElements());
@@ -260,9 +293,23 @@ typename matioCpp::MultiDimensionalArray<T>::reference matioCpp::MultiDimensiona
 }
 
 template<typename T>
-typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator()(const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &el) const
+typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator()(const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &el) const
 {
     return data()[rawIndexFromIndices(el)];
+}
+
+template<typename T>
+typename matioCpp::MultiDimensionalArray<T>::reference matioCpp::MultiDimensionalArray<T>::operator()(typename matioCpp::MultiDimensionalArray<T>::index_type el)
+{
+    assert(el < numberOfElements() && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
+    return data()[el];
+}
+
+template<typename T>
+typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator()(typename matioCpp::MultiDimensionalArray<T>::index_type el) const
+{
+    assert(el < numberOfElements() && "[matioCpp::MultiDimensionalArray::operator()] The required element is out of bounds.");
+    return data()[el];
 }
 
 template<typename T>
@@ -275,6 +322,20 @@ template<typename T>
 typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator[](const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &el) const
 {
     return data()[rawIndexFromIndices(el)];
+}
+
+template<typename T>
+typename matioCpp::MultiDimensionalArray<T>::reference matioCpp::MultiDimensionalArray<T>::operator[](typename matioCpp::MultiDimensionalArray<T>::index_type el)
+{
+    assert(el < numberOfElements() && "[matioCpp::MultiDimensionalArray::operator[]] The required element is out of bounds.");
+    return data()[el];
+}
+
+template<typename T>
+typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator[](typename matioCpp::MultiDimensionalArray<T>::index_type el) const
+{
+    assert(el < numberOfElements() && "[matioCpp::MultiDimensionalArray::operator[]] The required element is out of bounds.");
+    return data()[el];
 }
 
 template<typename T>

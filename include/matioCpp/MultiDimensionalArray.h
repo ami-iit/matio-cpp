@@ -134,6 +134,15 @@ public:
     index_type rawIndexFromIndices(const std::vector<index_type>& el) const;
 
     /**
+     * @brief Get the indices given the raw index
+     * @paragraph rawIndex The input raw index from which to compute the indices
+     * @param el The output indices
+
+    * @return True if successfull, false otherwise (for example if rawIndex is out of bounds)
+     */
+    bool indicesFromRawIndex(size_t rawIndex, std::vector<index_type>& el) const;
+
+    /**
      * @brief Get this MultiDimensionalArray as a Span
      */
     matioCpp::Span<T> toSpan();
@@ -199,6 +208,20 @@ public:
 
     /**
      * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A reference to the element.
+     */
+    reference operator()(index_type el);
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A copy to the element.
+     */
+    value_type operator()(index_type el) const;
+
+    /**
+     * @brief Access specified element.
      * @param el The element to be accessed.
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
      * @return A reference to the element.
@@ -212,6 +235,20 @@ public:
      * @return A copy to the element.
      */
     value_type operator[](const std::vector<index_type>& el) const;
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A reference to the element.
+     */
+    reference operator[](index_type el);
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A copy to the element.
+     */
+    value_type operator[](index_type el) const;
 };
 
 #include "impl/MultiDimensionalArray.tpp"

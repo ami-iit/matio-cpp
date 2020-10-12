@@ -189,6 +189,38 @@ typename matioCpp::CellArray::index_type matioCpp::CellArray::rawIndexFromIndice
     return index;
 }
 
+bool matioCpp::CellArray::indicesFromRawIndex(size_t rawIndex, std::vector<matioCpp::CellArray::index_type> &el) const
+{
+    el.resize(dimensions().size());
+
+    if (rawIndex >= numberOfElements())
+    {
+        std::cerr << "[ERROR][matioCpp::CellArray::indicesFromRawIndex] rawIndex is greater than the number of elements." << std::endl;
+        return false;
+    }
+
+    size_t previousDimensionsFactorial = dimensions()[0];
+
+    //First we fill el with the factorial of the dimensions
+
+    for (size_t i = 1; i < el.size(); ++i)
+    {
+        el[i - 1] = previousDimensionsFactorial;
+        previousDimensionsFactorial *= dimensions()[i];
+    }
+
+    size_t remainder = rawIndex;
+
+    for (size_t i = el.size() - 1; i > 0; --i)
+    {
+        el[i] = remainder / el[i - 1];
+        remainder -= el[i] * el[i - 1];
+    }
+    el[0] = remainder;
+
+    return true;
+}
+
 bool matioCpp::CellArray::setName(const std::string &newName)
 {
     return initializeVariable(newName,
@@ -237,6 +269,31 @@ bool matioCpp::CellArray::setElement(const std::vector<matioCpp::CellArray::inde
     return true;
 }
 
+bool matioCpp::CellArray::setElement(matioCpp::CellArray::index_type el, const matioCpp::Variable &newValue)
+{
+    assert(el < numberOfElements() && "[matioCpp::CellArray::setElement] The required element is out of bounds.");
+
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::CellArray::setElement] The CellArray has not been properly initialized." << std::endl;
+        return false;
+    }
+
+    if (!newValue.isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::CellArray::setElement] The input variable is not valid." << std::endl;
+        return false;
+    }
+
+    if (!setCellElement(el, newValue))
+    {
+        std::cerr << "[ERROR][matioCpp::CellArray::setElement] Failed to set the cell element." << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 matioCpp::Variable matioCpp::CellArray::operator()(const std::vector<matioCpp::CellArray::index_type> &el)
 {
     return getCellElement(rawIndexFromIndices(el));
@@ -247,6 +304,18 @@ const matioCpp::Variable matioCpp::CellArray::operator()(const std::vector<matio
     return getCellElement(rawIndexFromIndices(el));
 }
 
+matioCpp::Variable matioCpp::CellArray::operator()(matioCpp::CellArray::index_type el)
+{
+    assert(el < numberOfElements() && "[matioCpp::CellArray::operator()] The required element is out of bounds.");
+    return getCellElement(el);
+}
+
+const matioCpp::Variable matioCpp::CellArray::operator()(matioCpp::CellArray::index_type el) const
+{
+    assert(el < numberOfElements() && "[matioCpp::CellArray::operator()] The required element is out of bounds.");
+    return getCellElement(el);
+}
+
 matioCpp::Variable matioCpp::CellArray::operator[](const std::vector<matioCpp::CellArray::index_type> &el)
 {
     return getCellElement(rawIndexFromIndices(el));
@@ -255,5 +324,17 @@ matioCpp::Variable matioCpp::CellArray::operator[](const std::vector<matioCpp::C
 const matioCpp::Variable matioCpp::CellArray::operator[](const std::vector<matioCpp::CellArray::index_type> &el) const
 {
     return getCellElement(rawIndexFromIndices(el));
+}
+
+matioCpp::Variable matioCpp::CellArray::operator[](matioCpp::CellArray::index_type el)
+{
+    assert(el < numberOfElements() && "[matioCpp::CellArray::operator[]] The required element is out of bounds.");
+    return getCellElement(el);
+}
+
+const matioCpp::Variable matioCpp::CellArray::operator[](matioCpp::CellArray::index_type el) const
+{
+    assert(el < numberOfElements() && "[matioCpp::CellArray::operator[]] The required element is out of bounds.");
+    return getCellElement(el);
 }
 

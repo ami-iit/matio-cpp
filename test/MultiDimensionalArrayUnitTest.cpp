@@ -175,6 +175,21 @@ TEST_CASE("Constructors")
 
 }
 
+TEST_CASE("Indeces from raw index")
+{
+    matioCpp::MultiDimensionalArray<double> var("test", {3,4,5});
+
+    REQUIRE(var.numberOfElements() == 60);
+
+    for (size_t i = 0; i < var.numberOfElements(); ++i)
+    {
+        std::vector<size_t> el;
+        REQUIRE(var.indicesFromRawIndex(i, el));
+        REQUIRE(var.rawIndexFromIndices(el) == i);
+    }
+
+}
+
 TEST_CASE("Assignments")
 {
     std::vector<int> dataVec = {2,4,6,8};
@@ -302,6 +317,15 @@ TEST_CASE("Modifications")
     REQUIRE(out({1,0,1}) == 12);
     REQUIRE(out({0,1,1}) == 14);
     REQUIRE(out({1,1,1}) == 16);
+
+    REQUIRE(out(0) == 2);
+    REQUIRE(out(1) == 4);
+    REQUIRE(out(2) == 6);
+    REQUIRE(out(3) == 8);
+    REQUIRE(out(4) == 10);
+    REQUIRE(out[5] == 12);
+    REQUIRE(out[6] == 14);
+    REQUIRE(out[7] == 16);
 
     checkSameVector(matioCpp::make_span(in), out.toSpan());
 }
