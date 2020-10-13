@@ -116,6 +116,42 @@ protected:
     const Variable getCellElement(size_t linearIndex) const;
 
     /**
+     * @brief Get the total number of fields in the variable, considered as a struct
+     * @return The total number of fields
+     */
+    size_t getStructNumberOfFields() const;
+
+    /**
+     * @brief Get the list of fields in the variable, considered as a struct
+     * @return The list of fields.
+     */
+    char * const *getStructFields() const;
+
+    /**
+     * @brief Get the index of the specified field in the variable, considered as a struct
+     * @param field The field to search
+     * @return The index of the field, the output of getStructNumberOfFields() if not found.
+     */
+    size_t getStructFieldIndex(const std::string& field) const;
+
+    /**
+     * @brief Set the field of the struct at the specified position
+     * @param index The linear index of the specified field
+     * @param newValue The Variable that will be copied in the specified location
+     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @note An assertion is thrown if index is out of bounds, but only in debug mode
+     */
+    bool setStructField(size_t index, const Variable& newValue);
+
+    /**
+     * @brief Set the field of the struct given the newValue name
+     * @param newValue The Variable that will be copied in the specified field
+     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @note If the field is not found, a new field is created and appended to the struct.
+     */
+    bool setStructField(const Variable& newValue);
+
+    /**
      * @brief Check if an input matio pointer is compatible with the specified variable.
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.

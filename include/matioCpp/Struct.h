@@ -89,10 +89,11 @@ public:
 
     /**
      * @brief Set from a vector of Variables
-     * @param elements The elements to be added.
-     * @return True if successfull.
+     * @param elements The elements to be set.
+     * @note Previous fields are lost
+     * @return True if successfull. False otherwise, for example if one of the input variables is not valid.
      */
-    bool fromVectorOfVariables(const std::vector<index_type>& dimensions, std::vector<Variable> &elements);
+    bool fromVectorOfVariables(std::vector<Variable> &elements);
 
     /**
      * @brief Change the name of the Variable
@@ -117,7 +118,7 @@ public:
 
     /**
      * @brief Check if a field is existing
-     * It performs a linear search over the output of fields.
+     * It performs a linear search over the output of fields().
      * @return True if the field is existing, false otherwise.
      */
     bool isFieldExisting(const std::string& field) const;

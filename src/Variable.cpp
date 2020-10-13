@@ -181,6 +181,68 @@ const matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) 
     return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
 }
 
+size_t matioCpp::Variable::getStructNumberOfFields() const
+{
+    return Mat_VarGetNumberOfFields(m_handler->get());
+}
+
+char * const * matioCpp::Variable::getStructFields() const
+{
+    return Mat_VarGetStructFieldnames(m_handler->get());
+}
+
+size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
+{
+    size_t i = 0;
+    size_t numberOfFields = getStructNumberOfFields();
+    char * const * fields = getStructFields();
+
+    if (!fields)
+    {
+        return numberOfFields;
+    }
+
+    while (i < numberOfFields && (strcmp(fields[i], field.c_str()) != 0))
+    {
+        ++i;
+    }
+
+    return i;
+}
+
+bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue)
+{
+    Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
+    if (!copiedNonOwning.isValid())
+    {
+        return false;
+    }
+
+    matvar_t* previousField = Mat_VarSetStructFieldByIndex(m_handler->get(), index, 0, copiedNonOwning.toMatio());
+
+    m_handler->dropOwnedPointer(previousField); //This avoids that any variable that was using this pointer before tries to access it.
+    Mat_VarFree(previousField);
+
+    return Mat_VarGetStructFieldByIndex(m_handler->get(), index, 0);
+}
+
+bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue)
+{
+    size_t fieldindex = getStructFieldIndex(newValue.name());
+
+    if (fieldindex == getStructNumberOfFields())
+    {
+        int err = Mat_VarAddStructField(m_handler->get(), newValue.name().c_str());
+
+        if (err)
+        {
+            return false;
+        }
+    }
+
+    return setStructField(fieldindex, newValue);
+}
+
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
 {
     return inputPtr;
