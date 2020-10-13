@@ -255,8 +255,24 @@ bool matioCpp::MultiDimensionalArray<T>::setName(const std::string &newName)
 template<typename T>
 void matioCpp::MultiDimensionalArray<T>::resize(const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &newDimensions)
 {
-    matioCpp::MultiDimensionalArray<T> newArray(name(), newDimensions);
-    fromOther(std::move(newArray));
+    matioCpp::MultiDimensionalArray<T>::index_type totalElements = 1;
+    for (matioCpp::MultiDimensionalArray<T>::index_type dim : newDimensions)
+    {
+        if (dim == 0)
+        {
+            std::cerr << "[ERROR][matioCpp::MultiDimensionalArray::resize] Zero dimension detected." << std::endl;
+            assert(false);
+        }
+
+        totalElements *= dim;
+    }
+
+    std::vector<T> dummy(totalElements);
+
+    initializeVariable(name(),
+                       VariableType::MultiDimensionalArray,
+                       matioCpp::get_type<T>::valueType(), newDimensions,
+                       dummy.data());
 }
 
 template<typename T>

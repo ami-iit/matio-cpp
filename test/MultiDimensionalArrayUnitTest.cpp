@@ -328,6 +328,12 @@ TEST_CASE("Modifications")
     REQUIRE(out[7] == 16);
 
     checkSameVector(matioCpp::make_span(in), out.toSpan());
+
+    out.resize({1,5}); //Resizing as it was a vector
+    REQUIRE(out.isValid());
+    REQUIRE(out.dimensions().size() == 2);
+    REQUIRE(out.dimensions()[0] == 1);
+    REQUIRE(out.dimensions()[1] == 5);
 }
 
 TEST_CASE("Data")
