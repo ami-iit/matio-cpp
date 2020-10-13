@@ -152,6 +152,21 @@ protected:
     bool setStructField(const Variable& newValue);
 
     /**
+     * @brief Get the specified field in the variable, considered as a struct
+     * @param index The index of the field
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    Variable getStructField(size_t index);
+
+    /**
+     * @brief Get the specified field in the variable, considered as a struct
+     * @param index The index of the field
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     */
+    const Variable getStructField(size_t index) const;
+
+    /**
      * @brief Check if an input matio pointer is compatible with the specified variable.
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.

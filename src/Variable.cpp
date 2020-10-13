@@ -232,15 +232,33 @@ bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue)
 
     if (fieldindex == getStructNumberOfFields())
     {
-        int err = Mat_VarAddStructField(m_handler->get(), newValue.name().c_str());
+        if (m_handler->isShared()) //This means that the variable is not part of an array
+        {
+            int err = Mat_VarAddStructField(m_handler->get(), newValue.name().c_str());
 
-        if (err)
+            if (err)
+            {
+                return false;
+            }
+        }
+        else
         {
             return false;
         }
+
     }
 
     return setStructField(fieldindex, newValue);
+}
+
+matioCpp::Variable matioCpp::Variable::getStructField(size_t index)
+{
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, 0), m_handler));
+}
+
+const matioCpp::Variable matioCpp::Variable::getStructField(size_t index) const
+{
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, 0), m_handler));
 }
 
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const

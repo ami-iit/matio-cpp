@@ -169,58 +169,75 @@ std::vector<std::string> matioCpp::Struct::fields() const
 
 bool matioCpp::Struct::isFieldExisting(const std::string &field) const
 {
-    std::vector<std::string> fieldsList = fields();
-    return (std::find(fieldsList.begin(), fieldsList.end(), field) != fieldsList.end());
+    return getStructFieldIndex(field) < numberOfFields();
+}
+
+size_t matioCpp::Struct::getFieldIndex(const std::string &field) const
+{
+    return getStructFieldIndex(field);
 }
 
 bool matioCpp::Struct::setField(matioCpp::Struct::index_type index, const matioCpp::Variable &newValue)
 {
-
+    assert(index < numberOfFields() && "The specified index is out of bounds");
+    return setStructField(index, newValue);
 }
 
 bool matioCpp::Struct::setField(const matioCpp::Variable &newValue)
 {
-
+    return setStructField(newValue);
 }
 
 matioCpp::Variable matioCpp::Struct::operator()(matioCpp::Struct::index_type el)
 {
-
+    assert(el < numberOfFields() && "The specified index is out of bounds");
+    return getStructField(el);
 }
 
 const matioCpp::Variable matioCpp::Struct::operator()(matioCpp::Struct::index_type el) const
 {
-
+    assert(el < numberOfFields() && "The specified index is out of bounds");
+    return getStructField(el);
 }
 
 matioCpp::Variable matioCpp::Struct::operator()(const std::string &el)
 {
-
+    size_t index = getFieldIndex(el);
+    assert(index < numberOfFields() && "The specified field does not exist.");
+    return getStructField(index);
 }
 
 const matioCpp::Variable matioCpp::Struct::operator()(const std::string &el) const
 {
-
+    size_t index = getFieldIndex(el);
+    assert(index < numberOfFields() && "The specified field does not exist.");
+    return getStructField(index);
 }
 
 matioCpp::Variable matioCpp::Struct::operator[](matioCpp::Struct::index_type el)
 {
-
+    assert(el < numberOfFields() && "The specified index is out of bounds");
+    return getStructField(el);
 }
 
 const matioCpp::Variable matioCpp::Struct::operator[](matioCpp::Struct::index_type el) const
 {
-
+    assert(el < numberOfFields() && "The specified index is out of bounds");
+    return getStructField(el);
 }
 
 matioCpp::Variable matioCpp::Struct::operator[](const std::string &el)
 {
-
+    size_t index = getFieldIndex(el);
+    assert(index < numberOfFields() && "The specified field does not exist.");
+    return getStructField(index);
 }
 
 const matioCpp::Variable matioCpp::Struct::operator[](const std::string &el) const
 {
-
+    size_t index = getFieldIndex(el);
+    assert(index < numberOfFields() && "The specified field does not exist.");
+    return getStructField(index);
 }
 
 

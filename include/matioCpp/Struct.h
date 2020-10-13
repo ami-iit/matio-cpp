@@ -124,6 +124,13 @@ public:
     bool isFieldExisting(const std::string& field) const;
 
     /**
+     * @brief Get the index of the specified field in the struct by performing a linear search
+     * @param field The field to search
+     * @return The index of the field, the output of numberOfFields() if not found.
+     */
+    size_t getFieldIndex(const std::string& field) const;
+
+    /**
      * @brief Set the field at the specified position
      * @param index The linear index of the specified field
      * @param newValue The Variable that will be copied in the specified location
