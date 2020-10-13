@@ -74,6 +74,8 @@ bool matioCpp::SharedMatvar::importMatvar(matvar_t *inputPtr)
 
     *m_ptr = inputPtr;
 
+    m_ownership->dropAll();
+
     return true;
 }
 

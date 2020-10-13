@@ -57,6 +57,11 @@ protected:
          * @param previouslyOwned The pointer that is not own anymore
          */
         void drop(matvar_t* previouslyOwned);
+
+        /**
+         * @brief Drop all the previously owned pointers
+         */
+        void dropAll();
     };
 
     /**

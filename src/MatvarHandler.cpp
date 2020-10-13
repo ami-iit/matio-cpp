@@ -75,6 +75,18 @@ void matioCpp::MatvarHandler::Ownership::drop(matvar_t *previouslyOwned)
     }
 }
 
+void matioCpp::MatvarHandler::Ownership::dropAll()
+{
+    m_ownedPointers.clear();
+
+    std::shared_ptr<matvar_t*> locked = m_pointerToDeallocate.lock();
+
+    if (locked && *locked)
+    {
+        m_ownedPointers.emplace(*locked); // Still keep the one to free
+    }
+}
+
 matioCpp::MatvarHandler::MatvarHandler()
     : m_ptr(std::make_shared<matvar_t*>(nullptr))
 {
