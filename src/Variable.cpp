@@ -226,26 +226,33 @@ bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &
     return Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray);
 }
 
+bool matioCpp::Variable::addStructField(const std::string &newField)
+{
+    if (m_handler->isShared()) //This means that the variable is not part of an array
+    {
+        int err = Mat_VarAddStructField(m_handler->get(), newField.c_str());
+
+        if (err)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
     size_t fieldindex = getStructFieldIndex(newValue.name());
 
-    if (fieldindex == getStructNumberOfFields())
+    if ((fieldindex == getStructNumberOfFields()) && !((getArrayNumberOfElements() == 1) && addStructField(newValue.name())))
     {
-        if (m_handler->isShared() && (structPositionInArray == 0)) //This means that the variable is not part of an array
-        {
-            int err = Mat_VarAddStructField(m_handler->get(), newValue.name().c_str());
-
-            if (err)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-
+        //This is the case when the field has not been found and, either there are more than one elements (i.e. it is part of an array), or there was an error in adding the field
+        return false;
     }
 
     return setStructField(fieldindex, newValue, structPositionInArray);

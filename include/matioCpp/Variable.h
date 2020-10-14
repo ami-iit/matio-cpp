@@ -144,6 +144,13 @@ protected:
     bool setStructField(size_t index, const Variable& newValue, size_t structPositionInArray = 0);
 
     /**
+     * @brief Add a new field to the variable, considered as a struct
+     * @param newField The new field
+     * @return True on success, false otherwise, for example if the struct is part of an array
+     */
+    bool addStructField(const std::string& newField);
+
+    /**
      * @brief Set the field of the struct given the newValue name
      * @param newValue The Variable that will be copied in the specified field
      * @param structPositionInArray The linear position of the struct to set in the struct array
