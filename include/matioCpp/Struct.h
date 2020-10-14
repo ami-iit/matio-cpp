@@ -48,7 +48,7 @@ public:
      * @param name The name of the Struct
      * @param elements The elements to be added to the Struct (they are copied)
      */
-    Struct(const std::string& name, std::vector<Variable> &elements);
+    Struct(const std::string& name, const std::vector<Variable> &elements);
 
     /**
      * @brief Copy constructor

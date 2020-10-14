@@ -97,7 +97,8 @@ set(MATIOCPP_SRC src/Variable.cpp
                  src/WeakMatvar.cpp
                  src/CellArray.cpp
                  src/File.cpp
-                 src/Struct.cpp)
+                 src/Struct.cpp
+                 src/StructArray.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/VectorIterator.h
@@ -113,7 +114,8 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/Element.h
                  include/matioCpp/CellArray.h
                  include/matioCpp/File.h
-                 include/matioCpp/Struct.h)
+                 include/matioCpp/Struct.h
+                 include/matioCpp/StructArray.h)
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/MultiDimensionalArray.tpp

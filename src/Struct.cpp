@@ -56,7 +56,7 @@ matioCpp::Struct::Struct(const std::string &name)
                        nullptr);
 }
 
-matioCpp::Struct::Struct(const std::string &name, std::vector<matioCpp::Variable> &elements)
+matioCpp::Struct::Struct(const std::string &name, const std::vector<Variable> &elements)
 {
     size_t emptyDimensions[] = {1, 1};
     std::vector<matvar_t*> vectorOfPointers(elements.size() + 1, nullptr); //The vector of pointers has to be null terminated

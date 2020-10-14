@@ -189,6 +189,8 @@ class File;
 
 class Struct;
 
+class StructArray;
+
 }
 
 #endif // MATIOCPP_FORWARDDECLARATIONS_H

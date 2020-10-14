@@ -138,33 +138,37 @@ protected:
      * @brief Set the field of the struct at the specified position
      * @param index The linear index of the specified field
      * @param newValue The Variable that will be copied in the specified location
+     * @param structPositionInArray The linear position of the struct to set in the struct array
      * @return True if successfull, false otherwise (for example if the newValue is not valid)
-     * @note An assertion is thrown if index is out of bounds, but only in debug mode
      */
-    bool setStructField(size_t index, const Variable& newValue);
+    bool setStructField(size_t index, const Variable& newValue, size_t structPositionInArray = 0);
 
     /**
      * @brief Set the field of the struct given the newValue name
      * @param newValue The Variable that will be copied in the specified field
+     * @param structPositionInArray The linear position of the struct to set in the struct array
      * @return True if successfull, false otherwise (for example if the newValue is not valid)
-     * @note If the field is not found, a new field is created and appended to the struct.
+     * @note If the field is not found, a new field is created and appended to the struct,
+     *  but only if the struct is not part of an array.
      */
-    bool setStructField(const Variable& newValue);
+    bool setStructField(const Variable& newValue, size_t structPositionInArray = 0);
 
     /**
      * @brief Get the specified field in the variable, considered as a struct
      * @param index The index of the field
+     * @param structPositionInArray The linear position of the struct to set in the struct array
      * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the variable cannot be resized and the name cannot change.
      */
-    Variable getStructField(size_t index);
+    Variable getStructField(size_t index, size_t structPositionInArray = 0);
 
     /**
      * @brief Get the specified field in the variable, considered as a struct
      * @param index The index of the field
+     * @param structPositionInArray The linear position of the struct to set in the struct array
      * @return A const Variable with a weak ownership to the underlying mat variable.
      */
-    const Variable getStructField(size_t index) const;
+    const Variable getStructField(size_t index, size_t structPositionInArray = 0) const;
 
     /**
      * @brief Check if an input matio pointer is compatible with the specified variable.

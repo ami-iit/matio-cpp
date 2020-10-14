@@ -210,7 +210,7 @@ size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
     return i;
 }
 
-bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue)
+bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
     Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
     if (!copiedNonOwning.isValid())
@@ -223,16 +223,16 @@ bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &
     m_handler->dropOwnedPointer(previousField); //This avoids that any variable that was using this pointer before tries to access it.
     Mat_VarFree(previousField);
 
-    return Mat_VarGetStructFieldByIndex(m_handler->get(), index, 0);
+    return Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray);
 }
 
-bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue)
+bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
     size_t fieldindex = getStructFieldIndex(newValue.name());
 
     if (fieldindex == getStructNumberOfFields())
     {
-        if (m_handler->isShared()) //This means that the variable is not part of an array
+        if (m_handler->isShared() && (structPositionInArray == 0)) //This means that the variable is not part of an array
         {
             int err = Mat_VarAddStructField(m_handler->get(), newValue.name().c_str());
 
@@ -248,17 +248,17 @@ bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue)
 
     }
 
-    return setStructField(fieldindex, newValue);
+    return setStructField(fieldindex, newValue, structPositionInArray);
 }
 
-matioCpp::Variable matioCpp::Variable::getStructField(size_t index)
+matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray)
 {
-    return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, 0), m_handler));
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
 }
 
-const matioCpp::Variable matioCpp::Variable::getStructField(size_t index) const
+const matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray) const
 {
-    return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, 0), m_handler));
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
 }
 
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
