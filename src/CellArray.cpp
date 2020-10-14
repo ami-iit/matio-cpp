@@ -237,13 +237,7 @@ void matioCpp::CellArray::resize(const std::vector<typename matioCpp::CellArray:
 
 typename matioCpp::CellArray::index_type matioCpp::CellArray::numberOfElements() const
 {
-    matioCpp::CellArray::index_type totalElements = 1;
-    for (matioCpp::CellArray::index_type dim : dimensions())
-    {
-        totalElements *= dim;
-    }
-
-    return totalElements;
+    return getArrayNumberOfElements();
 }
 
 bool matioCpp::CellArray::setElement(const std::vector<matioCpp::CellArray::index_type> &el, const matioCpp::Variable &newValue)

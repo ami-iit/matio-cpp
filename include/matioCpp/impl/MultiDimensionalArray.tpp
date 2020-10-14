@@ -274,13 +274,7 @@ typename matioCpp::MultiDimensionalArray<T>::const_pointer matioCpp::MultiDimens
 template<typename T>
 typename matioCpp::MultiDimensionalArray<T>::index_type matioCpp::MultiDimensionalArray<T>::numberOfElements() const
 {
-    matioCpp::MultiDimensionalArray<T>::index_type totalElements = 1;
-    for (matioCpp::MultiDimensionalArray<T>::index_type dim : dimensions())
-    {
-        totalElements *= dim;
-    }
-
-    return totalElements;
+    return getArrayNumberOfElements();
 }
 
 template<typename T>
