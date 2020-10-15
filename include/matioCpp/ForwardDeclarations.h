@@ -132,6 +132,15 @@ enum class FileVersion
     Undefined  /** @brief Undefined version                   */
 };
 
+/**
+ * @brief The delete mode of matvar_t pointers.
+ */
+enum class DeleteMode
+{
+    DoNotDelete, /** The handler does not delete the pointer. **/
+    Delete /** The handler deletes the pointer. **/
+};
+
 // [views.constants], constants
 MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;
 

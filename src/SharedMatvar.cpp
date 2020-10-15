@@ -67,14 +67,9 @@ bool matioCpp::SharedMatvar::importMatvar(matvar_t *inputPtr)
 {
     assert(m_ptr);
 
-    if (*m_ptr)
-    {
-        Mat_VarFree(*m_ptr);
-    }
+    m_ownership->dropAll();
 
     *m_ptr = inputPtr;
-
-    m_ownership->dropAll();
 
     return true;
 }

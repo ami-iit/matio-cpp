@@ -22,7 +22,9 @@ protected:
      */
     class Ownership
     {
-        std::weak_ptr<matvar_t*> m_pointerToDeallocate; /** A pointer to the matvar_t* that needs to be freed when the corresponding ownership is deallocated **/
+        std::weak_ptr<matvar_t*> m_main; /** A pointer to the main matvar_t* that needs to be freed when the corresponding ownership is deallocated. It is the one owning the pointers in the other two sets. **/
+
+        std::unordered_set<matvar_t*> m_otherPointersToDeallocate; /** The set of owned pointers that also need to be deallocated. **/
 
         std::unordered_set<matvar_t*> m_ownedPointers;  /** The set of pointers, owned by the handler. **/
     public:
@@ -50,16 +52,16 @@ protected:
          * This will not be deallocated as it is supposed to be part of the matvar_t pointer stored in m_ptr.
          * @param owned The pointer to be considered owned.
          */
-        void own(matvar_t* owned);
+        void own(matvar_t* owned, matioCpp::DeleteMode mode);
 
         /**
-         * @brief Drop a previously owned pointer
+         * @brief Drop a previously owned pointer and deleted if necessary
          * @param previouslyOwned The pointer that is not own anymore
          */
         void drop(matvar_t* previouslyOwned);
 
         /**
-         * @brief Drop all the previously owned pointers
+         * @brief Drops all the previously owned pointers and free those that need to be deallocated, including the main one.
          */
         void dropAll();
     };
