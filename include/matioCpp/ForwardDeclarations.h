@@ -191,6 +191,9 @@ class Struct;
 
 class StructArray;
 
+template <bool isConst>
+class StructArrayElement;
+
 }
 
 #endif // MATIOCPP_FORWARDDECLARATIONS_H

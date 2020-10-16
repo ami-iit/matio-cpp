@@ -115,7 +115,8 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/CellArray.h
                  include/matioCpp/File.h
                  include/matioCpp/Struct.h
-                 include/matioCpp/StructArray.h)
+                 include/matioCpp/StructArray.h
+                 include/matioCpp/StructArrayElement.h)
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/MultiDimensionalArray.tpp

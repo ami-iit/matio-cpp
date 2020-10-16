@@ -291,42 +291,52 @@ bool matioCpp::StructArray::setElement(matioCpp::StructArray::index_type el, con
 
 }
 
-matioCpp::Struct matioCpp::StructArray::operator()(const std::vector<matioCpp::StructArray::index_type> &el)
+matioCpp::StructArray::Element matioCpp::StructArray::operator ()(const std::vector<matioCpp::StructArray::index_type> &el)
 {
-
+    matioCpp::StructArray::index_type linearindex = rawIndexFromIndices(el);
+    return matioCpp::StructArray::Element(linearindex, this);
 }
 
-const matioCpp::Struct matioCpp::StructArray::operator()(const std::vector<matioCpp::StructArray::index_type> &el) const
+matioCpp::StructArray::ConstElement matioCpp::StructArray::operator ()(const std::vector<matioCpp::StructArray::index_type> &el) const
 {
-
+    matioCpp::StructArray::index_type linearindex = rawIndexFromIndices(el);
+    return matioCpp::StructArray::ConstElement(linearindex, this);
 }
 
-matioCpp::Struct matioCpp::StructArray::operator()(matioCpp::StructArray::index_type el)
+matioCpp::StructArray::Element matioCpp::StructArray::operator ()(matioCpp::StructArray::index_type el)
 {
-
+    assert(el < numberOfElements());
+    return matioCpp::StructArray::Element(el, this);
 }
 
-const matioCpp::Struct matioCpp::StructArray::operator()(matioCpp::StructArray::index_type el) const
+matioCpp::StructArray::ConstElement matioCpp::StructArray::operator ()(matioCpp::StructArray::index_type el) const
 {
-
+    assert(el < numberOfElements());
+    return matioCpp::StructArray::ConstElement(el, this);
 }
 
-matioCpp::Struct matioCpp::StructArray::operator[](const std::vector<matioCpp::StructArray::index_type> &el)
+matioCpp::StructArray::Element matioCpp::StructArray::operator [](const std::vector<matioCpp::StructArray::index_type> &el)
 {
-
+    matioCpp::StructArray::index_type linearindex = rawIndexFromIndices(el);
+    return matioCpp::StructArray::Element(linearindex, this);
 }
 
-const matioCpp::Struct matioCpp::StructArray::operator[](const std::vector<matioCpp::StructArray::index_type> &el) const
+matioCpp::StructArray::ConstElement matioCpp::StructArray::operator [](const std::vector<matioCpp::StructArray::index_type> &el) const
 {
-
+    matioCpp::StructArray::index_type linearindex = rawIndexFromIndices(el);
+    return matioCpp::StructArray::ConstElement(linearindex, this);
 }
 
-matioCpp::Struct matioCpp::StructArray::operator[](matioCpp::StructArray::index_type el)
+matioCpp::StructArray::Element matioCpp::StructArray::operator [](matioCpp::StructArray::index_type el)
 {
-
+    assert(el < numberOfElements());
+    return matioCpp::StructArray::Element(el, this);
 }
 
-const matioCpp::Struct matioCpp::StructArray::operator[](matioCpp::StructArray::index_type el) const
+matioCpp::StructArray::ConstElement matioCpp::StructArray::operator [](matioCpp::StructArray::index_type el) const
 {
-
+    assert(el < numberOfElements());
+    return matioCpp::StructArray::ConstElement(el, this);
 }
+
+

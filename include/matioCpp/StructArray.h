@@ -14,6 +14,7 @@
 #include <matioCpp/ForwardDeclarations.h>
 #include <matioCpp/Variable.h>
 #include <matioCpp/Struct.h>
+#include <matioCpp/StructArrayElement.h>
 
 /**
  * @brief StructArray is a particular type of Variable specialized for array of structs.
@@ -28,9 +29,16 @@ class matioCpp::StructArray : public matioCpp::Variable
      */
     virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
 
+    template<bool>
+    friend class StructArrayElement;
+
 public:
 
     using index_type = size_t; /** The type used for indices. **/
+
+    using Element = StructArrayElement<false>; /** Non-const version of StructArrayElement. **/
+
+    using ConstElement = StructArrayElement<true>; /** Const version of Element. **/
 
     /**
      * @brief Default Constructor
@@ -192,7 +200,7 @@ public:
 
     /**
      * @brief Set the element at the specified position
-     * @param el The indices of the specified element
+     * @param el The indices of the specified elementconst StructArrayElement
      * @param newValue The Struct that will be copied in the specified location
      * @return True if successfull, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode
@@ -217,7 +225,7 @@ public:
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the name cannot change, and no fields can be added.
      */
-    matioCpp::Struct operator()(const std::vector<index_type>& el);
+    Element operator()(const std::vector<index_type>& el);
 
     /**
      * @brief Access specified element.
@@ -225,7 +233,7 @@ public:
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
      * @return A const Struct with a weak ownership to the underlying mat variable.
      */
-    const matioCpp::Struct operator()(const std::vector<index_type>& el) const;
+    ConstElement operator()(const std::vector<index_type>& el) const;
 
     /**
      * @brief Access specified element.
@@ -233,14 +241,14 @@ public:
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the name cannot change, and no fields can be added.
      */
-    matioCpp::Struct operator()(index_type el);
+    Element operator()(index_type el);
 
     /**
      * @brief Access specified element.
      * @param el The element to be accessed (raw index).
      * @return A const Struct with a weak ownership to the underlying mat variable.
      */
-    const matioCpp::Struct operator()(index_type el) const;
+    ConstElement operator()(index_type el) const;
 
     /**
      * @brief Access specified element.
@@ -249,7 +257,7 @@ public:
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the name cannot change, and no fields can be added.
      */
-    matioCpp::Struct operator[](const std::vector<index_type>& el);
+    Element operator[](const std::vector<index_type>& el);
 
     /**
      * @brief Access specified element.
@@ -257,7 +265,7 @@ public:
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
      * @return A const Struct with a weak ownership to the underlying mat variable.
      */
-    const matioCpp::Struct operator[](const std::vector<index_type>& el) const;
+    ConstElement operator[](const std::vector<index_type>& el) const;
 
     /**
      * @brief Access specified element.
@@ -265,15 +273,14 @@ public:
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the name cannot change, and no fields can be added.
      */
-    matioCpp::Struct operator[](index_type el);
+    Element operator[](index_type el);
 
     /**
      * @brief Access specified element.
      * @param el The element to be accessed.
      * @return A const Struct with a weak ownership to the underlying mat variable.
      */
-    const matioCpp::Struct operator[](index_type el) const;
+    ConstElement operator[](index_type el) const;
 };
-
 
 #endif // MATIOCPP_STRUCTARRAY_H
