@@ -11,29 +11,36 @@
 #include <matioCpp/MatvarHandler.h>
 #include <matioCpp/ConversionUtilities.h>
 
+void matioCpp::MatvarHandler::Ownership::dropDependencies(matvar_t *previouslyOwned)
+{
+    if (!previouslyOwned)
+    {
+        return;
+    }
+
+    std::unordered_map<matvar_t*, Dependency>::iterator it = m_dependencyTree.find(previouslyOwned);
+
+    if (it == m_dependencyTree.end())
+    {
+        return;
+    }
+
+    for (matvar_t* child : it->second.dependencies)
+    {
+        dropDependencies(child);
+    }
+
+    if (it->second.mode == matioCpp::DeleteMode::Delete)
+    {
+        Mat_VarFree(previouslyOwned);
+    }
+
+    m_dependencyTree.erase(previouslyOwned);
+}
+
 matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<matvar_t *> pointerToDeallocate)
     : m_main(pointerToDeallocate)
 {
-    std::shared_ptr<matvar_t*> locked = pointerToDeallocate.lock();
-    if (locked && *locked)
-    {
-        VariableType outputVariableType;
-        ValueType outputValueType;
-        if (matioCpp::get_types_from_matvart(*locked, outputVariableType, outputValueType))
-        {
-            if (outputVariableType == matioCpp::VariableType::CellArray)
-            {
-                size_t totalElements = 1;
-                for (int dim = 0; dim < (*locked)->rank; ++dim)
-                {
-                    totalElements *= (*locked)->dims[dim];
-                }
-
-                m_ownedPointers.reserve(totalElements);
-            }
-        }
-        m_ownedPointers.emplace(*locked);
-    }
 
 }
 
@@ -44,31 +51,53 @@ matioCpp::MatvarHandler::Ownership::~Ownership()
 
 bool matioCpp::MatvarHandler::Ownership::isOwning(matvar_t *test)
 {
-    return (test && ((test == *(m_main.lock())) || (m_ownedPointers.find(test) != m_ownedPointers.end())));
+    return (test && ((test == *(m_main.lock())) || (m_dependencyTree.find(test) != m_dependencyTree.end())));
 }
 
-void matioCpp::MatvarHandler::Ownership::own(matvar_t *owned, DeleteMode mode)
+void matioCpp::MatvarHandler::Ownership::own(matvar_t *owned, const MatvarHandler *owner, DeleteMode mode)
 {
+    assert(owner);
     if (owned)
     {
-        m_ownedPointers.insert(owned);
-
-        if (mode == DeleteMode::Delete)
+        Dependency dep;
+        dep.mode = mode;
+        if (*(owner->m_ptr) != *(m_main.lock()))
         {
-            m_otherPointersToDeallocate.insert(owned);
+            dep.parent = *(owner->m_ptr);
+
+            assert(m_dependencyTree.find(dep.parent) != m_dependencyTree.end());
+
+            m_dependencyTree[dep.parent].dependencies.insert(owned);
         }
+
+        m_dependencyTree[owned] = dep;
     }
 }
 
 void matioCpp::MatvarHandler::Ownership::drop(matvar_t *previouslyOwned)
 {
-    m_ownedPointers.erase(previouslyOwned);
-
-    if (m_otherPointersToDeallocate.find(previouslyOwned) != m_otherPointersToDeallocate.end())
+    if (!previouslyOwned)
     {
-        Mat_VarFree(previouslyOwned);
-        m_otherPointersToDeallocate.erase(previouslyOwned);
+        return;
     }
+
+    std::unordered_map<matvar_t*, Dependency>::iterator it = m_dependencyTree.find(previouslyOwned);
+
+    if (it == m_dependencyTree.end())
+    {
+        return;
+    }
+
+    std::unordered_map<matvar_t*, Dependency>::iterator parent = m_dependencyTree.find(it->second.parent);
+
+    if ((it->second.parent != *(m_main.lock())) && (parent != m_dependencyTree.end()))
+    {
+        parent->second.dependencies.erase(previouslyOwned);
+    }
+
+    dropDependencies(previouslyOwned);
+
+    m_dependencyTree.erase(previouslyOwned);
 }
 
 void matioCpp::MatvarHandler::Ownership::dropAll()
@@ -83,14 +112,15 @@ void matioCpp::MatvarHandler::Ownership::dropAll()
         }
     }
 
-    for(matvar_t* pointer : m_otherPointersToDeallocate)
+    for(std::pair<matvar_t*, Dependency> dep : m_dependencyTree)
     {
-        Mat_VarFree(pointer);
+        if (dep.second.mode == matioCpp::DeleteMode::Delete)
+        {
+            Mat_VarFree(dep.first);
+        }
     }
 
-    m_otherPointersToDeallocate.clear();
-
-    m_ownedPointers.clear();
+    m_dependencyTree.clear();
 }
 
 matioCpp::MatvarHandler::MatvarHandler()

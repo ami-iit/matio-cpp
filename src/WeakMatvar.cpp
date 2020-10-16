@@ -44,7 +44,7 @@ matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const SharedMatvar &owner, 
     auto locked = m_ownership.lock();
     if (locked)
     {
-        locked->own(inputPtr, mode);
+        locked->own(inputPtr, &owner, mode);
     }
 }
 
@@ -56,7 +56,7 @@ matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const matioCpp::MatvarHandl
     auto locked = m_ownership.lock();
     if (locked)
     {
-        locked->own(inputPtr, mode);
+        locked->own(inputPtr, owner, mode);
     }
 }
 

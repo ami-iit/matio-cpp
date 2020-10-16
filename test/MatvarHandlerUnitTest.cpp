@@ -282,3 +282,28 @@ TEST_CASE("Weak ownership register with deletion")
     shared.importMatvar(importedVar);
     REQUIRE_FALSE(otherWeak.get());
 }
+
+TEST_CASE("Weak ownership register with multiple dependencies")
+{
+    std::vector<double> vec(7);
+    std::vector<size_t> dimensions = {vec.size(), 1};
+    matvar_t* topVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* secondLayer = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* thirdLayer = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+
+    REQUIRE(topVar);
+    REQUIRE(secondLayer);
+    REQUIRE(thirdLayer);
+    matioCpp::SharedMatvar shared(topVar);
+    matioCpp::WeakMatvar weak(secondLayer, shared, matioCpp::DeleteMode::Delete);
+    matioCpp::WeakMatvar weakWeak(thirdLayer, &weak, matioCpp::DeleteMode::Delete);
+
+    REQUIRE(weak.get() == secondLayer);
+    REQUIRE(weakWeak.get() == thirdLayer);
+
+    shared.dropOwnedPointer(secondLayer); //Dropping the second layer causes also the third to be deallocated
+
+    REQUIRE_FALSE(weak.get());
+    REQUIRE_FALSE(weakWeak.get());
+}
+

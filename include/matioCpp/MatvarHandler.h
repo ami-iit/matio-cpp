@@ -17,6 +17,15 @@ class matioCpp::MatvarHandler
 {
 protected:
 
+    struct Dependency
+    {
+        std::unordered_set<matvar_t*> dependencies; /** The set of dependencies. **/
+
+        matioCpp::DeleteMode mode; /** Deletion mode for the dependency. **/
+
+        matvar_t* parent{nullptr}; /** The parent of the pointer. Null if there is no parent (or if the parent is the main pointer) **/
+    };
+
     /**
      * @brief The Ownership class is used to define the ownership of a matvar. SharedMatvar and WeakMatvar have a shared_ptr and a weak_ptr to it respectively.
      */
@@ -24,9 +33,14 @@ protected:
     {
         std::weak_ptr<matvar_t*> m_main; /** A pointer to the main matvar_t* that needs to be freed when the corresponding ownership is deallocated. It is the one owning the pointers in the other two sets. **/
 
-        std::unordered_set<matvar_t*> m_otherPointersToDeallocate; /** The set of owned pointers that also need to be deallocated. **/
+        std::unordered_map<matvar_t*, Dependency> m_dependencyTree; /** A map that links a pointer to its Dependency object. **/
 
-        std::unordered_set<matvar_t*> m_ownedPointers;  /** The set of pointers, owned by the handler. **/
+        /**
+         * @brief Drops all the dependencies of a given pointer
+         * @param previouslyOwned The pointer whose dependencies have to be dropped.
+         */
+        void dropDependencies(matvar_t* previouslyOwned);
+
     public:
 
         /**
@@ -52,7 +66,7 @@ protected:
          * This will not be deallocated as it is supposed to be part of the matvar_t pointer stored in m_ptr.
          * @param owned The pointer to be considered owned.
          */
-        void own(matvar_t* owned, matioCpp::DeleteMode mode);
+        void own(matvar_t* owned, const MatvarHandler* owner, matioCpp::DeleteMode mode);
 
         /**
          * @brief Drop a previously owned pointer and deleted if necessary

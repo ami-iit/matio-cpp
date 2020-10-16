@@ -25,6 +25,7 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits> // for enable_if_t, declval, is_convertible, inte...
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
