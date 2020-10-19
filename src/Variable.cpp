@@ -11,6 +11,7 @@
 
 #include <matioCpp/Variable.h>
 #include <matioCpp/CellArray.h>
+#include <matioCpp/Struct.h>
 
 bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
@@ -266,6 +267,16 @@ matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t struc
 const matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray) const
 {
     return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
+}
+
+matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex)
+{
+    return matioCpp::Struct(matioCpp::WeakMatvar(Mat_VarGetStructsLinear(m_handler->get(), linearIndex, 1, 1, 0), m_handler, matioCpp::DeleteMode::Delete));
+}
+
+const matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex) const
+{
+    return matioCpp::Struct(matioCpp::WeakMatvar(Mat_VarGetStructsLinear(m_handler->get(), linearIndex, 1, 1, 0), m_handler, matioCpp::DeleteMode::Delete));
 }
 
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const

@@ -109,7 +109,7 @@ public:
      * @return True if successfull. False otherwise, for example if one of the input variables is not valid or if the fields do not match the already existing fields.
      */
     template<bool B = isConst, typename = typename std::enable_if_t<(B == isConst) && !B>>
-    bool fromVectorOfVariables(std::vector<Variable> &elements) const;
+    bool fromVectorOfVariables(const std::vector<Variable> &elements) const;
 
     /**
      * @brief Get the total number of fields in the struct
@@ -143,6 +143,7 @@ public:
      * @param newValue The Variable that will be copied in the specified location
      * @return True if successfull, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if index is out of bounds, but only in debug mode
+     * @note The name is of newValue is not considered.
      */
     template<bool B = isConst, typename = typename std::enable_if_t<(B == isConst) && !B>>
     bool setField(index_type index, const Variable& newValue) const;
@@ -275,14 +276,72 @@ template <bool isConst>
 template<bool B, typename >
 matioCpp::StructArrayElement<isConst> &matioCpp::StructArrayElement<isConst>::operator=(const matioCpp::Struct &other) const
 {
+    char * const * arrayFields = m_array->getStructFields();
+    char * const * structFields = other.getStructFields();
 
+    if (m_array->numberOfFields() != other.numberOfFields())
+    {
+        std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] The input struct is supposed to have the same number of fields of the struct array." <<std::endl;
+        assert(false);
+        return *this;
+    }
+
+    for (size_t i = 0; i < m_array->numberOfFields(); ++i)
+    {
+        if (strcmp(arrayFields[i], structFields[i]) != 0)
+        {
+            std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] The field " << structFields[i] << " of the input struct is supposed to be " << arrayFields[i]
+                      << ". Cannot insert in a struct array a new field in a single element." <<std::endl;
+            assert(false);
+            return *this;
+        }
+
+        bool ok = m_array->setStructField(i, other(i), m_innerIndex);
+        if (!ok)
+        {
+            std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] Failed to set field " << structFields[i] << "." <<std::endl;
+            assert(false);
+            return *this;
+        }
+    }
+
+    return *this;
 }
 
 template <bool isConst>
 template<bool B, typename >
-bool matioCpp::StructArrayElement<isConst>::fromVectorOfVariables(std::vector<Variable> &elements) const
+bool matioCpp::StructArrayElement<isConst>::fromVectorOfVariables(const std::vector<Variable> &elements) const
 {
+    char * const * arrayFields = m_array->getStructFields();
 
+    if (m_array->numberOfFields() != elements.size())
+    {
+        std::cerr << "[ERROR][matioCpp::StructArrayElement::fromVectorOfVariables] The input vector is supposed to have size equal to the number of fields of the struct array." <<std::endl;
+        assert(false);
+        return *this;
+    }
+
+    for (size_t i = 0; i < m_array->numberOfFields(); ++i)
+    {
+        if (strcmp(arrayFields[i], elements[i].name().c_str()) != 0)
+        {
+            std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] The name " << elements[i].name().c_str() << " of the input vector of variables at position "
+                      << std::to_string(i) << " is supposed to be " << arrayFields[i]
+                      << ". Cannot insert in a struct array a new field in a single element." <<std::endl;
+            assert(false);
+            return *this;
+        }
+
+        bool ok = m_array->setStructField(i, elements[i], m_innerIndex);
+        if (!ok)
+        {
+            std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] Failed to set field " << arrayFields[i] << "." <<std::endl;
+            assert(false);
+            return *this;
+        }
+    }
+
+    return *this;
 }
 
 template <bool isConst>
@@ -313,20 +372,40 @@ template <bool isConst>
 template<bool B, typename >
 bool matioCpp::StructArrayElement<isConst>::setField(index_type index, const Variable &newValue) const
 {
+    assert(index < numberOfFields() && "The index is out of bounds.");
+    if (!newValue.isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] The input variable is not valid." << std::endl;
+        return false;
+    }
 
+    return m_array->setStructField(index, newValue, m_innerIndex);
 }
 
 template <bool isConst>
 template<bool B, typename >
 bool matioCpp::StructArrayElement<isConst>::setField(const Variable &newValue) const
 {
+    if (!newValue.isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] The input variable is not valid." << std::endl;
+        return false;
+    }
 
+    size_t index = getFieldIndex(newValue.name());
+    if (index == numberOfFields())
+    {
+        std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] No field named " << newValue.name() << "." << std::endl;
+        return false;
+    }
+
+    return setField(index, newValue);
 }
 
 template <bool isConst>
 typename matioCpp::StructArrayElement<isConst>::output_struct_type matioCpp::StructArrayElement<isConst>::asStruct() const
 {
-
+    return m_array->getStructArrayElement(m_innerIndex);
 }
 
 template <bool isConst>

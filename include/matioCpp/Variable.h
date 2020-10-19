@@ -178,6 +178,23 @@ protected:
     const Variable getStructField(size_t index, size_t structPositionInArray = 0) const;
 
     /**
+     * @brief Get an element of the variable, considered as a StructArray
+     * @note This allocates memory, one pointer per sruct field, but the pointers point to data in the array
+     * @param index The linear index of the struct to retrieve
+     * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    Struct getStructArrayElement(size_t linearIndex);
+
+    /**
+     * @brief Get an element of the variable, considered as a StructArray
+     * @note This allocates memory, one pointer per sruct field, but the pointers point to data in the array
+     * @param index The linear index of the struct to retrieve
+     * @return A const Struct with a weak ownership to the underlying mat variable.
+     */
+    const Struct getStructArrayElement(size_t linearIndex) const;
+
+    /**
      * @brief Check if an input matio pointer is compatible with the specified variable.
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
