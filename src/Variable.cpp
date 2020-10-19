@@ -454,3 +454,13 @@ const matioCpp::CellArray matioCpp::Variable::asCellArray() const
 {
     return matioCpp::CellArray(*m_handler);
 }
+
+matioCpp::Struct matioCpp::Variable::asStruct()
+{
+    return matioCpp::Struct(*m_handler);
+}
+
+const matioCpp::Struct matioCpp::Variable::asStruct() const
+{
+    return matioCpp::Struct(*m_handler);
+}

@@ -400,6 +400,16 @@ public:
      */
     const matioCpp::CellArray asCellArray() const;
 
+    /**
+     * @brief Cast the variable as a Struct.
+     */
+    matioCpp::Struct asStruct();
+
+    /**
+     * @brief Cast the variable as a const Struct.
+     */
+    const matioCpp::Struct asStruct() const;
+
 };
 
 #endif
