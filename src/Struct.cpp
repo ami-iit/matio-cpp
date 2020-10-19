@@ -25,7 +25,7 @@ bool matioCpp::Struct::checkCompatibility(const matvar_t *inputPtr) const
 
     if (outputVariableType != matioCpp::VariableType::Struct)
     {
-        std::cerr << "[matioCpp::Struct::checkCompatibility] The input variable is not a cell array." << std::endl;
+        std::cerr << "[matioCpp::Struct::checkCompatibility] The input variable is not a struct." << std::endl;
         return false;
     }
 
@@ -71,7 +71,7 @@ matioCpp::Struct::Struct(const std::string &name, const std::vector<Variable> &e
     }
 
     initializeVariable(name,
-                       VariableType::CellArray,
+                       VariableType::Struct,
                        matioCpp::ValueType::VARIABLE, emptyDimensions,
                        vectorOfPointers.data());
 }
@@ -131,7 +131,7 @@ bool matioCpp::Struct::fromVectorOfVariables(std::vector<matioCpp::Variable> &el
     }
 
     initializeVariable(name(),
-                       VariableType::CellArray,
+                       VariableType::Struct,
                        matioCpp::ValueType::VARIABLE, dimensions(),
                        vectorOfPointers.data());
     return true;
@@ -158,7 +158,7 @@ std::vector<std::string> matioCpp::Struct::fields() const
     {
         size_t numberOfFields = getStructNumberOfFields();
         output.reserve(numberOfFields);
-        for (size_t i = 0; i < output.size(); ++i)
+        for (size_t i = 0; i < numberOfFields; ++i)
         {
             output.emplace_back(matvarOutput[i]);
         }

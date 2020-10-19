@@ -37,3 +37,7 @@ add_unit_test(NAME File
               SOURCES FileUnitTest.cpp
               LINKS matioCpp::matioCpp)
 
+add_unit_test(NAME Struct
+              SOURCES StructUnitTest.cpp
+              LINKS matioCpp::matioCpp)
+
