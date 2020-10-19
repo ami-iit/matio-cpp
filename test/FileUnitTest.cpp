@@ -129,8 +129,18 @@ TEST_CASE("Read")
     REQUIRE(string.isValid());
     REQUIRE(string() == "test");
 
-    matioCpp::Variable structVar = input.read("struct");
+    matioCpp::Struct structVar = input.read("struct").asStruct();
     REQUIRE(structVar.isValid());
+    REQUIRE(structVar.numberOfFields() == 3);
+    REQUIRE(structVar.isFieldExisting("string"));
+    REQUIRE(structVar.isFieldExisting("double"));
+    REQUIRE(structVar.isFieldExisting("int"));
+    std::vector<std::string> fields = structVar.fields();
+    REQUIRE(fields[0] == "string");
+    REQUIRE(fields[1] == "double");
+    REQUIRE(fields[2] == "int");
+    REQUIRE(structVar("double").asElement<double>()() == 1.7);
+    REQUIRE(structVar("int").asElement<int>()() == 43);
 
     matioCpp::Variable structArray = input.read("struct_array");
     REQUIRE(structArray.isValid());
@@ -231,5 +241,19 @@ TEST_CASE("Write")
 
     REQUIRE(readCellArray.isValid());
     REQUIRE(readCellArray({0,0,2}).asString()() == "content");
+
+    std::vector<matioCpp::Variable> dataVector;
+    dataVector.emplace_back(matioCpp::Vector<double>("vector", 4));
+    dataVector.emplace_back(matioCpp::Element<int>("element", 3));
+    dataVector.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    dataVector.emplace_back(matioCpp::String("name", "content"));
+    dataVector.emplace_back(matioCpp::Struct("otherStruct"));
+
+    matioCpp::Struct structVar("struct", dataVector);
+    REQUIRE(file.write(structVar));
+    matioCpp::Struct readStructVar = file.read("struct").asStruct();
+
+    REQUIRE(readStructVar.isValid());
+    REQUIRE(readStructVar("element").asElement<int>()() == 3);
 
 }
