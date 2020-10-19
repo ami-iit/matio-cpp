@@ -159,6 +159,7 @@ public:
     /**
      * @brief Get the element as a Struct.
      * @note This requires memory allocation. In particular, it needs to allocate a number of pointers equal to the number of fields
+     * @note The array to which this element belongs should be less that 10-dimensional
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the variable cannot be resized and the name cannot change.
      */
@@ -276,34 +277,9 @@ template <bool isConst>
 template<bool B, typename >
 matioCpp::StructArrayElement<isConst> &matioCpp::StructArrayElement<isConst>::operator=(const matioCpp::Struct &other) const
 {
-    char * const * arrayFields = m_array->getStructFields();
-    char * const * structFields = other.getStructFields();
-
-    if (m_array->numberOfFields() != other.numberOfFields())
-    {
-        std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] The input struct is supposed to have the same number of fields of the struct array." <<std::endl;
-        assert(false);
-        return *this;
-    }
-
-    for (size_t i = 0; i < m_array->numberOfFields(); ++i)
-    {
-        if (strcmp(arrayFields[i], structFields[i]) != 0)
-        {
-            std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] The field " << structFields[i] << " of the input struct is supposed to be " << arrayFields[i]
-                      << ". Cannot insert in a struct array a new field in a single element." <<std::endl;
-            assert(false);
-            return *this;
-        }
-
-        bool ok = m_array->setStructField(i, other(i), m_innerIndex);
-        if (!ok)
-        {
-            std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] Failed to set field " << structFields[i] << "." <<std::endl;
-            assert(false);
-            return *this;
-        }
-    }
+    bool ok = m_array->setElement(m_innerIndex, other);
+    assert(ok && "Failed to set the specified element to the input struct.");
+    matioCpp::unused(ok);
 
     return *this;
 }
@@ -405,6 +381,7 @@ bool matioCpp::StructArrayElement<isConst>::setField(const Variable &newValue) c
 template <bool isConst>
 typename matioCpp::StructArrayElement<isConst>::output_struct_type matioCpp::StructArrayElement<isConst>::asStruct() const
 {
+    assert(m_array->dimensions().size < 10);
     return m_array->getStructArrayElement(m_innerIndex);
 }
 

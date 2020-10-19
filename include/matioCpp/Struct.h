@@ -27,8 +27,7 @@ class matioCpp::Struct : public matioCpp::Variable
      */
     virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
 
-    template <bool isConst>
-    friend class StructArrayElement;
+    friend class StructArray;
 
 public:
 
