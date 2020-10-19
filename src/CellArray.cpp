@@ -57,7 +57,6 @@ matioCpp::CellArray::CellArray(const std::string &name)
 
 matioCpp::CellArray::CellArray(const std::string &name, const std::vector<matioCpp::CellArray::index_type> &dimensions)
 {
-    matioCpp::CellArray::index_type totalElements = 1;
     for (matioCpp::CellArray::index_type dim : dimensions)
     {
         if (dim == 0)
@@ -65,8 +64,6 @@ matioCpp::CellArray::CellArray(const std::string &name, const std::vector<matioC
             std::cerr << "[ERROR][matioCpp::CellArray::CellArray] Zero dimension detected." << std::endl;
             assert(false);
         }
-
-        totalElements *= dim;
     }
 
     initializeVariable(name,
@@ -93,7 +90,7 @@ matioCpp::CellArray::CellArray(const std::string &name, const std::vector<matioC
     {
         if (!elements[i].isValid())
         {
-            std::cerr << "[ERROR][matioCpp::CellArray::fromVectorOfVariables] The element at index "<< i << " (0-based) is not valid." << std::endl;
+            std::cerr << "[ERROR][matioCpp::CellArray::CellArray] The element at index "<< i << " (0-based) is not valid." << std::endl;
             assert(false);
         }
         vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(elements[i].toMatio());
