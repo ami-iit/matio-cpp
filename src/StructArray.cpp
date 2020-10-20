@@ -133,14 +133,14 @@ matioCpp::StructArray::StructArray(const std::string &name, const std::vector<ma
         if (!abort)
         {
             initializeVariable(name,
-                               VariableType::CellArray,
+                               VariableType::StructArray,
                                matioCpp::ValueType::VARIABLE, dimensions,
                                vectorOfPointers.data());
         }
         else
         {
             initializeVariable(name,
-                               VariableType::CellArray,
+                               VariableType::StructArray,
                                matioCpp::ValueType::VARIABLE, dimensions,
                                nullptr);
         }
@@ -149,7 +149,7 @@ matioCpp::StructArray::StructArray(const std::string &name, const std::vector<ma
     else
     {
         initializeVariable(name,
-                           VariableType::CellArray,
+                           VariableType::StructArray,
                            matioCpp::ValueType::VARIABLE, dimensions,
                            nullptr);
     }
@@ -251,7 +251,7 @@ bool matioCpp::StructArray::fromVectorOfStructs(const std::vector<matioCpp::Stru
 
 
         return initializeVariable(name(),
-                                  VariableType::CellArray,
+                                  VariableType::StructArray,
                                   matioCpp::ValueType::VARIABLE, dimensions,
                                   vectorOfPointers.data());
     }
@@ -259,7 +259,7 @@ bool matioCpp::StructArray::fromVectorOfStructs(const std::vector<matioCpp::Stru
     {
 
         return initializeVariable(name(),
-                                  VariableType::CellArray,
+                                  VariableType::StructArray,
                                   matioCpp::ValueType::VARIABLE, dimensions,
                                   nullptr);
     }
