@@ -71,7 +71,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         return nullptr;
     }
 
-    if (outputVariableType == matioCpp::VariableType::CellArray) // It is a different case because Mat_VarDuplicate segafaults with a CellArray
+    if (outputVariableType == matioCpp::VariableType::CellArray) // It is a different case because Mat_VarDuplicate segfaults with a CellArray
     {
         matvar_t * shallowCopy = Mat_VarDuplicate(inputPtr, 0); // Shallow copy to remove const
 
@@ -98,6 +98,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
             //When doing a shallow copy, the data is not copied,
             //but it will try to free it anyway with Mat_VarFree.
             //This avoids matio to attempt freeing the data
+            // See https://github.com/tbeu/matio/issues/158
         Mat_VarFree(shallowCopy);
     }
     else
