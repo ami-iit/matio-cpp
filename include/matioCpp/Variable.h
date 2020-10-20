@@ -83,7 +83,7 @@ protected:
      * @brief Set a cell element at a specified linear position
      * @param linearIndex The linear index of the specified element
      * @param newValue The Variable that will be copied in the specified location
-     * @return True if successfull, false otherwise
+     * @return True if successful, false otherwise
      */
     bool setCellElement(size_t linearIndex, const Variable& newValue);
 
@@ -156,7 +156,7 @@ public:
     /**
      * @brief Set this variable from an existing matio variable.
      * @param inputVar The not null pointer to a matio variable. The variable is cloned.
-     * @return True if the cloning was successfull.
+     * @return True if the cloning was successful.
      */
     virtual bool fromMatio(const matvar_t * inputVar);
 

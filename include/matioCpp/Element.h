@@ -107,7 +107,7 @@ public:
     /**
      * @brief Change the name of the Variable
      * @param newName The new name
-     * @return True if successfull.
+     * @return True if successful.
      *
      * @warning This requires the Element to be reallocated. It performs memory allocation.
      */

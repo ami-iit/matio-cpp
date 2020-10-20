@@ -91,14 +91,14 @@ public:
     /**
      * @brief Perform a deep copy of the input pointer.
      * @param inputPtr The input pointer
-     * @return True if successfull, false otherwise (e.g. if isShared is false, or the input pointer is null).
+     * @return True if successful, false otherwise (e.g. if isShared is false, or the input pointer is null).
      */
     virtual bool duplicateMatvar(const matvar_t* inputPtr) = 0;
 
     /**
      * @brief Import the input pointer.
      * @param inputPtr The input pointer
-     * @return True if successfull, false otherwise (e.g. if isShared is false, or the input pointer is null).
+     * @return True if successful, false otherwise (e.g. if isShared is false, or the input pointer is null).
      */
     virtual bool importMatvar(matvar_t* inputPtr) = 0;
 

@@ -55,8 +55,9 @@ public:
      * @param name The name of the CellArray
      * @param dimensions The dimensions of the CellArray
      * @param elements The elements to be added to the CellArray (they are copied)
-     * @note The name of the variables is not used
-     * @note The vector is supposed to contain the variables in column-major format.
+     * @note The name of the variables in the vector is not used
+     * @note The vector is supposed to contain the variables in column-major format. For example, an array of dimension 2x3x4
+     * needs a dimension vector of size 3 with content {2,3,4}. The elements vector is supposed to be 24 dimensional.
      */
     CellArray(const std::string& name, const std::vector<index_type>& dimensions, std::vector<Variable> &elements);
 
@@ -103,13 +104,13 @@ public:
      * @note The name of the variables is not used
      * @param dimensions The input dimensions
      * @param elements The input vector of variables.
-     * @return True if successfull. False otherwise, for example if one of the input variables is not valid.
+     * @return True if successful. False otherwise, for example if one of the input variables is not valid.
      */
     bool fromVectorOfVariables(const std::vector<index_type>& dimensions, std::vector<Variable> &elements);
 
     /**
      * @brief Get the linear index corresponding to the provided indices
-     * @param el The desider element
+     * @param el The desired element
      * @warning It checks if the element is in the bounds only in debug mode.
      *
      * Since the variables are stored internally in column-major, an element (i,j,k,l,..) of an array
@@ -125,24 +126,23 @@ public:
      * @paragraph rawIndex The input raw index from which to compute the indices
      * @param el The output indices
 
-    * @return True if successfull, false otherwise (for example if rawIndex is out of bounds)
+    * @return True if successful, false otherwise (for example if rawIndex is out of bounds)
      */
     bool indicesFromRawIndex(size_t rawIndex, std::vector<index_type>& el) const;
 
     /**
      * @brief Change the name of the Variable
      * @param newName The new name
-     * @return True if successfull.
+     * @return True if successful.
      *
      * @warning This requires the CellArray to be reallocated. It performs memory allocation.
      */
     bool setName(const std::string& newName);
 
     /**
-     * @brief Resize the vector.
+     * @brief Resize the cell array.
      * @param newDimensions The new dimensions.
      *
-     * @warning This requires to allocate memory for twice the new size.
      * @warning Previous data is lost.
      */
     void resize(const std::vector<index_type>& newDimensions);
@@ -157,7 +157,7 @@ public:
      * @brief Set the element at the specified position
      * @param el The indices of the specified element
      * @param newValue The Variable that will be copied in the specified location
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode
      * @warning The Variable previously in the same place will be freed. Any previous reference to this variable (obtained through the non-const version of the operator() and operator[]) are invalidated. Using them may result in a segfault.
      */
@@ -167,7 +167,7 @@ public:
      * @brief Set the element at the specified position
      * @param el The raw index of the specified element
      * @param newValue The Variable that will be copied in the specified location
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode
      * @warning The Variable previously in the same place will be freed. Any previous reference to this variable (obtained through the non-const version of the operator() and operator[]) are invalidated. Using them may result in a segfault.
      */
