@@ -115,7 +115,7 @@ public:
      * @param elements The elements to be set.
      * @note Previous structs are lost
      * @note Each struct is supposed to have the same set of fields
-     * @return True if successfull. False otherwise, for example if one of the input variables is not valid.
+     * @return True if successful. False otherwise, for example if one of the input variables is not valid.
      */
     bool fromVectorOfStructs(const std::vector<index_type> &dimensions, const std::vector<matioCpp::Struct>& elements);
 
@@ -137,14 +137,14 @@ public:
      * @paragraph rawIndex The input raw index from which to compute the indices
      * @param el The output indices
 
-    * @return True if successfull, false otherwise (for example if rawIndex is out of bounds)
+    * @return True if successful, false otherwise (for example if rawIndex is out of bounds)
      */
     bool indicesFromRawIndex(size_t rawIndex, std::vector<index_type>& el) const;
 
     /**
      * @brief Change the name of the Variable
      * @param newName The new name
-     * @return True if successfull.
+     * @return True if successful.
      *
      * @warning This requires the Struct to be reallocated. It performs memory allocation.
      */
@@ -202,7 +202,7 @@ public:
      * @brief Set the element at the specified position
      * @param el The indices of the specified elementconst StructArrayElement
      * @param newValue The Struct that will be copied in the specified location
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode
      * @note The struct needs to have the same set of fields returned by fields()
      */
@@ -212,7 +212,7 @@ public:
      * @brief Set the element at the specified position
      * @param el The raw index of the specified element
      * @param newValue The Struct that will be copied in the specified location
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode
      * @note The struct needs to have the same set of fields returned by fields()
      */

@@ -139,7 +139,7 @@ protected:
      * @param index The linear index of the specified field
      * @param newValue The Variable that will be copied in the specified location
      * @param structPositionInArray The linear position of the struct to set in the struct array
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      */
     bool setStructField(size_t index, const Variable& newValue, size_t structPositionInArray = 0);
 
@@ -154,7 +154,7 @@ protected:
      * @brief Set the field of the struct given the newValue name
      * @param newValue The Variable that will be copied in the specified field
      * @param structPositionInArray The linear position of the struct to set in the struct array
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note If the field is not found, a new field is created and appended to the struct,
      *  but only if the struct is not part of an array.
      */

@@ -106,7 +106,7 @@ public:
      * @brief Set from a vector of Variables
      * @param elements The elements to be set.
      * @note Previous fields are lost
-     * @return True if successfull. False otherwise, for example if one of the input variables is not valid or if the fields do not match the already existing fields.
+     * @return True if successful. False otherwise, for example if one of the input variables is not valid or if the fields do not match the already existing fields.
      */
     template<bool B = isConst, typename = typename std::enable_if_t<(B == isConst) && !B>>
     bool fromVectorOfVariables(const std::vector<Variable> &elements) const;
@@ -141,7 +141,7 @@ public:
      * @brief Set the field at the specified position
      * @param index The linear index of the specified field
      * @param newValue The Variable that will be copied in the specified location
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if index is out of bounds, but only in debug mode
      * @note The name is of newValue is not considered.
      */
@@ -151,7 +151,7 @@ public:
     /**
      * @brief Set the field given the newValue name
      * @param newValue The Variable that will be copied in the specified field
-     * @return True if successfull, false otherwise (for example if the newValue is not valid or the field is not found)
+     * @return True if successful, false otherwise (for example if the newValue is not valid or the field is not found)
      */
     template<bool B = isConst, typename = typename std::enable_if_t<(B == isConst) && !B>>
     bool setField(const Variable& newValue) const;

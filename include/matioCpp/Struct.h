@@ -93,14 +93,14 @@ public:
      * @brief Set from a vector of Variables
      * @param elements The elements to be set.
      * @note Previous fields are lost
-     * @return True if successfull. False otherwise, for example if one of the input variables is not valid.
+     * @return True if successful. False otherwise, for example if one of the input variables is not valid.
      */
     bool fromVectorOfVariables(std::vector<Variable> &elements);
 
     /**
      * @brief Change the name of the Variable
      * @param newName The new name
-     * @return True if successfull.
+     * @return True if successful.
      *
      * @warning This requires the Struct to be reallocated. It performs memory allocation.
      */
@@ -136,7 +136,7 @@ public:
      * @brief Set the field at the specified position
      * @param index The linear index of the specified field
      * @param newValue The Variable that will be copied in the specified location
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if index is out of bounds, but only in debug mode
      */
     bool setField(index_type index, const Variable& newValue);
@@ -144,7 +144,7 @@ public:
     /**
      * @brief Set the field given the newValue name
      * @param newValue The Variable that will be copied in the specified field
-     * @return True if successfull, false otherwise (for example if the newValue is not valid)
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note If the field is not found, a new field is created and appended to the struct.
      */
     bool setField(const Variable& newValue);
