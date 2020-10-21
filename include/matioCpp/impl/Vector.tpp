@@ -86,6 +86,14 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 }
 
 template<typename T>
+matioCpp::Vector<T>::Vector(const std::string &name, matioCpp::Vector<T>::index_type dimensions)
+{
+    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
+    std::vector<T> empty(dimensions);
+    initializeVector(name, matioCpp::make_span(empty));
+}
+
+template<typename T>
 matioCpp::Vector<T>::Vector(const std::string& name, Span<T> inputVector)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
@@ -155,7 +163,8 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
     }
     else
     {
-        initializeVector(name(), other);
+        bool ok = initializeVector(name(), other);
+        assert(ok && "Failed to resize.");
     }
 
     return *this;

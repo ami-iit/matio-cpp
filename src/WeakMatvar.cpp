@@ -30,10 +30,10 @@ matioCpp::WeakMatvar::WeakMatvar(matioCpp::WeakMatvar &&other)
 }
 
 matioCpp::WeakMatvar::WeakMatvar(const SharedMatvar &other)
-    : matioCpp::MatvarHandler(other)
-    , m_ownership(other.ownership())
 {
-
+   matioCpp::WeakMatvar otherWeak = other.weakOwnership();
+   m_ownership = otherWeak.m_ownership;
+   m_ptr = otherWeak.m_ptr;
 }
 
 matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const SharedMatvar &owner)
@@ -42,6 +42,12 @@ matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const SharedMatvar &owner)
 
 {
 
+}
+
+matioCpp::WeakMatvar::WeakMatvar(matvar_t *inputPtr, const matioCpp::MatvarHandler *owner)
+{
+    m_ownership = owner->weakOwnership().m_ownership;
+    m_ptr = std::make_shared<matvar_t*>(inputPtr);
 }
 
 matioCpp::WeakMatvar::~WeakMatvar()
@@ -75,9 +81,21 @@ bool matioCpp::WeakMatvar::duplicateMatvar(const matvar_t *)
     return false;
 }
 
+bool matioCpp::WeakMatvar::importMatvar(matvar_t *)
+{
+    std::cerr << "[ERROR][matioCpp::WeakMatvar::importMatvar] Cannot import inputPtr. A WeakMatvar cannot modify the matvar pointer." << std::endl;
+
+    return false;
+}
+
 matioCpp::MatvarHandler *matioCpp::WeakMatvar::pointerToDuplicate() const
 {
     return new WeakMatvar(*this);
+}
+
+matioCpp::WeakMatvar matioCpp::WeakMatvar::weakOwnership() const
+{
+    return *this;
 }
 
 matioCpp::WeakMatvar &matioCpp::WeakMatvar::operator=(const matioCpp::WeakMatvar &other)
@@ -96,8 +114,6 @@ matioCpp::WeakMatvar &matioCpp::WeakMatvar::operator=(matioCpp::WeakMatvar &&oth
 
 matioCpp::WeakMatvar &matioCpp::WeakMatvar::operator=(const SharedMatvar &other)
 {
-    m_ownership = other.m_ownership;
-    m_ptr = other.m_ptr;
-    return *this;
+    return operator=(other.weakOwnership());
 }
 

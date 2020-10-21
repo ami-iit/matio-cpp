@@ -23,8 +23,6 @@ class matioCpp::SharedMatvar : public matioCpp::MatvarHandler
      */
     std::shared_ptr<MatvarHandler::Ownership> m_ownership;
 
-    friend class WeakMatvar;
-
 public:
 
     /**
@@ -75,7 +73,17 @@ public:
     /**
      * Docs inherited
      */
+    virtual bool importMatvar(matvar_t *inputPtr) final;
+
+    /**
+     * Docs inherited
+     */
     virtual MatvarHandler* pointerToDuplicate() const final;
+
+    /**
+     * Docs inherited
+     */
+    virtual WeakMatvar weakOwnership() const final;
 
     /**
      * @brief Copy assignement

@@ -116,13 +116,13 @@ public:
      * @note The pointer is supposed to be in column-major format.
      * @param dimensions The input dimensions
      * @param inputVector The input pointer.
-     * @return True if successfull.
+     * @return True if successful.
      */
     bool fromVectorizedArray(const std::vector<index_type>& dimensions, const_pointer inputVector);
 
     /**
      * @brief Get the index in the vectorized array corresponding to the provided indices
-     * @param el The desider element
+     * @param el The desired element
      * @warning It checks if the element is in the bounds only in debug mode.
      *
      * Since the array is stored in column-major, an element (i,j,k,l,..) of an array
@@ -132,6 +132,15 @@ public:
      * @return the index in the vectorized array corresponding to the provided indices
      */
     index_type rawIndexFromIndices(const std::vector<index_type>& el) const;
+
+    /**
+     * @brief Get the indices given the raw index
+     * @paragraph rawIndex The input raw index from which to compute the indices
+     * @param el The output indices
+
+    * @return True if successful, false otherwise (for example if rawIndex is out of bounds)
+     */
+    bool indicesFromRawIndex(size_t rawIndex, std::vector<index_type>& el) const;
 
     /**
      * @brief Get this MultiDimensionalArray as a Span
@@ -146,7 +155,7 @@ public:
     /**
      * @brief Change the name of the Variable
      * @param newName The new name
-     * @return True if successfull.
+     * @return True if successful.
      *
      * @warning This requires the MultiDimensionalArray to be reallocated. It performs memory allocation.
      */
@@ -156,7 +165,6 @@ public:
      * @brief Resize the vector.
      * @param newDimensions The new dimensions.
      *
-     * @warning This requires to allocate memory for twice the new size.
      * @warning Previous data is lost.
      */
     void resize(const std::vector<index_type>& newDimensions);
@@ -199,6 +207,20 @@ public:
 
     /**
      * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A reference to the element.
+     */
+    reference operator()(index_type el);
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A copy to the element.
+     */
+    value_type operator()(index_type el) const;
+
+    /**
+     * @brief Access specified element.
      * @param el The element to be accessed.
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
      * @return A reference to the element.
@@ -212,6 +234,20 @@ public:
      * @return A copy to the element.
      */
     value_type operator[](const std::vector<index_type>& el) const;
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A reference to the element.
+     */
+    reference operator[](index_type el);
+
+    /**
+     * @brief Access specified element.
+     * @param el The element to be accessed (raw index).
+     * @return A copy to the element.
+     */
+    value_type operator[](index_type el) const;
 };
 
 #include "impl/MultiDimensionalArray.tpp"

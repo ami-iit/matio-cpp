@@ -10,6 +10,7 @@
 
 
 #include <matioCpp/Variable.h>
+#include <matioCpp/CellArray.h>
 
 bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
@@ -26,12 +27,6 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
         return false;
     }
 
-    if (*std::min_element(dimensions.begin(), dimensions.end()) && !data)
-    {
-        std::cerr << errorPrefix << "The min dimension is not zero, but the data pointer is empty." << std::endl;
-        return false;
-    }
-
     matio_types matioType;
     matio_classes matioClass;
 
@@ -44,12 +39,20 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matioCpp::MatvarHandler* previousHandler = m_handler;
-    m_handler = new matioCpp::SharedMatvar(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0));
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0);
 
-    if (previousHandler)
+    if (m_handler)
     {
-        delete previousHandler;
+        if (!m_handler->importMatvar(newPtr))
+        {
+            std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
+            Mat_VarFree(newPtr);
+            return false;
+        }
+    }
+    else
+    {
+        m_handler = new matioCpp::SharedMatvar(newPtr);
     }
 
     if (!m_handler || !m_handler->get())
@@ -122,6 +125,31 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     return true;
 }
 
+bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Variable &newValue)
+{
+    Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
+    if (!copiedNonOwning.isValid())
+    {
+        return false;
+    }
+
+    matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
+
+    Mat_VarFree(previousCell);
+
+    return Mat_VarGetCell(m_handler->get(), linearIndex);
+}
+
+matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex)
+{
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+}
+
+const matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
+{
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+}
+
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
 {
     return inputPtr;
@@ -142,7 +170,10 @@ matioCpp::Variable::Variable(const matvar_t *inputVar)
 matioCpp::Variable::Variable(const matioCpp::Variable &other)
     : m_handler(new matioCpp::SharedMatvar())
 {
-    m_handler->duplicateMatvar(other.toMatio());
+    if (other.isValid())
+    {
+        m_handler->duplicateMatvar(other.toMatio());
+    }
 }
 
 matioCpp::Variable::Variable(matioCpp::Variable &&other)
@@ -267,4 +298,14 @@ matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 bool matioCpp::Variable::isValid() const
 {
     return m_handler->get();
+}
+
+matioCpp::CellArray matioCpp::Variable::asCellArray()
+{
+    return matioCpp::CellArray(*m_handler);
+}
+
+const matioCpp::CellArray matioCpp::Variable::asCellArray() const
+{
+    return matioCpp::CellArray(*m_handler);
 }

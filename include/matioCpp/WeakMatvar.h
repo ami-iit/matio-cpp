@@ -22,6 +22,8 @@ class matioCpp::WeakMatvar : public matioCpp::MatvarHandler
      */
     std::weak_ptr<MatvarHandler::Ownership> m_ownership;
 
+    friend class matioCpp::SharedMatvar;
+
 public:
 
     /**
@@ -65,6 +67,17 @@ public:
     WeakMatvar(matvar_t* inputPtr, const SharedMatvar& owner);
 
     /**
+     * @brief Import an already existing matvar_t pointer which is owned by owner.
+     *
+     * owner needs to make sure that inputPtr is deallocated.
+     * @param inputPtr The matvar_t pointer to import
+     * @param owner The owner of inputPtr (the one that takes care of deallocating it)
+     *
+     * @note An assertion is thrown if owner is not shared
+     */
+    WeakMatvar(matvar_t* inputPtr, const MatvarHandler* owner);
+
+    /**
      * Destructor
      */
     ~WeakMatvar();
@@ -88,8 +101,20 @@ public:
 
     /**
      * Docs inherited
+     *
+     * This always returns false.
+     */
+    virtual bool importMatvar(matvar_t *) final;
+
+    /**
+     * Docs inherited
      */
     virtual MatvarHandler* pointerToDuplicate() const final;
+
+    /**
+     * Docs inherited
+     */
+    virtual WeakMatvar weakOwnership() const final;
 
     /**
      * @brief Copy assignement

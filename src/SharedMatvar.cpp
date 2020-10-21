@@ -9,7 +9,9 @@
  */
 
 #include <matioCpp/SharedMatvar.h>
+#include <matioCpp/WeakMatvar.h>
 #include <matioCpp/Span.h>
+#include <matioCpp/ConversionUtilities.h>
 
 
 matioCpp::SharedMatvar::SharedMatvar()
@@ -58,13 +60,11 @@ bool matioCpp::SharedMatvar::isShared() const
 
 bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
 {
-    std::string errorPrefix = "[ERROR][matioCpp::SharedMatvar::duplicateFromMatio] ";
-    if (!inputPtr)
-    {
-        std::cerr << errorPrefix << "Empty input variable." << std::endl;
-        return false;
-    }
+    return importMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(inputPtr));
+}
 
+bool matioCpp::SharedMatvar::importMatvar(matvar_t *inputPtr)
+{
     assert(m_ptr);
 
     if (*m_ptr)
@@ -72,7 +72,7 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
         Mat_VarFree(*m_ptr);
     }
 
-    *m_ptr = Mat_VarDuplicate(inputPtr, 1); //0 Shallow copy, 1 Deep copy
+    *m_ptr = inputPtr;
 
     return true;
 }
@@ -80,6 +80,14 @@ bool matioCpp::SharedMatvar::duplicateMatvar(const matvar_t *inputPtr)
 matioCpp::MatvarHandler *matioCpp::SharedMatvar::pointerToDuplicate() const
 {
     return new SharedMatvar(*this);
+}
+
+matioCpp::WeakMatvar matioCpp::SharedMatvar::weakOwnership() const
+{
+    matioCpp::WeakMatvar weak;
+    weak.m_ownership = m_ownership;
+    weak.m_ptr = m_ptr;
+    return weak;
 }
 
 matioCpp::SharedMatvar &matioCpp::SharedMatvar::operator=(const matioCpp::SharedMatvar &other)

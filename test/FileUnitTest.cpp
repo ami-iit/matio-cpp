@@ -80,11 +80,24 @@ TEST_CASE("Read")
 
     REQUIRE(input.isOpen());
 
-    matioCpp::Variable cellArray = input.read("cell_array");
+    matioCpp::CellArray cellArray = input.read("cell_array").asCellArray();
     REQUIRE(cellArray.isValid());
+    REQUIRE(cellArray.dimensions().size() == 2);
+    REQUIRE(cellArray.dimensions()[0] == 1);
+    REQUIRE(cellArray.dimensions()[1] == 3);
+    REQUIRE(cellArray({0,0}).asElement<int>()() == 1);
+    REQUIRE(cellArray({0,1}).asElement<char>()() == 'a');
+    REQUIRE(cellArray({0,2}).asElement<double>()() == 3.14);
 
-    matioCpp::Variable cellMatrix = input.read("cell_matrix");
+    matioCpp::CellArray cellMatrix = input.read("cell_matrix").asCellArray();
     REQUIRE(cellMatrix.isValid());
+    REQUIRE(cellMatrix.dimensions().size() == 2);
+    REQUIRE(cellMatrix.dimensions()[0] == 2);
+    REQUIRE(cellMatrix.dimensions()[1] == 2);
+    matioCpp::CellArray cellElement = cellMatrix({0,0}).asCellArray();
+    REQUIRE(cellElement.isValid());
+    REQUIRE(cellMatrix({0,1}).asElement<int>()() == 7);
+    REQUIRE(cellMatrix({1,1}).asElement<double>()() == 3.14);
 
     matioCpp::Element<double> doubleVar = input.read("double").asElement<double>();
     REQUIRE(doubleVar.isValid());
@@ -202,4 +215,21 @@ TEST_CASE("Write")
     {
         REQUIRE(vector[i] == i+1);
     }
+
+
+    std::vector<matioCpp::Variable> dataCell;
+    dataCell.emplace_back(matioCpp::Vector<double>("vector", 4));
+    dataCell.emplace_back(matioCpp::Element<int>("element", 3));
+    dataCell.emplace_back(matioCpp::String("name", "content"));
+    dataCell.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    dataCell.emplace_back(matioCpp::String("otherString", "content"));
+    dataCell.emplace_back(matioCpp::CellArray("otherCell"));
+
+    matioCpp::CellArray cellArray("cellArray", {1,2,3}, dataCell);
+    REQUIRE(file.write(cellArray));
+    matioCpp::CellArray readCellArray = file.read("cellArray").asCellArray();
+
+    REQUIRE(readCellArray.isValid());
+    REQUIRE(readCellArray({0,0,2}).asString()() == "content");
+
 }

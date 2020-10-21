@@ -26,8 +26,12 @@ add_unit_test(NAME MultiDimensionalArray
               LINKS matioCpp::matioCpp)
 
 add_unit_test(NAME Element
-            SOURCES ElementUnitTest.cpp
-            LINKS matioCpp::matioCpp)
+              SOURCES ElementUnitTest.cpp
+              LINKS matioCpp::matioCpp)
+
+add_unit_test(NAME CellArray
+              SOURCES CellArrayUnitTest.cpp
+              LINKS matioCpp::matioCpp)
 
 add_unit_test(NAME File
               SOURCES FileUnitTest.cpp

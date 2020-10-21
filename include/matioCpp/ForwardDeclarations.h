@@ -159,6 +159,8 @@ using String = Vector<char>;
 template<typename T>
 class MultiDimensionalArray;
 
+class CellArray;
+
 class File;
 
 }

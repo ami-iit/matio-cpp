@@ -81,7 +81,7 @@ public:
     /**
      * @brief Delete the specified file
      * @param name Name of the file to delete.
-     * @return True if successfull, false otherwise (for example, in Windows the file will not be deleted if open).
+     * @return True if successful, false otherwise (for example, in Windows the file will not be deleted if open).
      */
     static bool Delete(const std::string& name);
 
@@ -132,7 +132,7 @@ public:
      * @brief Write a Variable to a file
      * @param variable The input variable.
      * @note The input variable is not const since matio needs a non-const matvar_t pointer when writing to a file.
-     * @return True if successfull.
+     * @return True if successful.
      */
     bool write(Variable &variable);
 

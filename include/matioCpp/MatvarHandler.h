@@ -91,15 +91,35 @@ public:
     /**
      * @brief Perform a deep copy of the input pointer.
      * @param inputPtr The input pointer
-     * @return True if successfull, false otherwise (e.g. if isShared is false, or the input pointer is null).
+     * @return True if successful, false otherwise (e.g. if isShared is false, or the input pointer is null).
      */
     virtual bool duplicateMatvar(const matvar_t* inputPtr) = 0;
+
+    /**
+     * @brief Import the input pointer.
+     * @param inputPtr The input pointer
+     * @return True if successful, false otherwise (e.g. if isShared is false, or the input pointer is null).
+     */
+    virtual bool importMatvar(matvar_t* inputPtr) = 0;
 
     /**
      * @brief Get a pointer to a duplicate of the MatvarHandler. The pointed object has to be deallocated manually
      * @return A pointer to a copy of the MatvarHandler.
      */
     virtual MatvarHandler* pointerToDuplicate() const = 0;
+
+    /**
+     * @brief Get a WeakMatvar version of the current MatvarHandler
+     * @return A WeakMatvar version of the current MatvarHandler.
+     */
+    virtual WeakMatvar weakOwnership() const = 0;
+
+    /**
+     * @brief Get a duplicate of the input matvar pointer/
+     * @param inputPtr The input pointer
+     * @return A copy of the pointer
+     */
+    static matvar_t* GetMatvarDuplicate(const matvar_t* inputPtr);
 
 };
 

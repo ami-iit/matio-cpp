@@ -80,6 +80,29 @@ protected:
     }
 
     /**
+     * @brief Set a cell element at a specified linear position
+     * @param linearIndex The linear index of the specified element
+     * @param newValue The Variable that will be copied in the specified location
+     * @return True if successful, false otherwise
+     */
+    bool setCellElement(size_t linearIndex, const Variable& newValue);
+
+    /**
+     * @brief Get a cell element at a specified linear position
+     * @param linearIndex The linear index of the specified element
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    Variable getCellElement(size_t linearIndex);
+
+    /**
+     * @brief Get a cell element at a specified linear position
+     * @param linearIndex The linear index of the specified element
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     */
+    const Variable getCellElement(size_t linearIndex) const;
+
+    /**
      * @brief Check if an input matio pointer is compatible with the specified variable.
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
@@ -133,7 +156,7 @@ public:
     /**
      * @brief Set this variable from an existing matio variable.
      * @param inputVar The not null pointer to a matio variable. The variable is cloned.
-     * @return True if the cloning was successfull.
+     * @return True if the cloning was successful.
      */
     virtual bool fromMatio(const matvar_t * inputVar);
 
@@ -268,6 +291,16 @@ public:
      */
     template<typename T>
     const matioCpp::MultiDimensionalArray<T> asMultiDimensionalArray() const;
+
+    /**
+     * @brief Cast the variable as a CellArray.
+     */
+    matioCpp::CellArray asCellArray();
+
+    /**
+     * @brief Cast the variable as a const CellArray.
+     */
+    const matioCpp::CellArray asCellArray() const;
 
 };
 

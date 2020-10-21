@@ -58,7 +58,7 @@ public:
 
     using iterator = vector_iterator<Vector<T>, false>; /** The iterator type. **/
 
-    using const_iterator = vector_iterator<Vector<T>, true>; /** The const iterator tyep. **/
+    using const_iterator = vector_iterator<Vector<T>, true>; /** The const iterator type. **/
 
     using reverse_iterator = std::reverse_iterator<iterator>; /** The reverse iterator type. **/
 
@@ -76,6 +76,13 @@ public:
      * @note If the type is char, the name is also copied in the content.
      */
     Vector(const std::string& name);
+
+    /**
+     * @brief Constructor
+     * @param name The name of the Vector
+     * @param inputVector The input data.
+     */
+    Vector(const std::string& name, index_type dimensions);
 
     /**
      * @brief Constructor
@@ -156,7 +163,7 @@ public:
     /**
      * @brief Change the name of the Variable
      * @param newName The new name
-     * @return True if successfull.
+     * @return True if successful.
      *
      * @warning This requires the Vector to be reallocated. It performs memory allocation.
      */
