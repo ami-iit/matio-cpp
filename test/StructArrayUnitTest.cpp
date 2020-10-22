@@ -157,32 +157,43 @@ TEST_CASE("Constructors")
         REQUIRE(b.valueType() == matioCpp::ValueType::VARIABLE);
     }
 
-//    SECTION("Shared ownership")
-//    {
-//        std::vector<matvar_t*> data;
-//        std::vector<size_t> dimensions = {1,2,3};
-//        data.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
-//        data.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
-//        data.emplace_back(nullptr);
-//        data.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
-//        data.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
-//        data.emplace_back(Mat_VarDuplicate(matioCpp::StructArray("otherCell").toMatio(), 1));
+    SECTION("Shared ownership")
+    {
+        std::vector<size_t> dimensions = {2,2};
+        std::vector<matvar_t*> pointers;
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::Vector<double>("vector").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::Element<int>("element").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::String("name", "content").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::Struct("otherStruct").toMatio()));
+        std::vector<matvar_t*> pointersArray;
+        pointersArray.insert(pointersArray.end(), pointers.begin(), pointers.end());
+        for (size_t k = 1; k < 4; ++k)
+        {
+            for (size_t i = 0; i < pointers.size(); ++i)
+            {
+                pointersArray.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(pointers[i]));
+            }
+        }
+        pointersArray.emplace_back(nullptr);
 
-//        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), data.data(), 0);
-//        REQUIRE(matioVar);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, dimensions.size(), dimensions.data(), pointersArray.data(), 0);
+        REQUIRE(matioVar);
 
-//        matioCpp::SharedMatvar sharedMatvar(matioVar);
-//        matioCpp::StructArray sharedVar(sharedMatvar);
-//        REQUIRE(sharedVar.isValid());
-//        REQUIRE(sharedVar.toMatio() == matioVar);
+        matioCpp::SharedMatvar sharedMatvar(matioVar);
+        matioCpp::StructArray sharedVar(sharedMatvar);
+        REQUIRE(sharedVar.isValid());
+        REQUIRE(sharedVar.toMatio() == matioVar);
 
-//        checkVariable(sharedVar, "test", matioCpp::VariableType::StructArray, matioCpp::ValueType::VARIABLE, false, dimensions);
+        checkVariable(sharedVar, "test", matioCpp::VariableType::StructArray, matioCpp::ValueType::VARIABLE, false, dimensions);
 
-//        matioCpp::StructArray weakVar((matioCpp::WeakMatvar(sharedMatvar)));
-//        REQUIRE(weakVar.isValid());
-//        REQUIRE(weakVar.toMatio() == matioVar);
+        matioCpp::StructArray weakVar((matioCpp::WeakMatvar(sharedMatvar)));
+        REQUIRE(weakVar.isValid());
+        REQUIRE(weakVar.toMatio() == matioVar);
 
-//        checkVariable(weakVar, "test", matioCpp::VariableType::StructArray, matioCpp::ValueType::VARIABLE, false, dimensions);
-//    }
+        checkVariable(weakVar, "test", matioCpp::VariableType::StructArray, matioCpp::ValueType::VARIABLE, false, dimensions);
+    }
 
 }
+
+
