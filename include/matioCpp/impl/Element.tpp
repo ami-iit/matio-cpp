@@ -60,7 +60,7 @@ matioCpp::Element<T>::Element()
     size_t emptyDimensions[] = {1, 1};
     initializeVariable("unnamed_element",
                        VariableType::Element,
-                       matioCpp::get_type<T>::valueType, emptyDimensions,
+                       matioCpp::get_type<T>::valueType(), emptyDimensions,
                        (void*)&empty);
 }
 
@@ -72,7 +72,7 @@ matioCpp::Element<T>::Element(const std::string &name)
     size_t emptyDimensions[] = {1, 1};
     initializeVariable(name,
                        VariableType::Element,
-                       matioCpp::get_type<T>::valueType, emptyDimensions,
+                       matioCpp::get_type<T>::valueType(), emptyDimensions,
                        (void*)&empty);
 }
 
@@ -84,7 +84,7 @@ matioCpp::Element<T>::Element(const std::string &name, T inputValue)
     size_t emptyDimensions[] = {1, 1};
     initializeVariable(name,
                        VariableType::Element,
-                       matioCpp::get_type<T>::valueType, emptyDimensions,
+                       matioCpp::get_type<T>::valueType(), emptyDimensions,
                        (void*)&empty);
 }
 
@@ -111,7 +111,7 @@ matioCpp::Element<T>::Element(const MatvarHandler &handler)
         size_t emptyDimensions[] = {1, 1};
         initializeVariable("unnamed_element",
                            VariableType::Element,
-                           matioCpp::get_type<T>::valueType, emptyDimensions,
+                           matioCpp::get_type<T>::valueType(), emptyDimensions,
                            (void*)&empty);
     }
 }

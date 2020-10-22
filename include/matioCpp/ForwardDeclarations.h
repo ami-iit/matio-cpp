@@ -76,6 +76,14 @@ template<typename... Ts> struct make_void { typedef void type;};
 template<typename... Ts> using void_t = typename make_void<Ts...>::type;
 
 /**
+ * dependent_false is a type-dependent expression that is always false. Please check
+ * https://en.cppreference.com/w/cpp/language/if for further details.
+ */
+template <class T> struct dependent_false : std::false_type
+{
+};
+
+/**
  * @brief Define the type of variable
  */
 enum class VariableType

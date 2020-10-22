@@ -44,20 +44,23 @@ bool get_types_names_from_matvart(const matvar_t* input, std::string &classType,
 /**
  * @brief Utility metafunction to get the ValueType from a given primitive type.
  */
-template <typename Tp> struct get_type;
+template <typename Tp> struct get_type
+{
+    static_assert (matioCpp::dependent_false<Tp>::value, "Unsupported type");
+};
 // specializations
-template <> struct get_type<int8_t>   { using type = int8_t;   static constexpr ValueType valueType = ValueType::INT8; };
-template <> struct get_type<uint8_t>  { using type = uint8_t;  static constexpr ValueType valueType = ValueType::UINT8; };
-template <> struct get_type<int16_t>  { using type =  int16_t; static constexpr ValueType valueType = ValueType::INT16; };
-template <> struct get_type<uint16_t> { using type = uint16_t; static constexpr ValueType valueType = ValueType::UINT16; };
-template <> struct get_type<int32_t>  { using type = int32_t;  static constexpr ValueType valueType = ValueType::INT32; };
-template <> struct get_type<uint32_t> { using type = uint32_t; static constexpr ValueType valueType = ValueType::UINT32; };
-template <> struct get_type<float>    { using type = float;    static constexpr ValueType valueType = ValueType::SINGLE; };
-template <> struct get_type<double>   { using type = double;   static constexpr ValueType valueType = ValueType::DOUBLE; };
-template <> struct get_type<int64_t>  { using type = int64_t;  static constexpr ValueType valueType = ValueType::INT64; };
-template <> struct get_type<char> { using type = char; static constexpr ValueType valueType = ValueType::UTF8; };
-template <> struct get_type<char16_t> { using type = char16_t; static constexpr ValueType valueType = ValueType::UTF16; };
-template <> struct get_type<char32_t> { using type = char32_t; static constexpr ValueType valueType = ValueType::UTF32; };
+template <> struct get_type<int8_t>    { using type = int8_t;   static inline ValueType valueType(){return ValueType::INT8;}; };
+template <> struct get_type<uint8_t>   { using type = uint8_t;  static inline ValueType valueType(){return ValueType::UINT8;}; };
+template <> struct get_type<int16_t>   { using type =  int16_t; static inline ValueType valueType(){return ValueType::INT16;}; };
+template <> struct get_type<uint16_t>  { using type = uint16_t; static inline ValueType valueType(){return ValueType::UINT16;}; };
+template <> struct get_type<int32_t>   { using type = int32_t;  static inline ValueType valueType(){return ValueType::INT32;}; };
+template <> struct get_type<uint32_t>  { using type = uint32_t; static inline ValueType valueType(){return ValueType::UINT32;}; };
+template <> struct get_type<float>     { using type = float;    static inline ValueType valueType(){return ValueType::SINGLE;}; };
+template <> struct get_type<double>    { using type = double;   static inline ValueType valueType(){return ValueType::DOUBLE;}; };
+template <> struct get_type<int64_t>   { using type = int64_t;  static inline ValueType valueType(){return ValueType::INT64;}; };
+template <> struct get_type<char>      { using type = char;     static inline ValueType valueType(){return ValueType::UTF8;}; };
+template <> struct get_type<char16_t>  { using type = char16_t; static inline ValueType valueType(){return ValueType::UTF16;}; };
+template <> struct get_type<char32_t>  { using type = char32_t; static inline ValueType valueType(){return ValueType::UTF32;}; };
 
 /**
  * @brief Utility function to check if certain ValueType can be converted to a primitive type T.

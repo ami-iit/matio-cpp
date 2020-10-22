@@ -59,7 +59,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray()
     constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable("unnamed_multidimensional_array",
                        VariableType::MultiDimensionalArray,
-                       matioCpp::get_type<T>::valueType, emptyDimensions,
+                       matioCpp::get_type<T>::valueType(), emptyDimensions,
                        (void*)empty.data());
 }
 
@@ -70,7 +70,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
     constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
-                       matioCpp::get_type<T>::valueType, emptyDimensions,
+                       matioCpp::get_type<T>::valueType(), emptyDimensions,
                        (void*)empty.data());
 }
 
@@ -93,7 +93,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
 
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
-                       matioCpp::get_type<T>::valueType, dimensions,
+                       matioCpp::get_type<T>::valueType(), dimensions,
                        (void*)dummy.data());
 }
 
@@ -111,7 +111,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
 
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
-                       matioCpp::get_type<T>::valueType, dimensions,
+                       matioCpp::get_type<T>::valueType(), dimensions,
                        (void*)inputVector);
 }
 
@@ -138,7 +138,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const MatvarHandler &h
         constexpr size_t emptyDimensions[] = {0, 0, 0};
         initializeVariable("unnamed_multidimensional_array",
                            VariableType::MultiDimensionalArray,
-                           matioCpp::get_type<T>::valueType, emptyDimensions,
+                           matioCpp::get_type<T>::valueType(), emptyDimensions,
                            (void*)empty.data());
     }
 }
@@ -177,7 +177,7 @@ bool matioCpp::MultiDimensionalArray<T>::fromVectorizedArray(const std::vector<t
 
     return initializeVariable(name(),
                               VariableType::MultiDimensionalArray,
-                              matioCpp::get_type<T>::valueType, dimensions,
+                              matioCpp::get_type<T>::valueType(), dimensions,
                               (void*)inputVector);
 }
 
@@ -251,7 +251,7 @@ bool matioCpp::MultiDimensionalArray<T>::setName(const std::string &newName)
 {
     return initializeVariable(newName,
                               VariableType::MultiDimensionalArray,
-                              matioCpp::get_type<T>::valueType, dimensions(),
+                              matioCpp::get_type<T>::valueType(), dimensions(),
                               (void*)data());
 }
 
