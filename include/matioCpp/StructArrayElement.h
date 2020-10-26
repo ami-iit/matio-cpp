@@ -159,7 +159,6 @@ public:
     /**
      * @brief Get the element as a Struct.
      * @note This requires memory allocation. In particular, it needs to allocate a number of pointers equal to the number of fields
-     * @note The array to which this element belongs should be less that 10-dimensional
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the variable cannot be resized and the name cannot change.
      */
@@ -234,6 +233,7 @@ matioCpp::StructArrayElement<isConst>::StructArrayElement(const matioCpp::Struct
     : m_innerIndex(other.m_innerIndex)
     , m_array(other.m_array)
 {
+    static_assert (!B && isConst, "This constructor is meant to be used to obtain a const element from a non const one.");
     assert(m_array);
 }
 
@@ -251,6 +251,7 @@ matioCpp::StructArrayElement<isConst>::StructArrayElement(matioCpp::StructArrayE
     : m_innerIndex(other.m_innerIndex)
     , m_array(other.m_array)
 {
+    static_assert (!B && isConst, "This constructor is meant to be used to obtain a const element from a non const one.");
     assert(m_array);
 }
 
@@ -267,6 +268,8 @@ template <bool isConst>
 template<bool B, typename >
 matioCpp::StructArrayElement<isConst> &matioCpp::StructArrayElement<isConst>::operator=(matioCpp::StructArrayElement<B> &&other)
 {
+    static_assert (!B && isConst, "This operator is meant to be used to obtain a const element from a non const one.");
+
     m_innerIndex = other.m_innerIndex;
     m_array = other.m_array;
     assert(m_array);
@@ -277,6 +280,8 @@ template <bool isConst>
 template<bool B, typename >
 matioCpp::StructArrayElement<isConst> &matioCpp::StructArrayElement<isConst>::operator=(const matioCpp::Struct &other) const
 {
+    static_assert (!B && isConst, "This operator is meant to be used to obtain a const element from a non const one.");
+
     bool ok = m_array->setElement(m_innerIndex, other);
     assert(ok && "Failed to set the specified element to the input struct.");
     matioCpp::unused(ok);
@@ -288,6 +293,8 @@ template <bool isConst>
 template<bool B, typename >
 bool matioCpp::StructArrayElement<isConst>::fromVectorOfVariables(const std::vector<Variable> &elements) const
 {
+    static_assert ((B == isConst) && !B, "This method can be used only if the the element is not const.");
+
     char * const * arrayFields = m_array->getStructFields();
 
     if (m_array->numberOfFields() != elements.size())
@@ -348,6 +355,8 @@ template <bool isConst>
 template<bool B, typename >
 bool matioCpp::StructArrayElement<isConst>::setField(index_type index, const Variable &newValue) const
 {
+    static_assert ((B == isConst) && !B, "This method can be used only if the the element is not const.");
+
     assert(index < numberOfFields() && "The index is out of bounds.");
     if (!newValue.isValid())
     {
@@ -362,6 +371,8 @@ template <bool isConst>
 template<bool B, typename >
 bool matioCpp::StructArrayElement<isConst>::setField(const Variable &newValue) const
 {
+    static_assert ((B == isConst) && !B, "This method can be used only if the the element is not const.");
+
     if (!newValue.isValid())
     {
         std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] The input variable is not valid." << std::endl;
@@ -381,7 +392,6 @@ bool matioCpp::StructArrayElement<isConst>::setField(const Variable &newValue) c
 template <bool isConst>
 typename matioCpp::StructArrayElement<isConst>::output_struct_type matioCpp::StructArrayElement<isConst>::asStruct() const
 {
-    assert(m_array->dimensions().size < 10);
     return m_array->getStructArrayElement(m_innerIndex);
 }
 

@@ -348,7 +348,7 @@ std::vector<std::string> matioCpp::StructArray::fields() const
     {
         size_t numberOfFields = getStructNumberOfFields();
         output.reserve(numberOfFields);
-        for (size_t i = 0; i < output.size(); ++i)
+        for (size_t i = 0; i < numberOfFields; ++i)
         {
             output.emplace_back(matvarOutput[i]);
         }

@@ -219,7 +219,7 @@ bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &
         return false;
     }
 
-    matvar_t* previousField = Mat_VarSetStructFieldByIndex(m_handler->get(), index, 0, copiedNonOwning.toMatio());
+    matvar_t* previousField = Mat_VarSetStructFieldByIndex(m_handler->get(), index, structPositionInArray, copiedNonOwning.toMatio());
 
     m_handler->dropOwnedPointer(previousField); //This avoids that any variable that was using this pointer before tries to access it.
     Mat_VarFree(previousField);
@@ -271,12 +271,30 @@ const matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t
 
 matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex)
 {
-    return matioCpp::Struct(matioCpp::WeakMatvar(Mat_VarGetStructsLinear(m_handler->get(), linearIndex, 1, 1, 0), m_handler, matioCpp::DeleteMode::Delete));
+    size_t numberOfFields = getStructNumberOfFields();
+    std::vector<matvar_t*> fields(numberOfFields + 1, nullptr);
+    for (size_t field = 0; field < numberOfFields; ++field)
+    {
+        fields[field] = Mat_VarGetStructFieldByIndex(m_handler->get(), field, linearIndex);
+    }
+    std::string newName = name() + std::to_string(linearIndex);
+    size_t dimensions[] = {1,1};
+    matvar_t* rawStruct = Mat_VarCreate(newName.c_str(), matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, 2, dimensions, fields.data(), MAT_F_DONT_COPY_DATA);
+    return matioCpp::Struct(matioCpp::WeakMatvar(rawStruct, m_handler, matioCpp::DeleteMode::Delete));
 }
 
 const matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex) const
 {
-    return matioCpp::Struct(matioCpp::WeakMatvar(Mat_VarGetStructsLinear(m_handler->get(), linearIndex, 1, 1, 0), m_handler, matioCpp::DeleteMode::Delete));
+    size_t numberOfFields = getStructNumberOfFields();
+    std::vector<matvar_t*> fields(numberOfFields + 1, nullptr);
+    for (size_t field = 0; field < numberOfFields; ++field)
+    {
+        fields[field] = Mat_VarGetStructFieldByIndex(m_handler->get(), field, linearIndex);
+    }
+    std::string newName = name() + "_" + std::to_string(linearIndex);
+    size_t dimensions[] = {1,1};
+    matvar_t* rawStruct = Mat_VarCreate(newName.c_str(), matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, 2, dimensions, fields.data(), MAT_F_DONT_COPY_DATA);
+    return matioCpp::Struct(matioCpp::WeakMatvar(rawStruct, m_handler, matioCpp::DeleteMode::Delete));
 }
 
 bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
