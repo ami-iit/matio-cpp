@@ -410,6 +410,16 @@ public:
      */
     const matioCpp::Struct asStruct() const;
 
+    /**
+     * @brief Cast the variable as a StructArray.
+     */
+    matioCpp::StructArray asStructArray();
+
+    /**
+     * @brief Cast the variable as a const StructArray.
+     */
+    const matioCpp::StructArray asStructArray() const;
+
 };
 
 #endif

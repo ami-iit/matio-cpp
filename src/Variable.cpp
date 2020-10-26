@@ -12,6 +12,7 @@
 #include <matioCpp/Variable.h>
 #include <matioCpp/CellArray.h>
 #include <matioCpp/Struct.h>
+#include <matioCpp/StructArray.h>
 
 bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
@@ -213,6 +214,12 @@ size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
 
 bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
+    if (!m_handler->isShared())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setStructField] Cannot set the field if the variable is not owning the memory." << std::endl;
+        return false;
+    }
+
     Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
     if (!copiedNonOwning.isValid())
     {
@@ -481,4 +488,14 @@ matioCpp::Struct matioCpp::Variable::asStruct()
 const matioCpp::Struct matioCpp::Variable::asStruct() const
 {
     return matioCpp::Struct(*m_handler);
+}
+
+matioCpp::StructArray matioCpp::Variable::asStructArray()
+{
+    return matioCpp::StructArray(*m_handler);
+}
+
+const matioCpp::StructArray matioCpp::Variable::asStructArray() const
+{
+    return matioCpp::StructArray(*m_handler);
 }
