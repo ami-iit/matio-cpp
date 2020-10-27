@@ -127,6 +127,9 @@ TEST_CASE("Copy/move constructor/assignment")
         matioCpp::Variable b;
         b.fromOther(a);
         checkSameVariable(a,b);
+        matioCpp::Variable c;
+        c = a;
+        checkSameVariable(a,c);
     }
 
     SECTION("Move constructor")
@@ -145,6 +148,10 @@ TEST_CASE("Copy/move constructor/assignment")
         matioCpp::Variable b;
         b.fromOther(std::move(a));
         checkVariable(b, "test", matioCpp::VariableType::Vector,
+                      matioCpp::ValueType::DOUBLE, false, {vec.size(), 1});
+        matioCpp::Variable c;
+        c = std::move(b);
+        checkVariable(c, "test", matioCpp::VariableType::Vector,
                       matioCpp::ValueType::DOUBLE, false, {vec.size(), 1});
     }
 

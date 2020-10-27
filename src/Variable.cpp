@@ -198,6 +198,22 @@ matioCpp::Variable::~Variable()
     m_handler = nullptr;
 }
 
+matioCpp::Variable &matioCpp::Variable::operator=(const matioCpp::Variable &other)
+{
+    bool ok = fromOther(other);
+    assert(ok);
+    matioCpp::unused(ok);
+    return *this;
+}
+
+matioCpp::Variable &matioCpp::Variable::operator=(matioCpp::Variable &&other)
+{
+    bool ok = fromOther(std::forward<matioCpp::Variable>(other));
+    assert(ok);
+    matioCpp::unused(ok);
+    return *this;
+}
+
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 {
     if (!checkCompatibility(inputVar))

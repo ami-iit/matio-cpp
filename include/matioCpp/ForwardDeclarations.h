@@ -84,6 +84,11 @@ template <class T> struct dependent_false : std::false_type
 };
 
 /**
+ * Utility metafunction to avoid compiler warnings about unused variables.
+ */
+template <typename... Args> inline void unused(Args&&...) {}
+
+/**
  * @brief Define the type of variable
  */
 enum class VariableType

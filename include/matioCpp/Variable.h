@@ -144,14 +144,20 @@ public:
     ~Variable();
 
     /**
-     * @brief The copy operator has been deleted to avoid a specific child class to be assigned to another one not compatible.
+     * @brief Copy assignement
+     * @param other The variable to be copied
+     * @return A reference to the variable.
+     * @note It calls fromOther(), with an assertion on its output.
      */
-    Variable& operator=(const Variable& other) = delete;
+    Variable& operator=(const Variable& other);
 
     /**
-     * @brief The copy operator has been deleted to avoid a specific child class to be assigned to another one not compatible.
+     * @brief Move assignement
+     * @param other The variable to be moved
+     * @return A reference to the variable.
+     * @note It calls fromOther(), with an assertion on its output.
      */
-    Variable& operator=(Variable&& other) = delete;
+    Variable& operator=(Variable&& other);
 
     /**
      * @brief Set this variable from an existing matio variable.
