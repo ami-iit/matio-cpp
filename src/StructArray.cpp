@@ -318,10 +318,7 @@ bool matioCpp::StructArray::indicesFromRawIndex(size_t rawIndex, std::vector<mat
 
 bool matioCpp::StructArray::setName(const std::string &newName)
 {
-    return initializeVariable(newName,
-                              VariableType::StructArray,
-                              matioCpp::ValueType::VARIABLE, dimensions(),
-                              (void*)toMatio()->data);
+    return changeName(newName);
 }
 
 void matioCpp::StructArray::resize(const std::vector<matioCpp::StructArray::index_type> &newDimensions)

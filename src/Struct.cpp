@@ -139,10 +139,7 @@ bool matioCpp::Struct::fromVectorOfVariables(std::vector<matioCpp::Variable> &el
 
 bool matioCpp::Struct::setName(const std::string &newName)
 {
-    return initializeVariable(newName,
-                              VariableType::Struct,
-                              matioCpp::ValueType::VARIABLE, dimensions(),
-                              (void*)toMatio()->data);
+    return changeName(newName);
 }
 
 matioCpp::Struct::index_type matioCpp::Struct::numberOfFields() const

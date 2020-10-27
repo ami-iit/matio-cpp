@@ -297,8 +297,10 @@ TEST_CASE("Modifications")
     matioCpp::Struct in("test", data);
     matioCpp::Struct out;
 
-    REQUIRE(out.setName("test2"));
-    REQUIRE(out.name() == "test2");
+    out = in;
+
+    REQUIRE(out.setName("t"));
+    REQUIRE(out.name() == "t");
 
 
     std::vector<double> vectorIn;
