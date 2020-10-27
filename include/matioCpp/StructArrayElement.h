@@ -300,8 +300,7 @@ bool matioCpp::StructArrayElement<isConst>::fromVectorOfVariables(const std::vec
     if (m_array->numberOfFields() != elements.size())
     {
         std::cerr << "[ERROR][matioCpp::StructArrayElement::fromVectorOfVariables] The input vector is supposed to have size equal to the number of fields of the struct array." <<std::endl;
-        assert(false);
-        return *this;
+        return false;
     }
 
     for (size_t i = 0; i < m_array->numberOfFields(); ++i)
@@ -311,20 +310,18 @@ bool matioCpp::StructArrayElement<isConst>::fromVectorOfVariables(const std::vec
             std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] The name " << elements[i].name().c_str() << " of the input vector of variables at position "
                       << std::to_string(i) << " is supposed to be " << arrayFields[i]
                       << ". Cannot insert in a struct array a new field in a single element." <<std::endl;
-            assert(false);
-            return *this;
+            return false;
         }
 
         bool ok = m_array->setStructField(i, elements[i], m_innerIndex);
         if (!ok)
         {
             std::cerr << "[ERROR][matioCpp::StructArrayElement::operator=] Failed to set field " << arrayFields[i] << "." <<std::endl;
-            assert(false);
-            return *this;
+            return false;
         }
     }
 
-    return *this;
+    return true;
 }
 
 template <bool isConst>
