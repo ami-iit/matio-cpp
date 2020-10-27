@@ -226,10 +226,7 @@ bool matioCpp::CellArray::indicesFromRawIndex(size_t rawIndex, std::vector<matio
 
 bool matioCpp::CellArray::setName(const std::string &newName)
 {
-    return initializeVariable(newName,
-                              VariableType::CellArray,
-                              matioCpp::ValueType::VARIABLE, dimensions(),
-                              (void*)toMatio()->data);
+    return changeName(newName);
 }
 
 void matioCpp::CellArray::resize(const std::vector<typename matioCpp::CellArray::index_type> &newDimensions)

@@ -249,10 +249,7 @@ const matioCpp::Span<const T> matioCpp::MultiDimensionalArray<T>::toSpan() const
 template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::setName(const std::string &newName)
 {
-    return initializeVariable(newName,
-                              VariableType::MultiDimensionalArray,
-                              matioCpp::get_type<T>::valueType(), dimensions(),
-                              (void*)data());
+    return changeName(newName);
 }
 
 template<typename T>

@@ -203,7 +203,7 @@ const matioCpp::Span<const T> matioCpp::Vector<T>::toSpan() const
 template<typename T>
 bool matioCpp::Vector<T>::setName(const std::string &newName)
 {
-    return initializeVector(newName, toSpan());
+    return changeName(newName);
 }
 
 template<typename T>

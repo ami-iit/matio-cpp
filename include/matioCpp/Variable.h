@@ -80,6 +80,19 @@ protected:
     }
 
     /**
+     * @brief Change the name of the variable
+     * @param newName The new name to set
+     * @return True if successful, false otherwise.
+     */
+    bool changeName(const std::string& newName);
+
+    /**
+     * @brief Get the total number of elements in the array
+     * @return The total number of elements
+     */
+    size_t getArrayNumberOfElements() const;
+
+    /**
      * @brief Set a cell element at a specified linear position
      * @param linearIndex The linear index of the specified element
      * @param newValue The Variable that will be copied in the specified location

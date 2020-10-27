@@ -125,6 +125,36 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     return true;
 }
 
+bool matioCpp::Variable::changeName(const std::string &newName)
+{
+    if (!isValid())
+    {
+        return false;
+    }
+
+    char* previousName = m_handler->get()->name;
+
+    if (previousName)
+    {
+        free(previousName);
+    }
+
+    m_handler->get()->name = strdup(newName.c_str());
+
+    return (name() == newName);
+}
+
+size_t matioCpp::Variable::getArrayNumberOfElements() const
+{
+    size_t totalElements = 1;
+    for (size_t dim : dimensions())
+    {
+        totalElements *= dim;
+    }
+
+    return totalElements;
+}
+
 bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Variable &newValue)
 {
     Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));

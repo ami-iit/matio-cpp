@@ -146,11 +146,7 @@ matioCpp::Element<T> &matioCpp::Element<T>::operator=(T value)
 template<typename T>
 bool matioCpp::Element<T>::setName(const std::string &newName)
 {
-    T oldValue = operator()();
-    return initializeVariable(newName,
-                              VariableType::Element,
-                              valueType(), dimensions(),
-                              (void*)&oldValue);
+    return changeName(newName);
 }
 
 template<typename T>
