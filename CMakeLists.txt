@@ -120,7 +120,8 @@ set(MATIOCPP_HDR include/matioCpp/Span.h
 
 set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/MultiDimensionalArray.tpp
-                 include/matioCpp/impl/Element.tpp)
+                 include/matioCpp/impl/Element.tpp
+                 include/matioCpp/impl/StructArrayElement.tpp)
 
 source_group("Template Implementation Files" FILES ${MATIOCPP_TPP})
 
