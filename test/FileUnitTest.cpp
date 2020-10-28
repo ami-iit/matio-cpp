@@ -270,3 +270,29 @@ TEST_CASE("Write")
     REQUIRE(readStructArrayVar(0)("element").asElement<int>()() == 3);
 
 }
+
+TEST_CASE("Batch write")
+{
+    matioCpp::File::Delete("testBatch.mat");
+    matioCpp::File file = matioCpp::File::Create("testBatch.mat");
+
+    std::vector<matioCpp::Variable> dataVector;
+    dataVector.emplace_back(matioCpp::Vector<double>("vector", 4));
+    dataVector.emplace_back(matioCpp::Element<int>("element", 3));
+    dataVector.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    dataVector.emplace_back(matioCpp::String("name", "content"));
+
+    REQUIRE(file.write(dataVector.begin(), dataVector.end()));
+
+
+    matioCpp::File::Delete("testBatchMap.mat");
+    matioCpp::File file2 = matioCpp::File::Create("testBatchMap.mat");
+
+    std::unordered_map<std::string, matioCpp::Variable> dataMap;
+    dataMap.insert(std::make_pair("vector", matioCpp::Vector<double>("vector", 4)));
+    dataMap.insert(std::make_pair("element", matioCpp::Element<int>("element", 3)));
+    dataMap.insert(std::make_pair("array", matioCpp::MultiDimensionalArray<double>("array")));
+    dataMap.insert(std::make_pair("name", matioCpp::String("name", "content")));
+
+    REQUIRE(file2.write(dataMap.begin(), dataMap.end()));
+}
