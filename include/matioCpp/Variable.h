@@ -253,7 +253,7 @@ public:
      * @param inputVar The not null pointer to a matio variable. The variable is cloned.
      * @return True if the cloning was successful.
      */
-    virtual bool fromMatio(const matvar_t * inputVar);
+    bool fromMatio(const matvar_t * inputVar);
 
     /**
      * @brief Set this variable from another variable.
@@ -261,7 +261,7 @@ public:
      * @param other The Variable from which to copy the content (data, name, type, dimensions,..).
      * @return True if the cloning was successful.
      */
-    virtual bool fromOther(const Variable& other);
+    bool fromOther(const Variable& other);
 
     /**
      * @brief Set this variable from another variable.
@@ -270,7 +270,7 @@ public:
      * @param other The source Variable. Content is moved.
      * @return True if the moving was successful.
      */
-    virtual bool fromOther(Variable&& other);
+    bool fromOther(Variable&& other);
 
     /**
      * @brief Convert this Variable to a matio variable.

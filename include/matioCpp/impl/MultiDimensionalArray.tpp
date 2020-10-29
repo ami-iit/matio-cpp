@@ -11,12 +11,6 @@
 template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t *inputPtr) const
 {
-    if (!inputPtr)
-    {
-        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The input pointer is null." << std::endl;
-        return false;
-    }
-
     matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
     matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
     get_types_from_matvart(inputPtr, outputVariableType, outputValueType);

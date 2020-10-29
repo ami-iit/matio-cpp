@@ -106,13 +106,20 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matioCpp::MatvarHandler* previousHandler = m_handler;
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
-    m_handler = new matioCpp::SharedMatvar(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
-
-    if (previousHandler)
+    if (m_handler)
     {
-        delete previousHandler;
+        if (!m_handler->importMatvar(newPtr))
+        {
+            std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
+            Mat_VarFree(newPtr);
+            return false;
+        }
+    }
+    else
+    {
+        m_handler = new matioCpp::SharedMatvar(newPtr);
     }
 
     if (!m_handler || !m_handler->get())
@@ -366,6 +373,12 @@ matioCpp::Variable &matioCpp::Variable::operator=(matioCpp::Variable &&other)
 
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 {
+    if (!inputVar)
+    {
+        std::cerr << "[matioCpp::Variable::fromMatio] The input pointer is null." << std::endl;
+        return false;
+    }
+
     if (!checkCompatibility(inputVar))
     {
         return false;
@@ -376,16 +389,17 @@ bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 
 bool matioCpp::Variable::fromOther(const matioCpp::Variable &other)
 {
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return m_handler->duplicateMatvar(other.toMatio());
+    return fromMatio(other.toMatio());
 }
 
 bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
 {
+    if (!other.isValid())
+    {
+        std::cerr << "[matioCpp::Variable::fromOther] The input variable is not valid." << std::endl;
+        return false;
+    }
+
     if (!checkCompatibility(other.toMatio()))
     {
         return false;
