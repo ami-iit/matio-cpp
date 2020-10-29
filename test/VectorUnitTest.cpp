@@ -226,6 +226,9 @@ TEST_CASE("Assignments")
         matioCpp::Vector<double> vector;
         REQUIRE(vector.fromOther(var));
         checkSameVariable(var, vector);
+        matioCpp::Element<double> el("el", 5);
+        REQUIRE(vector.fromOther(el));
+        REQUIRE(vector(0) == el);
     }
 
     SECTION("From other variable (move)")

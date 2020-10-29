@@ -12,15 +12,17 @@ template<typename T>
 bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
 {
 
-    if (variableType != matioCpp::VariableType::MultiDimensionalArray)
+    if ((variableType != matioCpp::VariableType::MultiDimensionalArray) &&
+        (variableType != matioCpp::VariableType::Vector) &&
+        (variableType != matioCpp::VariableType::Element))
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The input variable is not a multidimensional array." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The variable type is not compatible with a multidimensional array." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -31,7 +33,7 @@ bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t* inpu
 
         get_types_names_from_matvart(inputPtr, classType, dataType);
 
-        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The input type is not convertible to " <<
+        std::cerr << "[matioCpp::MultiDimensionalArray::checkCompatibility] The value type is not convertible to " <<
             typeid(T).name() <<"." << std::endl <<
             "                                                      Input class type: " << classType << std::endl <<
             "                                                      Input data type: " << dataType << std::endl;
@@ -119,7 +121,7 @@ template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         std::vector<T> empty;

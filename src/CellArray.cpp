@@ -11,13 +11,13 @@ bool matioCpp::CellArray::checkCompatibility(const matvar_t* inputPtr, matioCpp:
 {
     if (variableType != matioCpp::VariableType::CellArray)
     {
-        std::cerr << "[matioCpp::CellArray::checkCompatibility] The input variable is not a cell array." << std::endl;
+        std::cerr << "[matioCpp::CellArray::checkCompatibility] The variable type is not compatible with a cell array." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::CellArray::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::CellArray::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -102,7 +102,7 @@ matioCpp::CellArray::CellArray(CellArray &&other)
 matioCpp::CellArray::CellArray(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         size_t emptyDimensions[] = {0, 0};

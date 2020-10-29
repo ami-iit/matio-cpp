@@ -10,15 +10,16 @@
 
 bool matioCpp::StructArray::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType) const
 {
-    if (variableType != matioCpp::VariableType::StructArray)
+    if ((variableType != matioCpp::VariableType::StructArray) &&
+        (variableType != matioCpp::VariableType::Struct))
     {
-        std::cerr << "[matioCpp::StructArray::checkCompatibility] The input variable is not a struct array." << std::endl;
+        std::cerr << "[matioCpp::StructArray::checkCompatibility] The variable type is not compatible with a struct array." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::StructArray::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::StructArray::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -156,7 +157,7 @@ matioCpp::StructArray::StructArray(matioCpp::StructArray &&other)
 matioCpp::StructArray::StructArray(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         size_t emptyDimensions[] = {0, 0};

@@ -14,13 +14,13 @@ bool matioCpp::Element<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp
 
     if (variableType != matioCpp::VariableType::Element)
     {
-        std::cerr << "[matioCpp::Element::checkCompatibility] The input variable is not an Element." << std::endl;
+        std::cerr << "[matioCpp::Element::checkCompatibility] The variable type is not compatible with an Element." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Element::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Element::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -31,7 +31,7 @@ bool matioCpp::Element<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp
 
         get_types_names_from_matvart(inputPtr, classType, dataType);
 
-        std::cerr << "[matioCpp::Element::checkCompatibility] The input type is not convertible to " <<
+        std::cerr << "[matioCpp::Element::checkCompatibility] The value type is not convertible to " <<
             typeid(T).name() <<"." << std::endl <<
             "                                        Input class type: " << classType << std::endl <<
             "                                        Input data type: " << dataType << std::endl;
@@ -92,7 +92,7 @@ template<typename T>
 matioCpp::Element<T>::Element(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         T empty;

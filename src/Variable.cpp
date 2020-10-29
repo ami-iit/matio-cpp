@@ -476,7 +476,7 @@ matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 
 bool matioCpp::Variable::isValid() const
 {
-    return m_handler->get();
+    return m_handler->get() && checkCompatibility(m_handler->get(), m_handler->variableType(), m_handler->valueType());
 }
 
 matioCpp::CellArray matioCpp::Variable::asCellArray()

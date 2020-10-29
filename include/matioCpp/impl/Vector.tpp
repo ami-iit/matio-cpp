@@ -19,15 +19,16 @@ template<typename T>
 bool matioCpp::Vector<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
 {
 
-    if (variableType != matioCpp::VariableType::Vector)
+    if ((variableType != matioCpp::VariableType::Vector) &&
+        (variableType != matioCpp::VariableType::Element))
     {
-        std::cerr << "[matioCpp::Vector::checkCompatibility] The input variable is not a vector." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The variable type is not compatible with a vector." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Vector::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -38,7 +39,7 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp:
 
         get_types_names_from_matvart(inputPtr, classType, dataType);
 
-        std::cerr << "[matioCpp::Vector::checkCompatibility] The input type is not convertible to " <<
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The value type is not convertible to " <<
             typeid(T).name() <<"." << std::endl <<
             "                                       Input class type: " << classType << std::endl <<
             "                                       Input data type: " << dataType << std::endl;
@@ -114,7 +115,7 @@ matioCpp::Vector<T>::Vector(const MatvarHandler &handler)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
 
-    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         std::vector<T> empty;

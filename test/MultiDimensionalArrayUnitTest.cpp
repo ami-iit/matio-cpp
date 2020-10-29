@@ -247,6 +247,10 @@ TEST_CASE("Assignments")
         matioCpp::MultiDimensionalArray<double> array;
         REQUIRE(array.fromOther(var));
         checkSameVariable(var, array);
+        matioCpp::Vector<double> vec("test", 5);
+        REQUIRE(array.fromOther(vec));
+        matioCpp::Element<double> el("el", 7);
+        REQUIRE(array.fromOther(el));
     }
 
     SECTION("From other variable (move)")
@@ -331,6 +335,7 @@ TEST_CASE("Modifications")
     REQUIRE(out.dimensions().size() == 2);
     REQUIRE(out.dimensions()[0] == 1);
     REQUIRE(out.dimensions()[1] == 5);
+    REQUIRE(out.asVector<int>().isValid());
 }
 
 TEST_CASE("Data")
