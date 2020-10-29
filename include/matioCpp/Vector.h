@@ -28,7 +28,7 @@ class matioCpp::Vector : public matioCpp::Variable
      * @param inputVector A span to an existing vector.
      * @return true in case of success.
      */
-    bool initializeVector(const std::string& name, Span<T> inputVector);
+    bool initializeVector(const std::string& name, Span<const T> inputVector);
 
     /**
      * @brief Check if an input matio pointer is compatible with the vector class.
@@ -88,7 +88,8 @@ public:
      * @param name The name of the Vector
      * @param inputVector The input data.
      */
-    Vector(const std::string& name, Span<T> inputVector);
+    template<typename in = T, typename = typename std::enable_if<!std::is_same<T, const char>::value>::type>
+    Vector(const std::string& name, Span<const T> inputVector);
 
     /**
      * @brief Constructor

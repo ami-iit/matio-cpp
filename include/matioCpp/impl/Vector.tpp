@@ -9,7 +9,7 @@
  */
 
 template<typename T>
-bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
+bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<const T> inputVector)
 {
     size_t dimensions[] = {1, static_cast<size_t>(inputVector.size())};
     return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputVector.data());
@@ -83,7 +83,8 @@ matioCpp::Vector<T>::Vector(const std::string &name, matioCpp::Vector<T>::index_
 }
 
 template<typename T>
-matioCpp::Vector<T>::Vector(const std::string& name, Span<T> inputVector)
+template<typename, typename>
+matioCpp::Vector<T>::Vector(const std::string& name, Span<const T> inputVector)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     initializeVector(name, inputVector);
