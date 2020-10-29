@@ -216,7 +216,7 @@ matioCpp::Variable matioCpp::File::read(const std::string &name) const
     return output;
 }
 
-bool matioCpp::File::write(matioCpp::Variable &variable)
+bool matioCpp::File::write(const Variable &variable)
 {
     if (!isOpen())
     {
@@ -235,7 +235,14 @@ bool matioCpp::File::write(matioCpp::Variable &variable)
         std::cerr << "[ERROR][matioCpp::File::write] The input variable is not valid." <<std::endl;
         return false;
     }
-    bool success = Mat_VarWrite(m_pimpl->mat_ptr, variable.toMatio(), matio_compression::MAT_COMPRESSION_NONE) == 0;
+
+    matvar_t* shallowCopy = Mat_VarDuplicate(variable.toMatio(), 0); //Shallow copy to remove const
+
+    bool success = Mat_VarWrite(m_pimpl->mat_ptr, shallowCopy, matio_compression::MAT_COMPRESSION_NONE) == 0;
+
+    shallowCopy->data = nullptr;
+    Mat_VarFree(shallowCopy);
+
 
     if (!success)
     {

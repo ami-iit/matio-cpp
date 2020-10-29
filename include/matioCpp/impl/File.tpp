@@ -12,13 +12,13 @@
  */
 
 template<class input>
-input &matioCpp::File::getVariable(input& it)
+const input &matioCpp::File::getVariable(const input& it)
 {
     return it;
 }
 
 template<class key, class input>
-input &matioCpp::File::getVariable(std::pair<key, input>& it)
+const input &matioCpp::File::getVariable(const std::pair<key, input>& it)
 {
     return it.second;
 }

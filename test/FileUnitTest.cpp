@@ -294,5 +294,5 @@ TEST_CASE("Batch write")
     dataMap.insert(std::make_pair("array", matioCpp::MultiDimensionalArray<double>("array")));
     dataMap.insert(std::make_pair("name", matioCpp::String("name", "content")));
 
-    REQUIRE(file2.write(dataMap.begin(), dataMap.end()));
+    REQUIRE(file2.write(dataMap.cbegin(), dataMap.cend()));
 }

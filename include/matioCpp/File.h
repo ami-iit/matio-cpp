@@ -25,7 +25,7 @@ class matioCpp::File
      * @return The same input
      */
     template<class input>
-    inline input &getVariable(input& it);
+    inline const input &getVariable(const input& it);
 
     /**
      * @brief Convert the input to a Variable.
@@ -34,7 +34,7 @@ class matioCpp::File
      * @return The second element of the input
      */
     template<class key, class input>
-    inline input &getVariable(std::pair<key, input>& it);
+    inline const input &getVariable(const std::pair<key, input>& it);
 
 public:
 
@@ -146,16 +146,15 @@ public:
     /**
      * @brief Write a Variable to a file
      * @param variable The input variable.
-     * @note The input variable is not const since matio needs a non-const matvar_t pointer when writing to a file.
+     * @note The it performs a shallow copy of the variable.
      * @return True if successful.
      */
-    bool write(Variable &variable);
+    bool write(const Variable &variable);
 
     /**
      * @brief Write a Variable to a file in a batch
      * @param begin Iterator to the first element to be written
      * @param end Iterator to the first element that is not written
-     * @note The iterators are supposed to be not const since matio needs a non-const matvar_t pointer when writing to a file.
      * @return True if successful.
      */
     template <class iterator>
