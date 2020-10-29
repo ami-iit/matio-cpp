@@ -6,6 +6,7 @@
  */
 
 #include <matioCpp/MatvarHandler.h>
+#include <matioCpp/SharedMatvar.h>
 #include <matioCpp/ConversionUtilities.h>
 
 void matioCpp::MatvarHandler::Ownership::dropDependencies(matvar_t *previouslyOwned)
@@ -35,8 +36,9 @@ void matioCpp::MatvarHandler::Ownership::dropDependencies(matvar_t *previouslyOw
     m_dependencyTree.erase(previouslyOwned);
 }
 
-matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<matvar_t *> pointerToDeallocate)
+matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<matvar_t *> pointerToDeallocate, matioCpp::DeleteMode deleteMode)
     : m_main(pointerToDeallocate)
+    , m_deleteMode(deleteMode)
 {
 
 }
@@ -104,7 +106,17 @@ void matioCpp::MatvarHandler::Ownership::dropAll()
     {
         if (*locked)
         {
-            Mat_VarFree(*locked);
+            if (m_deleteMode == DeleteMode::Delete || m_deleteMode == DeleteMode::ShallowDelete)
+            {
+                if (m_deleteMode == DeleteMode::ShallowDelete)
+                {
+                    (*locked)->data = nullptr; //When doing a shallow copy, the data pointer is copied.
+                    //Hence, by freeing the shallowCopy, also the data would be deallocated.
+                    //This avoids matio to attempt freeing the data
+                    // See https://github.com/tbeu/matio/issues/158
+                }
+                Mat_VarFree(*locked);
+            }
             *locked = nullptr;
         }
     }
@@ -163,7 +175,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
 
     if (outputVariableType == matioCpp::VariableType::CellArray) // It is a different case because Mat_VarDuplicate segfaults with a CellArray
     {
-        matvar_t * shallowCopy = Mat_VarDuplicate(inputPtr, 0); // Shallow copy to remove const
+        SharedMatvar shallowCopy = SharedMatvar::GetMatvarShallowDuplicate(inputPtr); // Shallow copy to remove const
 
         size_t totalElements = 1;
 
@@ -175,7 +187,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
         for (size_t i = 0; i < totalElements; ++i)
         {
-            matvar_t* internalPointer = Mat_VarGetCell(shallowCopy, i);
+            matvar_t* internalPointer = Mat_VarGetCell(shallowCopy.get(), i);
             if (internalPointer)
             {
                 vectorOfPointers[i] = GetMatvarDuplicate(internalPointer); //Deep copy
@@ -183,17 +195,10 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         }
 
         outputPtr = Mat_VarCreate(inputPtr->name, inputPtr->class_type, inputPtr->data_type, inputPtr->rank, inputPtr->dims, vectorOfPointers.data(), 0);
-
-        shallowCopy->data = nullptr; //This is a workaround for what it seems a matio problem.
-            //When doing a shallow copy, the data is not copied,
-            //but it will try to free it anyway with Mat_VarFree.
-            //This avoids matio to attempt freeing the data
-            // See https://github.com/tbeu/matio/issues/158
-        Mat_VarFree(shallowCopy);
     }
     else if ((outputVariableType == matioCpp::VariableType::Struct) || (outputVariableType == matioCpp::VariableType::StructArray))
     {
-        matvar_t * shallowCopy = Mat_VarDuplicate(inputPtr, 0); // Shallow copy to remove const
+        SharedMatvar shallowCopy = SharedMatvar::GetMatvarShallowDuplicate(inputPtr); // Shallow copy to remove const
 
         size_t totalElements = 1;
 
@@ -202,7 +207,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
             totalElements *= inputPtr->dims[i];
         }
 
-        size_t numberOfFields = Mat_VarGetNumberOfFields(shallowCopy);
+        size_t numberOfFields = Mat_VarGetNumberOfFields(shallowCopy.get());
 
         std::vector<matvar_t*> vectorOfPointers(totalElements * numberOfFields + 1, nullptr); //The vector of pointers has to be nullptr terminated.
 
@@ -211,7 +216,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         {
             for (size_t field = 0; field < numberOfFields; ++field)
             {
-                matvar_t* internalPointer = Mat_VarGetStructFieldByIndex(shallowCopy, field, i);
+                matvar_t* internalPointer = Mat_VarGetStructFieldByIndex(shallowCopy.get(), field, i);
                 if (internalPointer)
                 {
                     vectorOfPointers[innerIndex] = GetMatvarDuplicate(internalPointer); //Deep copy
@@ -222,12 +227,6 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         assert(innerIndex == totalElements * numberOfFields);
 
         outputPtr = Mat_VarCreate(inputPtr->name, inputPtr->class_type, inputPtr->data_type, inputPtr->rank, inputPtr->dims, vectorOfPointers.data(), 0);
-
-        shallowCopy->data = nullptr; //This is a workaround for what it seems a matio problem.
-            //When doing a shallow copy, the data is not copied,
-            //but it will try to free it anyway with Mat_VarFree.
-            //This avoids matio to attempt freeing the data
-        Mat_VarFree(shallowCopy);
     }
     else
     {

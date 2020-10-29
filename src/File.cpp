@@ -236,13 +236,9 @@ bool matioCpp::File::write(const Variable &variable)
         return false;
     }
 
-    matvar_t* shallowCopy = Mat_VarDuplicate(variable.toMatio(), 0); //Shallow copy to remove const
+    SharedMatvar shallowCopy = SharedMatvar::GetMatvarShallowDuplicate(variable.toMatio()); // Shallow copy to remove const
 
-    bool success = Mat_VarWrite(m_pimpl->mat_ptr, shallowCopy, matio_compression::MAT_COMPRESSION_NONE) == 0;
-
-    shallowCopy->data = nullptr;
-    Mat_VarFree(shallowCopy);
-
+    bool success = Mat_VarWrite(m_pimpl->mat_ptr, shallowCopy.get(), matio_compression::MAT_COMPRESSION_NONE) == 0;
 
     if (!success)
     {

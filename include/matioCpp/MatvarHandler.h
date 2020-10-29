@@ -30,6 +30,8 @@ protected:
     {
         std::weak_ptr<matvar_t*> m_main; /** A pointer to the main matvar_t* that needs to be freed when the corresponding ownership is deallocated. It is the one owning the pointers in the other two sets. **/
 
+        matioCpp::DeleteMode m_deleteMode; /** Deletion mode for the main matvar_t*. **/
+
         std::unordered_map<matvar_t*, Dependency> m_dependencyTree; /** A map that links a pointer to its Dependency object. **/
 
         /**
@@ -43,8 +45,9 @@ protected:
         /**
          * @brief Constructor
          * @param ponterToDeallocate A weak pointer toward the matvar_t* that needs to be freed.
+         * @param deleteMode Defines how the pointer has to be deallocated
          */
-        Ownership(std::weak_ptr<matvar_t*> pointerToDeallocate);
+        Ownership(std::weak_ptr<matvar_t*> pointerToDeallocate, matioCpp::DeleteMode deleteMode = matioCpp::DeleteMode::Delete);
 
         /**
          * @brief Destructor

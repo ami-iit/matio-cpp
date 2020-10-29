@@ -88,6 +88,18 @@ TEST_CASE("Constructors")
         REQUIRE(otherShared.get() == matioVar);
         REQUIRE(otherWeak.get() == matioVar);
     }
+
+    SECTION("Shallow Duplicate")
+    {
+        std::vector<double> vec(7);
+        std::vector<size_t> dimensions = {vec.size(), 1};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::SharedMatvar sharedShallow = matioCpp::SharedMatvar::GetMatvarShallowDuplicate(matioVar);
+        REQUIRE(sharedShallow.get()->data == matioVar->data);
+        Mat_VarFree(matioVar);
+    }
 }
 
 TEST_CASE("Ownership")

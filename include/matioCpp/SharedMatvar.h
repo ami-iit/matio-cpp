@@ -107,6 +107,14 @@ public:
      */
     std::weak_ptr<MatvarHandler::Ownership> ownership() const;
 
+    /**
+     * @brief Get the shallow duplicate of an input Matvar
+     * @param inputPtr The pointer do duplicate in a shallow way
+     * @return A SharedMatvar owning the shallow duplicate
+     * @warning If the inputPtr gets deallocated, trying to use the output SharedMatvar may result in a segfault.
+     */
+    static SharedMatvar GetMatvarShallowDuplicate(const matvar_t *inputPtr);
+
 };
 
 #endif // MATIOCPP_SHAREDMATVAR_H

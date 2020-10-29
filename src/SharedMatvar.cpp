@@ -107,3 +107,11 @@ std::weak_ptr<matioCpp::MatvarHandler::Ownership> matioCpp::SharedMatvar::owners
 {
     return m_ownership;
 }
+
+matioCpp::SharedMatvar matioCpp::SharedMatvar::GetMatvarShallowDuplicate(const matvar_t *inputPtr)
+{
+    SharedMatvar output;
+    output.m_ownership = std::make_shared<MatvarHandler::Ownership>(output.m_ptr, DeleteMode::ShallowDelete);
+    output.importMatvar(Mat_VarDuplicate(inputPtr, 0));
+    return output;
+}

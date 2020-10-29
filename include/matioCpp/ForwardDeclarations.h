@@ -149,6 +149,7 @@ enum class FileVersion
 enum class DeleteMode
 {
     DoNotDelete, /** The handler does not delete the pointer. **/
+    ShallowDelete, /** The handler deletes the pointer but not the data. **/
     Delete /** The handler deletes the pointer. **/
 };
 
