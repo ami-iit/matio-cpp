@@ -152,6 +152,11 @@ std::vector<std::string> matioCpp::Struct::fields() const
     return output;
 }
 
+void matioCpp::Struct::clear()
+{
+    fromOther(std::move(Struct(name())));
+}
+
 bool matioCpp::Struct::isFieldExisting(const std::string &field) const
 {
     return getStructFieldIndex(field) < numberOfFields();

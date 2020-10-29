@@ -222,6 +222,11 @@ void matioCpp::CellArray::resize(const std::vector<typename matioCpp::CellArray:
     fromOther(std::move(newArray));
 }
 
+void matioCpp::CellArray::clear()
+{
+    fromOther(std::move(CellArray(name())));
+}
+
 typename matioCpp::CellArray::index_type matioCpp::CellArray::numberOfElements() const
 {
     return getArrayNumberOfElements();

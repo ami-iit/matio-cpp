@@ -336,6 +336,9 @@ TEST_CASE("Modifications")
     REQUIRE(out.dimensions()[0] == 1);
     REQUIRE(out.dimensions()[1] == 5);
     REQUIRE(out.asVector<int>().isValid());
+
+    out.clear();
+    REQUIRE(out.numberOfElements() == 0);
 }
 
 TEST_CASE("Data")

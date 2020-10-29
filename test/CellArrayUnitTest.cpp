@@ -345,5 +345,8 @@ TEST_CASE("Modifications")
     REQUIRE(in.setElement(4, anotherString));
     REQUIRE(in(4).asString()() == "anotherString");
     REQUIRE_FALSE(previousElement.isValid());
+
+    in.clear();
+    REQUIRE(in.numberOfElements() == 0);
 }
 

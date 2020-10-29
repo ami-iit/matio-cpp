@@ -342,6 +342,11 @@ std::vector<std::string> matioCpp::StructArray::fields() const
     return output;
 }
 
+void matioCpp::StructArray::clear()
+{
+    fromOther(std::move(StructArray(name())));
+}
+
 bool matioCpp::StructArray::isFieldExisting(const std::string &field) const
 {
     return getStructFieldIndex(field) < numberOfFields();

@@ -216,6 +216,12 @@ void matioCpp::Vector<T>::resize(typename matioCpp::Vector<T>::index_type newSiz
 }
 
 template<typename T>
+void matioCpp::Vector<T>::clear()
+{
+    fromOther(std::move(Vector<T>(name())));
+}
+
+template<typename T>
 typename matioCpp::Vector<T>::pointer matioCpp::Vector<T>::data()
 {
     return static_cast<T*>(toMatio()->data);

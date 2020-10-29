@@ -181,6 +181,11 @@ public:
     void resize(index_type newSize);
 
     /**
+     * @brief Clear the vector
+     */
+    void clear();
+
+    /**
      * @brief Direct access to the underlying array.
      * @return A pointer to the internal data.
      */

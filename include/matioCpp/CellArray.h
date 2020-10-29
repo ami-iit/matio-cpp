@@ -145,6 +145,11 @@ public:
     void resize(const std::vector<index_type>& newDimensions);
 
     /**
+     * @brief Clear the cell array
+     */
+    void clear();
+
+    /**
      * @brief Get the total number of elements in the array
      * @return The total number of elements
      */

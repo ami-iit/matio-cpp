@@ -365,6 +365,13 @@ TEST_CASE("Assignments and modifications")
             REQUIRE(in[3]("element").asElement<int>() == 7);
 
         }
+
+        SECTION("Clear")
+        {
+            out.clear();
+            REQUIRE(out.numberOfElements() == 0);
+            REQUIRE(out.numberOfFields() == 0);
+        }
     }
 
     Mat_VarFree(matioVar);

@@ -116,6 +116,11 @@ public:
     std::vector<std::string> fields() const;
 
     /**
+     * @brief Clear the struct
+     */
+    void clear();
+
+    /**
      * @brief Check if a field is existing
      * It performs a linear search over the output of fields().
      * @return True if the field is existing, false otherwise.

@@ -283,6 +283,9 @@ TEST_CASE("Modifications")
     in.pop_back();
     out.resize(3);
     checkSameVector(matioCpp::make_span(in), out.toSpan());
+
+    in.clear();
+    REQUIRE(in.size() == 0);
 }
 
 TEST_CASE("Data")

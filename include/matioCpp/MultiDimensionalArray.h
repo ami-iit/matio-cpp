@@ -167,6 +167,11 @@ public:
     void resize(const std::vector<index_type>& newDimensions);
 
     /**
+     * @brief Clear the multidimensional array
+     */
+    void clear();
+
+    /**
      * @brief Direct access to the underlying array.
      * @note The underlying array is in column-major format.
      * @return A pointer to the internal data.

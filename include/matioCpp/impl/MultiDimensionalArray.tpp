@@ -266,6 +266,12 @@ void matioCpp::MultiDimensionalArray<T>::resize(const std::vector<typename matio
 }
 
 template<typename T>
+void matioCpp::MultiDimensionalArray<T>::clear()
+{
+    fromOther(std::move(MultiDimensionalArray<T>(name())));
+}
+
+template<typename T>
 typename matioCpp::MultiDimensionalArray<T>::pointer matioCpp::MultiDimensionalArray<T>::data()
 {
     return static_cast<typename matioCpp::MultiDimensionalArray<T>::pointer>(toMatio()->data);
