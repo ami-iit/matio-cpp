@@ -14,6 +14,86 @@ class matioCpp::MatvarHandler
 {
 protected:
 
+    class PointerInfo
+    {
+        matvar_t* m_ptr; /** The matvar_t pointer. **/
+
+        VariableType m_varType{VariableType::Unsupported}; /** The corresponding variable type. **/
+
+        ValueType m_valueType{ValueType::UNSUPPORTED}; /** The corresponding value type. **/
+
+        DeleteMode m_mode; /** The deletion mode. **/
+
+    public:
+
+        /**
+         * @brief Default constructor
+         */
+        PointerInfo();
+
+        /**
+         * @brief Constructor
+         * @param ptr The input pointer
+         * @param deleteMode The deletion mode
+         */
+        PointerInfo(matvar_t* ptr, DeleteMode deleteMode);
+
+        /**
+         * Destructor
+         */
+        ~PointerInfo();
+
+        /**
+         * @brief Change the input pointer
+         * @param ptr The new pointer
+         * @param deleteMode The corresponding deletion mode
+         */
+        void changePointer(matvar_t* ptr, DeleteMode deleteMode);
+
+        /**
+         * @brief Delete the matvar pointer
+         */
+        void deletePointer();
+
+        /**
+         * @brief Get the matvar pointer
+         * @return The inner matvar pointer.
+         */
+        matvar_t* pointer();
+
+        /**
+         * @brief Get the variable type
+         * @return the variable type.
+         */
+        VariableType variableType() const;
+
+        /**
+         * @brief Get the value type
+         * @return the value type.
+         */
+        ValueType valueType() const;
+
+        /**
+         * @brief Get the deletion mode
+         * @return the deletion mode.
+         */
+        DeleteMode deleteMode() const;
+
+        /**
+         * @brief Comparison operator
+         * @param other The pointer to compare
+         * @return True if input pointer is different from the other input pointer.
+         */
+        bool operator!=(const PointerInfo& other) const;
+
+        /**
+         * @brief Delete the given pointer given the mode
+         * @param ptr The pointer to delete
+         * @param deleteMode The deletion mode
+         */
+        static void DeletePointer(matvar_t *ptr, DeleteMode deleteMode);
+    };
+
     struct Dependency
     {
         std::unordered_set<matvar_t*> dependencies; /** The set of dependencies. **/
@@ -28,9 +108,7 @@ protected:
      */
     class Ownership
     {
-        std::weak_ptr<matvar_t*> m_main; /** A pointer to the main matvar_t* that needs to be freed when the corresponding ownership is deallocated. It is the one owning the pointers in the other two sets. **/
-
-        matioCpp::DeleteMode m_deleteMode; /** Deletion mode for the main matvar_t*. **/
+        std::weak_ptr<PointerInfo> m_main; /** A pointer to the main PointerInfo that contains the pointer to be freed when the corresponding ownership is deallocated. It is the one owning the pointers in the other two sets. **/
 
         std::unordered_map<matvar_t*, Dependency> m_dependencyTree; /** A map that links a pointer to its Dependency object. **/
 
@@ -44,10 +122,9 @@ protected:
 
         /**
          * @brief Constructor
-         * @param ponterToDeallocate A weak pointer toward the matvar_t* that needs to be freed.
-         * @param deleteMode Defines how the pointer has to be deallocated
+         * @param ponterToDeallocate A weak pointer toward the PointerInfo that contains the pointer to be freed.
          */
-        Ownership(std::weak_ptr<matvar_t*> pointerToDeallocate, matioCpp::DeleteMode deleteMode = matioCpp::DeleteMode::Delete);
+        Ownership(std::weak_ptr<PointerInfo> pointerToDeallocate);
 
         /**
          * @brief Destructor
@@ -65,6 +142,8 @@ protected:
          * @brief Add a pointer to the list of owned pointers.
          * This will not be deallocated as it is supposed to be part of the matvar_t pointer stored in m_ptr.
          * @param owned The pointer to be considered owned.
+         * @param owner The owner of owned. It is necessary to define the dependency tree.
+         * @param mode Define how the owned variable has to be deleted
          */
         void own(matvar_t* owned, const MatvarHandler* owner, matioCpp::DeleteMode mode);
 
@@ -81,11 +160,11 @@ protected:
     };
 
     /**
-     * @brief Shared pointer to a matvar_t pointer. This allows sharing the same matvar_t across several objects.
+     * @brief Shared pointer to a PointerInfo. This allows sharing the same matvar_t across several objects.
      *
      * Since it is separate from the ownership, it is possible to avoid deallocating this pointer if necessary (e.g. when getting an element from a struct).
      */
-    std::shared_ptr<matvar_t*> m_ptr;
+    std::shared_ptr<PointerInfo> m_ptr;
 
 public:
 
@@ -99,8 +178,9 @@ public:
     /**
      * @brief Constructor from an already existing matvar_t pointer
      * @param inputPtr The input matvar_t pointer
+     * @param deleteMode The mode with which the pointer has to be deleted
      */
-    MatvarHandler(matvar_t *inputPtr);
+    MatvarHandler(matvar_t *inputPtr, matioCpp::DeleteMode deleteMode = matioCpp::DeleteMode::Delete);
 
     /**
      * @brief Copy constructor
@@ -169,6 +249,13 @@ public:
      * @return A copy of the pointer
      */
     static matvar_t* GetMatvarDuplicate(const matvar_t* inputPtr);
+
+    /**
+     * @brief Delete the specified Matvar
+     * @param pointerToDelete The matvar to be deleted
+     * @param mode The deletion mode
+     */
+    static void DeleteMatvar(matvar_t* pointerToDelete, DeleteMode mode = DeleteMode::Delete);
 
 };
 

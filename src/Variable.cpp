@@ -45,7 +45,7 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
         if (!m_handler->importMatvar(newPtr))
         {
             std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
-            Mat_VarFree(newPtr);
+            MatvarHandler::DeleteMatvar(newPtr);
             return false;
         }
     }
@@ -113,7 +113,7 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
         if (!m_handler->importMatvar(newPtr))
         {
             std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
-            Mat_VarFree(newPtr);
+            MatvarHandler::DeleteMatvar(newPtr);
             return false;
         }
     }
@@ -172,7 +172,7 @@ bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Vari
     matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
 
     m_handler->dropOwnedPointer(previousCell); //This avoids that any variable that was using this pointer before tries to access it.
-    Mat_VarFree(previousCell);
+    MatvarHandler::DeleteMatvar(previousCell);
 
     return Mat_VarGetCell(m_handler->get(), linearIndex);
 }
@@ -233,7 +233,7 @@ bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &
     matvar_t* previousField = Mat_VarSetStructFieldByIndex(m_handler->get(), index, structPositionInArray, copiedNonOwning.toMatio());
 
     m_handler->dropOwnedPointer(previousField); //This avoids that any variable that was using this pointer before tries to access it.
-    Mat_VarFree(previousField);
+    MatvarHandler::DeleteMatvar(previousField);
 
     return Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray);
 }
