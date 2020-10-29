@@ -163,9 +163,24 @@ size_t matioCpp::Variable::getArrayNumberOfElements() const
 
 bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Variable &newValue)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setCellElement] The variable is not valid." << std::endl;
+        return false;
+    }
+
     Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
     if (!copiedNonOwning.isValid())
     {
+        std::cerr << "[ERROR][matioCpp::Variable::setCellElement] Could not copy the new value. ";
+        if (!newValue.isValid())
+        {
+            std::cerr << "The new value is not valid. " << std::endl;
+        }
+        else
+        {
+            std::cerr << "Matio internal problem. " << std::endl;
+        }
         return false;
     }
 
@@ -179,21 +194,25 @@ bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Vari
 
 matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex)
 {
+    assert(isValid());
     return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
 }
 
 const matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
 {
+    assert(isValid());
     return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
 }
 
 size_t matioCpp::Variable::getStructNumberOfFields() const
 {
+    assert(isValid());
     return Mat_VarGetNumberOfFields(m_handler->get());
 }
 
 char * const * matioCpp::Variable::getStructFields() const
 {
+    assert(isValid());
     return Mat_VarGetStructFieldnames(m_handler->get());
 }
 
@@ -218,6 +237,12 @@ size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
 
 bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setStructField] The variable is not valid." << std::endl;
+        return false;
+    }
+
     if (!m_handler->isShared())
     {
         std::cerr << "[ERROR][matioCpp::Variable::setStructField] Cannot set the field if the variable is not owning the memory." << std::endl;
@@ -240,6 +265,12 @@ bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &
 
 bool matioCpp::Variable::addStructField(const std::string &newField)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::addStructField] The variable is not valid." << std::endl;
+        return false;
+    }
+
     if (m_handler->isShared()) //This means that the variable is not part of an array
     {
         int err = Mat_VarAddStructField(m_handler->get(), newField.c_str());
@@ -259,6 +290,12 @@ bool matioCpp::Variable::addStructField(const std::string &newField)
 
 bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setStructField] The variable is not valid." << std::endl;
+        return false;
+    }
+
     size_t fieldindex = getStructFieldIndex(newValue.name());
 
     if ((fieldindex == getStructNumberOfFields()) && !((getArrayNumberOfElements() == 1) && addStructField(newValue.name())))
@@ -272,16 +309,20 @@ bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size
 
 matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray)
 {
+    assert(isValid());
     return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
 }
 
 const matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray) const
 {
+    assert(isValid());
     return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
 }
 
 matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex)
 {
+    assert(isValid());
+
     size_t numberOfFields = getStructNumberOfFields();
     std::vector<matvar_t*> fields(numberOfFields + 1, nullptr);
     for (size_t field = 0; field < numberOfFields; ++field)
@@ -296,6 +337,8 @@ matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex)
 
 const matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex) const
 {
+    assert(isValid());
+
     size_t numberOfFields = getStructNumberOfFields();
     std::vector<matvar_t*> fields(numberOfFields + 1, nullptr);
     for (size_t field = 0; field < numberOfFields; ++field)
@@ -415,16 +458,20 @@ bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
     }
     m_handler = other.m_handler;
     other.m_handler = nullptr;
-    return true;
+    return isValid();
 }
 
 const matvar_t *matioCpp::Variable::toMatio() const
 {
+    assert(isValid());
+
     return m_handler->get();
 }
 
 matvar_t *matioCpp::Variable::toMatio()
 {
+    assert(isValid());
+
     return m_handler->get();
 }
 
