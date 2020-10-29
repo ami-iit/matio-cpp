@@ -32,7 +32,7 @@ bool matioCpp::Element<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp
         get_types_names_from_matvart(inputPtr, classType, dataType);
 
         std::cerr << "[matioCpp::Element::checkCompatibility] The value type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl <<
+            get_type<T>::toString() <<"." << std::endl <<
             "                                        Input class type: " << classType << std::endl <<
             "                                        Input data type: " << dataType << std::endl;
         return false;
