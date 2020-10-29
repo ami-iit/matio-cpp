@@ -244,6 +244,18 @@ public:
     virtual void dropOwnedPointer(matvar_t* previouslyOwnedPointer) = 0;
 
     /**
+     * @brief Get the value type of the pointer
+     * @return The value type of the pointer
+     */
+    ValueType valueType() const;
+
+    /**
+     * @brief Get the variable type of the pointer
+     * @return The variable type of the pointer
+     */
+    VariableType variableType() const;
+
+    /**
      * @brief Get a duplicate of the input matvar pointer/
      * @param inputPtr The input pointer
      * @return A copy of the pointer

@@ -8,13 +8,9 @@
 
 #include <matioCpp/StructArray.h>
 
-bool matioCpp::StructArray::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::StructArray::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType) const
 {
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
-
-    if (outputVariableType != matioCpp::VariableType::StructArray)
+    if (variableType != matioCpp::VariableType::StructArray)
     {
         std::cerr << "[matioCpp::StructArray::checkCompatibility] The input variable is not a struct array." << std::endl;
         return false;
@@ -160,7 +156,7 @@ matioCpp::StructArray::StructArray(matioCpp::StructArray &&other)
 matioCpp::StructArray::StructArray(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get()))
+    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         size_t emptyDimensions[] = {0, 0};

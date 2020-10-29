@@ -308,7 +308,7 @@ const matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIn
     return matioCpp::Struct(matioCpp::WeakMatvar(rawStruct, m_handler, matioCpp::DeleteMode::Delete));
 }
 
-bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr, matioCpp::VariableType, matioCpp::ValueType) const
 {
     return inputPtr;
 }
@@ -379,7 +379,11 @@ bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
         return false;
     }
 
-    if (!checkCompatibility(inputVar))
+    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
+    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(inputVar, outputVariableType, outputValueType);
+
+    if (!checkCompatibility(inputVar, outputVariableType, outputValueType))
     {
         return false;
     }
@@ -400,7 +404,7 @@ bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
         return false;
     }
 
-    if (!checkCompatibility(other.toMatio()))
+    if (!checkCompatibility(other.toMatio(), other.variableType(), other.valueType()))
     {
         return false;
     }
@@ -438,18 +442,12 @@ std::string matioCpp::Variable::name() const
 
 matioCpp::VariableType matioCpp::Variable::variableType() const
 {
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(m_handler->get(), outputVariableType, outputValueType);
-    return outputVariableType;
+    return m_handler->variableType();
 }
 
 matioCpp::ValueType matioCpp::Variable::valueType() const
 {
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(m_handler->get(), outputVariableType, outputValueType);
-    return outputValueType;
+    return m_handler->valueType();
 }
 
 bool matioCpp::Variable::isComplex() const

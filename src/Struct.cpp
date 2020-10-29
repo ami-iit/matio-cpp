@@ -8,13 +8,10 @@
 
 #include <matioCpp/Struct.h>
 
-bool matioCpp::Struct::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::Struct::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
 {
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
 
-    if (outputVariableType != matioCpp::VariableType::Struct)
+    if (variableType != matioCpp::VariableType::Struct)
     {
         std::cerr << "[matioCpp::Struct::checkCompatibility] The input variable is not a struct." << std::endl;
         return false;
@@ -80,7 +77,7 @@ matioCpp::Struct::Struct(matioCpp::Struct &&other)
 matioCpp::Struct::Struct(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get()))
+    if (!checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         size_t emptyDimensions[] = {1, 1};

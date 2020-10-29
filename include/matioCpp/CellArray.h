@@ -20,9 +20,11 @@ class matioCpp::CellArray : public matioCpp::Variable
     /**
      * @brief Check if an input matio pointer is compatible with the CellArray class.
      * @param inputPtr The input matvar_t pointer.
+     * @param variableType The type of variable.
+     * @param valueType The value type.
      * @return True if compatible. False otherwise, throwing errors.
      */
-    virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
+    virtual bool checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const final;
 
 public:
 

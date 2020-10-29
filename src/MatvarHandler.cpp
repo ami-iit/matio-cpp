@@ -208,6 +208,16 @@ matioCpp::MatvarHandler::MatvarHandler(matioCpp::MatvarHandler &&other)
 
 }
 
+matioCpp::ValueType matioCpp::MatvarHandler::valueType() const
+{
+    return m_ptr->valueType();
+}
+
+matioCpp::VariableType matioCpp::MatvarHandler::variableType() const
+{
+    return m_ptr->variableType();
+}
+
 matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
 {
     std::string errorPrefix = "[ERROR][matioCpp::MatvarHandler::GetMatvarDuplicate] ";
