@@ -86,6 +86,11 @@ public:
     virtual WeakMatvar weakOwnership() const final;
 
     /**
+     * Docs inherited
+     */
+    virtual void dropOwnedPointer(matvar_t* previouslyOwnedPointer) final;
+
+    /**
      * @brief Copy assignement
      * @param other The other object to copy.
      * @return A reference to the current object.

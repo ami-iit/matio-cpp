@@ -67,10 +67,7 @@ bool matioCpp::SharedMatvar::importMatvar(matvar_t *inputPtr)
 {
     assert(m_ptr);
 
-    if (*m_ptr)
-    {
-        Mat_VarFree(*m_ptr);
-    }
+    m_ownership->dropAll();
 
     *m_ptr = inputPtr;
 
@@ -88,6 +85,11 @@ matioCpp::WeakMatvar matioCpp::SharedMatvar::weakOwnership() const
     weak.m_ownership = m_ownership;
     weak.m_ptr = m_ptr;
     return weak;
+}
+
+void matioCpp::SharedMatvar::dropOwnedPointer(matvar_t *previouslyOwnedPointer)
+{
+    m_ownership->drop(previouslyOwnedPointer);
 }
 
 matioCpp::SharedMatvar &matioCpp::SharedMatvar::operator=(const matioCpp::SharedMatvar &other)

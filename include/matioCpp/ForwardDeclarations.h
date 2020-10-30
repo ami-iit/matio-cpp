@@ -25,6 +25,8 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits> // for enable_if_t, declval, is_convertible, inte...
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -129,6 +131,15 @@ enum class FileVersion
     MAT5,      /** @brief Matlab version 5 file               */
     MAT7_3,    /** @brief Matlab version 7.3 file               */
     Undefined  /** @brief Undefined version                   */
+};
+
+/**
+ * @brief The delete mode of matvar_t pointers.
+ */
+enum class DeleteMode
+{
+    DoNotDelete, /** The handler does not delete the pointer. **/
+    Delete /** The handler deletes the pointer. **/
 };
 
 // [views.constants], constants

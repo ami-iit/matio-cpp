@@ -63,8 +63,9 @@ public:
      * owner needs to make sure that inputPtr is deallocated.
      * @param inputPtr The matvar_t pointer to import
      * @param owner The owner of inputPtr (the one that takes care of deallocating it)
+     * @param mode Specifies if owner has to deallocate the inputPtr or not
      */
-    WeakMatvar(matvar_t* inputPtr, const SharedMatvar& owner);
+    WeakMatvar(matvar_t* inputPtr, const SharedMatvar& owner, DeleteMode mode = DeleteMode::DoNotDelete);
 
     /**
      * @brief Import an already existing matvar_t pointer which is owned by owner.
@@ -72,10 +73,10 @@ public:
      * owner needs to make sure that inputPtr is deallocated.
      * @param inputPtr The matvar_t pointer to import
      * @param owner The owner of inputPtr (the one that takes care of deallocating it)
-     *
+     * @param mode Specifies if owner has to deallocate the inputPtr or not
      * @note An assertion is thrown if owner is not shared
      */
-    WeakMatvar(matvar_t* inputPtr, const MatvarHandler* owner);
+    WeakMatvar(matvar_t* inputPtr, const MatvarHandler* owner, DeleteMode mode = DeleteMode::DoNotDelete);
 
     /**
      * Destructor
@@ -115,6 +116,11 @@ public:
      * Docs inherited
      */
     virtual WeakMatvar weakOwnership() const final;
+
+    /**
+     * Docs inherited
+     */
+    virtual void dropOwnedPointer(matvar_t* previouslyOwnedPointer) final;
 
     /**
      * @brief Copy assignement
