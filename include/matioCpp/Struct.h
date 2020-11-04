@@ -98,7 +98,7 @@ public:
     bool fromVectorOfVariables(std::vector<Variable> &elements);
 
     /**
-     * @brief Change the name of the Variable
+     * @brief Change the name of the Struct
      * @param newName The new name
      * @return True if successful.
      */

@@ -18,6 +18,7 @@
 
 /**
  * @brief StructArray is a particular type of Variable specialized for array of structs.
+ * Each element of the array is a Struct and they all share the same fields.
  */
 class matioCpp::StructArray : public matioCpp::Variable
 {
