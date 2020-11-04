@@ -98,7 +98,7 @@ enum class VariableType
     MultiDimensionalArray,
     Struct,
     CellArray,
-    VariableArray, //Array of other variables which are not primitive types
+    StructArray,
     Unsupported
 };
 
@@ -186,6 +186,13 @@ class MultiDimensionalArray;
 class CellArray;
 
 class File;
+
+class Struct;
+
+class StructArray;
+
+template <bool isConst>
+class StructArrayElement;
 
 }
 

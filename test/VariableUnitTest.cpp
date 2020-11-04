@@ -268,6 +268,71 @@ TEST_CASE("Conversions")
         std::string expected = "anotherString";
         REQUIRE(strncmp((char*)cell->data, expected.c_str(), expected.size()) == 0);
     }
+
+    SECTION("To Struct")
+    {
+        std::vector<size_t> dimensions = {1, 1};
+        std::vector<matvar_t*> pointers;
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
+        pointers.emplace_back(Mat_VarDuplicate(matioCpp::Struct("otherStruct").toMatio(), 1));
+        pointers.emplace_back(nullptr);
+
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, 2, dimensions.data(), pointers.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::Struct structVar = sharedVar.asStruct();
+
+        matioCpp::String anotherString("name", "anotherString");
+
+        REQUIRE(structVar.setField(structVar.getFieldIndex("name"), anotherString));
+        REQUIRE(structVar("name").asString()() == "anotherString");
+
+        matvar_t* field = Mat_VarGetStructFieldByIndex(matioVar, structVar.getFieldIndex("name"), 0);
+        std::string expected = "anotherString";
+        REQUIRE(strncmp((char*)field->data, expected.c_str(), expected.size()) == 0);
+    }
+
+    SECTION("To Struct Array")
+    {
+        std::vector<size_t> dimensions = {2,2};
+        std::vector<matvar_t*> pointers;
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::Vector<double>("vector").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::Element<int>("element").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::String("name", "content").toMatio()));
+        pointers.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(matioCpp::Struct("otherStruct").toMatio()));
+        std::vector<matvar_t*> pointersArray;
+        pointersArray.insert(pointersArray.end(), pointers.begin(), pointers.end());
+        for (size_t k = 1; k < 4; ++k)
+        {
+            for (size_t i = 0; i < pointers.size(); ++i)
+            {
+                pointersArray.emplace_back(matioCpp::MatvarHandler::GetMatvarDuplicate(pointers[i]));
+            }
+        }
+        pointersArray.emplace_back(nullptr);
+
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, dimensions.size(), dimensions.data(), pointersArray.data(), 0);
+        REQUIRE(matioVar);
+
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::StructArray structArray = sharedVar.asStructArray();
+        REQUIRE(structArray.isValid());
+
+        matioCpp::String anotherString("name", "anotherContent");
+        REQUIRE(structArray({1,1}).setField(anotherString));
+
+        matvar_t* field = Mat_VarGetStructFieldByIndex(matioVar, structArray.getFieldIndex("name"), structArray.rawIndexFromIndices({1,1}));
+        std::string expected = "anotherContent";
+        REQUIRE(strncmp((char*)field->data, expected.c_str(), expected.size()) == 0);
+
+    }
 }
 
 

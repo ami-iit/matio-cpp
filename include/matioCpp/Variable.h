@@ -116,6 +116,85 @@ protected:
     const Variable getCellElement(size_t linearIndex) const;
 
     /**
+     * @brief Get the total number of fields in the variable, considered as a struct
+     * @return The total number of fields
+     */
+    size_t getStructNumberOfFields() const;
+
+    /**
+     * @brief Get the list of fields in the variable, considered as a struct
+     * @return The list of fields.
+     */
+    char * const *getStructFields() const;
+
+    /**
+     * @brief Get the index of the specified field in the variable, considered as a struct
+     * @param field The field to search
+     * @return The index of the field, the output of getStructNumberOfFields() if not found.
+     */
+    size_t getStructFieldIndex(const std::string& field) const;
+
+    /**
+     * @brief Set the field of the struct at the specified position
+     * @param index The linear index of the specified field
+     * @param newValue The Variable that will be copied in the specified location
+     * @param structPositionInArray The linear position of the struct to set in the struct array
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
+     */
+    bool setStructField(size_t index, const Variable& newValue, size_t structPositionInArray = 0);
+
+    /**
+     * @brief Add a new field to the variable, considered as a struct
+     * @param newField The new field
+     * @return True on success, false otherwise, for example if the struct is part of an array
+     */
+    bool addStructField(const std::string& newField);
+
+    /**
+     * @brief Set the field of the struct given the newValue name
+     * @param newValue The Variable that will be copied in the specified field
+     * @param structPositionInArray The linear position of the struct to set in the struct array
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
+     * @note If the field is not found, a new field is created and appended to the struct,
+     *  but only if the struct is not part of an array.
+     */
+    bool setStructField(const Variable& newValue, size_t structPositionInArray = 0);
+
+    /**
+     * @brief Get the specified field in the variable, considered as a struct
+     * @param index The index of the field
+     * @param structPositionInArray The linear position of the struct to set in the struct array
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    Variable getStructField(size_t index, size_t structPositionInArray = 0);
+
+    /**
+     * @brief Get the specified field in the variable, considered as a struct
+     * @param index The index of the field
+     * @param structPositionInArray The linear position of the struct to set in the struct array
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     */
+    const Variable getStructField(size_t index, size_t structPositionInArray = 0) const;
+
+    /**
+     * @brief Get an element of the variable, considered as a StructArray
+     * @note This allocates memory, one pointer per sruct field, but the pointers point to data in the array
+     * @param index The linear index of the struct to retrieve
+     * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     */
+    Struct getStructArrayElement(size_t linearIndex);
+
+    /**
+     * @brief Get an element of the variable, considered as a StructArray
+     * @note This allocates memory, one pointer per sruct field, but the pointers point to data in the array
+     * @param index The linear index of the struct to retrieve
+     * @return A const Struct with a weak ownership to the underlying mat variable.
+     */
+    const Struct getStructArrayElement(size_t linearIndex) const;
+
+    /**
      * @brief Check if an input matio pointer is compatible with the specified variable.
      * @param inputPtr The input matvar_t pointer.
      * @return True if compatible. False otherwise, throwing errors.
@@ -320,6 +399,26 @@ public:
      * @brief Cast the variable as a const CellArray.
      */
     const matioCpp::CellArray asCellArray() const;
+
+    /**
+     * @brief Cast the variable as a Struct.
+     */
+    matioCpp::Struct asStruct();
+
+    /**
+     * @brief Cast the variable as a const Struct.
+     */
+    const matioCpp::Struct asStruct() const;
+
+    /**
+     * @brief Cast the variable as a StructArray.
+     */
+    matioCpp::StructArray asStructArray();
+
+    /**
+     * @brief Cast the variable as a const StructArray.
+     */
+    const matioCpp::StructArray asStructArray() const;
 
 };
 

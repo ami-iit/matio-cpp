@@ -21,5 +21,8 @@
 #include <matioCpp/Element.h>
 #include <matioCpp/CellArray.h>
 #include <matioCpp/File.h>
+#include <matioCpp/Struct.h>
+#include <matioCpp/StructArray.h>
+#include <matioCpp/StructArrayElement.h>
 
 #endif //MATIOCPP_H
