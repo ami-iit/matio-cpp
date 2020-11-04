@@ -15,7 +15,7 @@ template<typename T>
 bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
 {
     size_t dimensions[] = {1, static_cast<size_t>(inputVector.size())};
-    return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputVector.data());
+    return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputVector.data());
 }
 
 template<typename T>
@@ -105,7 +105,7 @@ matioCpp::Vector<T>::Vector(const std::string &name, const std::string &inputStr
 {
     static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
     size_t dimensions[] = {1, static_cast<size_t>(inputString.size())};
-    initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)inputString.c_str());
+    initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputString.c_str());
 }
 
 template<typename T>
@@ -181,7 +181,7 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::string &other)
     else
     {
         size_t dimensions[] = {1, static_cast<size_t>(other.size())};
-        initializeVariable(name(), VariableType::Vector, matioCpp::get_type<T>::valueType, dimensions, (void*)other.c_str());
+        initializeVariable(name(), VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)other.c_str());
     }
 
     return *this;
@@ -203,7 +203,7 @@ const matioCpp::Span<const T> matioCpp::Vector<T>::toSpan() const
 template<typename T>
 bool matioCpp::Vector<T>::setName(const std::string &newName)
 {
-    return initializeVector(newName, toSpan());
+    return changeName(newName);
 }
 
 template<typename T>

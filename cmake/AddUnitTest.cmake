@@ -41,7 +41,7 @@ function(add_unit_test)
     set(oneValueArgs NAME)
     set(multiValueArgs SOURCES LINKS)
 
-    set(prefix "bipedal")
+    set(prefix "matiocpp")
 
     cmake_parse_arguments(${prefix}
         "${options}"
@@ -58,7 +58,6 @@ function(add_unit_test)
 
     target_link_libraries(${targetname} PRIVATE CatchTestMain ${${prefix}_LINKS})
     target_compile_definitions(${targetname} PRIVATE CATCH_CONFIG_FAST_COMPILE CATCH_CONFIG_DISABLE_MATCHERS)
-    target_compile_features(${targetname} PUBLIC cxx_std_17)
 
     add_test(NAME ${targetname} COMMAND ${targetname})
 

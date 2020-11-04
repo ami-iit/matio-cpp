@@ -125,6 +125,36 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     return true;
 }
 
+bool matioCpp::Variable::changeName(const std::string &newName)
+{
+    if (!isValid())
+    {
+        return false;
+    }
+
+    char* previousName = m_handler->get()->name;
+
+    if (previousName)
+    {
+        free(previousName);
+    }
+
+    m_handler->get()->name = strdup(newName.c_str());
+
+    return (name() == newName);
+}
+
+size_t matioCpp::Variable::getArrayNumberOfElements() const
+{
+    size_t totalElements = 1;
+    for (size_t dim : dimensions())
+    {
+        totalElements *= dim;
+    }
+
+    return totalElements;
+}
+
 bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Variable &newValue)
 {
     Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
@@ -196,6 +226,22 @@ matioCpp::Variable::~Variable()
         delete m_handler;
     }
     m_handler = nullptr;
+}
+
+matioCpp::Variable &matioCpp::Variable::operator=(const matioCpp::Variable &other)
+{
+    bool ok = fromOther(other);
+    assert(ok);
+    matioCpp::unused(ok);
+    return *this;
+}
+
+matioCpp::Variable &matioCpp::Variable::operator=(matioCpp::Variable &&other)
+{
+    bool ok = fromOther(std::forward<matioCpp::Variable>(other));
+    assert(ok);
+    matioCpp::unused(ok);
+    return *this;
 }
 
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)

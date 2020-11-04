@@ -164,8 +164,6 @@ public:
      * @brief Change the name of the Variable
      * @param newName The new name
      * @return True if successful.
-     *
-     * @warning This requires the Vector to be reallocated. It performs memory allocation.
      */
     bool setName(const std::string& newName);
 

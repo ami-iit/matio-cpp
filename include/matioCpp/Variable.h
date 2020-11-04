@@ -80,6 +80,19 @@ protected:
     }
 
     /**
+     * @brief Change the name of the variable
+     * @param newName The new name to set
+     * @return True if successful, false otherwise.
+     */
+    bool changeName(const std::string& newName);
+
+    /**
+     * @brief Get the total number of elements in the array
+     * @return The total number of elements
+     */
+    size_t getArrayNumberOfElements() const;
+
+    /**
      * @brief Set a cell element at a specified linear position
      * @param linearIndex The linear index of the specified element
      * @param newValue The Variable that will be copied in the specified location
@@ -144,14 +157,20 @@ public:
     ~Variable();
 
     /**
-     * @brief The copy operator has been deleted to avoid a specific child class to be assigned to another one not compatible.
+     * @brief Copy assignement
+     * @param other The variable to be copied
+     * @return A reference to the variable.
+     * @note It calls fromOther(), with an assertion on its output.
      */
-    Variable& operator=(const Variable& other) = delete;
+    Variable& operator=(const Variable& other);
 
     /**
-     * @brief The copy operator has been deleted to avoid a specific child class to be assigned to another one not compatible.
+     * @brief Move assignement
+     * @param other The variable to be moved
+     * @return A reference to the variable.
+     * @note It calls fromOther(), with an assertion on its output.
      */
-    Variable& operator=(Variable&& other) = delete;
+    Variable& operator=(Variable&& other);
 
     /**
      * @brief Set this variable from an existing matio variable.
