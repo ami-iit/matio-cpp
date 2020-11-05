@@ -1,6 +1,6 @@
-# Copyright (C) 2019 Istituto Italiano di Tecnologia (IIT). All rights reserved.
+# Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia . All rights reserved.
 # This software may be modified and distributed under the terms of the
-# GNU Lesser General Public License v2.1 or any later version.
+# BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
 
 cmake_minimum_required(VERSION 3.10)
 project(matioCpp VERSION 1.0 LANGUAGES CXX)

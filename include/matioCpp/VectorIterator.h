@@ -23,11 +23,8 @@
 /*
  * Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia
  *
- * Licensed under either the GNU Lesser General Public License v3.0 :
- * https://www.gnu.org/licenses/lgpl-3.0.html
- * or the GNU Lesser General Public License v2.1 :
- * https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * at your option.
+ * This software may be modified and distributed under the terms of the
+ * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
 
 #include <matioCpp/ForwardDeclarations.h>
