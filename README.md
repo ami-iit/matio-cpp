@@ -5,18 +5,13 @@
 # Overview
 
 - [Installation](#installation)
-
 - [Inclusion](#inclusion)
-
 - [Supported Data Types](#supported-data-types)
-
 - [Example of usage](#example-of-usage)
-
 - [Known limitations](#known-limitations)
-
 - [Similar projects](#similar-projects)
 
-- # Installation
+# Installation
 ## Dependencies
 
 The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``matio``](https://github.com/tbeu/matio) . While we suggest to follow the build instructions provided in the [``matio`` home page](https://github.com/tbeu/matio), it can also installed from common package managers:
@@ -51,7 +46,7 @@ cmake --build . --target INSTALL --config Release
 
 In order to allow CMake finding ``matio-cpp``, it is necessary that the installation folder is in the ``PATH``.
 
-- # Inclusion
+# Inclusion
 
   ``matio-cpp`` provides native CMake support which allows the library to be easily used in CMake projects
 
@@ -64,7 +59,7 @@ find_package(matioCpp REQUIRED)
 target_link_libraries(yourTarget matioCpp::matioCpp)
 ```
 
-- # Supported Data Types
+# Supported Data Types
 ``matio-cpp`` can handle the following data types:
 - ``Element``, like ``double``, ``int``, ...
 -  ``String``
@@ -76,13 +71,14 @@ target_link_libraries(yourTarget matioCpp::matioCpp)
 
 All these types can be read/written from/to ``.mat`` files.
 
-- # Example of usage
-- Read a ``.mat`` file
+# Example of usage
+
+Read a ``.mat`` file
 ```c++
 #include <matioCpp/matioCpp.h>
-.
-.
-.
+
+// ...
+
 matioCpp::File input("input.mat");
 // You can check if input is open with the isOpen() method
 matioCpp::CellArray cellArray = input.read("cell_array").asCellArray(); //Read a Cell Array named "cell_array"
@@ -92,12 +88,12 @@ assert(cellMatrix({1,2,3}).asElement<double>()() == 3.14); //Also the original c
 
 ```
 
-- Write a ``.mat`` file
+Write a ``.mat`` file
 ```c++
-  #include <matioCpp/matioCpp.h>
-  .
-  .
-  .
+#include <matioCpp/matioCpp.h>
+
+// ...
+
 matioCpp::File file = matioCpp::File::Create("test.mat"); //If the file already exists, use the same cnstructor as the example above
 
 std::vector<double> in = {2.0,4.0,6.0,8.0};
@@ -111,14 +107,14 @@ file.write(testString);
 
 ```
 
-- # Known Limitations
+# Known Limitations
  - Boolean arrays are not yet supported
  - Complex arrays are not yet supported
  - Cannot read timeseries from a ``.mat`` file (this is a ``matio`` limitation https://github.com/tbeu/matio/issues/99)
  - Cannot read string arrays from a ``.mat`` file (this is a ``matio`` limitation https://github.com/tbeu/matio/issues/98)
  - Cannot read strings in a ``Struct`` from a ``.mat`` file (this is a ``matio`` limitation related to https://github.com/tbeu/matio/issues/98)
 
-- # Similar Projects
+# Similar Projects
 - [``eigen-matio``](https://github.com/tesch1/eigen-matio)
 - [``matiopp``](https://github.com/bmc-labs/matiopp)
 - [``matiocpp``](https://github.com/joka90/matiocpp)
