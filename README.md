@@ -99,7 +99,7 @@ Write a ``.mat`` file
 matioCpp::File file = matioCpp::File::Create("test.mat"); //If the file already exists, use the same cnstructor as the example above
 
 std::vector<double> in = {2.0,4.0,6.0,8.0};
-matioCpp::Vector<int> out("test_vector");
+matioCpp::Vector<double> out("test_vector");
 out = in;
 file.write(out);
 
