@@ -153,6 +153,8 @@ enum class DeleteMode
     Delete /** The handler deletes the pointer. **/
 };
 
+class Logical {};
+
 // [views.constants], constants
 MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;
 
@@ -177,6 +179,8 @@ template<typename T>
 class Vector;
 
 using String = Vector<char>;
+
+using LogicalVector = Vector<matioCpp::Logical>;
 
 template<typename T>
 class MultiDimensionalArray;

@@ -247,6 +247,15 @@ TEST_CASE("Assignments")
         REQUIRE(string() == "test");
     }
 
+    SECTION("Logical")
+    {
+        std::vector<bool> test = {true, false, true};
+        matioCpp::Vector<matioCpp::Logical> logicalVector("test", test);
+        REQUIRE(logicalVector(0));
+        REQUIRE_FALSE(logicalVector(1));
+        REQUIRE(logicalVector(2));
+    }
+
     Mat_VarFree(matioVar);
 }
 

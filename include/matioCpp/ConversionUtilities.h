@@ -58,6 +58,7 @@ template <> struct get_type<int64_t>   { using type = int64_t;  static inline Va
 template <> struct get_type<char>      { using type = char;     static inline ValueType valueType(){return ValueType::UTF8;};   static inline std::string toString(){return "char"    ;};};
 template <> struct get_type<char16_t>  { using type = char16_t; static inline ValueType valueType(){return ValueType::UTF16;};  static inline std::string toString(){return "char16_t";};};
 template <> struct get_type<char32_t>  { using type = char32_t; static inline ValueType valueType(){return ValueType::UTF32;};  static inline std::string toString(){return "char32_t";};};
+template <> struct get_type<Logical>   { using type = uint8_t;  static inline ValueType valueType(){return ValueType::UINT8;};  static inline std::string toString(){return "uint8_t" ;};};
 
 /**
  * @brief Utility function to check if certain ValueType can be converted to a primitive type T.
