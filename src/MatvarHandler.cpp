@@ -250,7 +250,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
         for (size_t i = 0; i < totalElements; ++i)
         {
-            matvar_t* internalPointer = Mat_VarGetCell(shallowCopy.get(), i);
+            matvar_t* internalPointer = Mat_VarGetCell(shallowCopy.get(), static_cast<int>(i));
             if (internalPointer)
             {
                 vectorOfPointers[i] = GetMatvarDuplicate(internalPointer); //Deep copy

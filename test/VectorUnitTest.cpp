@@ -145,7 +145,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar sharedMatvar(matioVar);
@@ -174,7 +174,7 @@ TEST_CASE("Assignments")
 
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     SECTION("From matio")

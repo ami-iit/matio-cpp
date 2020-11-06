@@ -188,7 +188,7 @@ TEST_CASE("Constructors")
         }
         pointersArray.emplace_back(nullptr);
 
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, dimensions.size(), dimensions.data(), pointersArray.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, static_cast<int>(dimensions.size()), dimensions.data(), pointersArray.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar sharedMatvar(matioVar);
@@ -255,7 +255,7 @@ TEST_CASE("Assignments and modifications")
     }
     pointersArray.emplace_back(nullptr);
 
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, dimensions.size(), dimensions.data(), pointersArray.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, static_cast<int>(dimensions.size()), dimensions.data(), pointersArray.data(), 0);
     REQUIRE(matioVar);
 
     SECTION("Assignements")

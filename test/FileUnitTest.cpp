@@ -192,7 +192,7 @@ TEST_CASE("Write")
         {
             for (size_t k = 0; k < 3; ++k)
             {
-                matrixInput({i,j,k}) = i + 3*j + 9*k;
+                matrixInput({i,j,k}) = i + 3.0*j + 9.0*k;
             }
         }
     }

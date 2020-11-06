@@ -21,7 +21,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar shared(matioVar); //shared gets the control of matioVar
@@ -35,7 +35,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar;
@@ -59,7 +59,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar shared(matioVar); //shared gets the control of matioVar
@@ -77,7 +77,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar shared(matioVar); //shared gets the control of matioVar
@@ -93,7 +93,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar sharedShallow = matioCpp::SharedMatvar::GetMatvarShallowDuplicate(matioVar);
@@ -108,7 +108,7 @@ TEST_CASE("Ownership")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar(matioVar);
@@ -126,7 +126,7 @@ TEST_CASE("Ownership")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar(matioVar);
@@ -155,7 +155,7 @@ TEST_CASE("Import")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar shared;
@@ -169,7 +169,7 @@ TEST_CASE("Duplicate")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar shared;
@@ -198,7 +198,7 @@ TEST_CASE("Pointer to duplicate")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar(matioVar);
@@ -219,7 +219,7 @@ TEST_CASE("Weak ownership")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar* sharedPtr = new matioCpp::SharedMatvar(matioVar);
@@ -246,8 +246,8 @@ TEST_CASE("Weak ownership register")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
-    matvar_t* importedVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
+    matvar_t* importedVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar shared;
@@ -271,8 +271,8 @@ TEST_CASE("Weak ownership register with deletion")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
-    matvar_t* importedVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
+    matvar_t* importedVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar shared;
@@ -284,7 +284,7 @@ TEST_CASE("Weak ownership register with deletion")
 
     REQUIRE_FALSE(weak.get());
 
-    matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
 
     matioCpp::WeakMatvar otherWeak(matioVar, shared, matioCpp::DeleteMode::Delete);
     REQUIRE(otherWeak.get() == matioVar);
@@ -296,9 +296,9 @@ TEST_CASE("Weak ownership register with multiple dependencies")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* topVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
-    matvar_t* secondLayer = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
-    matvar_t* thirdLayer = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* topVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
+    matvar_t* secondLayer = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
+    matvar_t* thirdLayer = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
 
     REQUIRE(topVar);
     REQUIRE(secondLayer);

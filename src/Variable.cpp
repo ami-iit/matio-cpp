@@ -38,7 +38,7 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0);
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), data, 0);
 
     if (m_handler)
     {
@@ -106,7 +106,7 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
     if (m_handler)
     {
@@ -184,24 +184,24 @@ bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Vari
         return false;
     }
 
-    matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
+    matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), static_cast<int>(linearIndex), copiedNonOwning.toMatio());
 
     m_handler->dropOwnedPointer(previousCell); //This avoids that any variable that was using this pointer before tries to access it.
     MatvarHandler::DeleteMatvar(previousCell);
 
-    return Mat_VarGetCell(m_handler->get(), linearIndex);
+    return Mat_VarGetCell(m_handler->get(), static_cast<int>(linearIndex));
 }
 
 matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex)
 {
     assert(isValid());
-    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), static_cast<int>(linearIndex)), m_handler));
 }
 
 const matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
 {
     assert(isValid());
-    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), static_cast<int>(linearIndex)), m_handler));
 }
 
 size_t matioCpp::Variable::getStructNumberOfFields() const
