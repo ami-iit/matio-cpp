@@ -1,6 +1,7 @@
 # matio-cpp <a href="https://isocpp.org"><img src="https://img.shields.io/badge/standard-C++14-blue.svg?style=flat&logo=c%2B%2B" alt="C++ Standard" /></a> 
 
 **``matio-cpp``** is a C++ wrapper for the [``matio``](https://github.com/tbeu/matio) library, automatically dealing with memory allocation and deallocation.
+It can be used for reading and writing binary MATLAB `.mat` files from C++, without the need to access or rely on MATLAB's own shared libraries.
 
 # Overview
 
@@ -53,10 +54,10 @@ In order to allow CMake finding ``matio-cpp``, it is necessary that the installa
   In order to use ``matio-cpp`` in your project, add the following in your ``CMakeLists.txt``
 ```cmake
 find_package(matioCpp REQUIRED)
-.
-.
-.
-target_link_libraries(yourTarget matioCpp::matioCpp)
+
+# ...
+
+target_link_libraries(yourTarget PRIVATE matioCpp::matioCpp)
 ```
 
 # Supported Data Types
