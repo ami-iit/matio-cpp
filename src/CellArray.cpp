@@ -7,27 +7,17 @@
 
 #include <matioCpp/CellArray.h>
 
-bool matioCpp::CellArray::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::CellArray::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType) const
 {
-    if (!inputPtr)
+    if (variableType != matioCpp::VariableType::CellArray)
     {
-        std::cerr << "[matioCpp::CellArray::checkCompatibility] The input pointer is null." << std::endl;
-        return false;
-    }
-
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
-
-    if (outputVariableType != matioCpp::VariableType::CellArray)
-    {
-        std::cerr << "[matioCpp::CellArray::checkCompatibility] The input variable is not a cell array." << std::endl;
+        std::cerr << "[matioCpp::CellArray::checkCompatibility] The variable type is not compatible with a cell array." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::CellArray::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::CellArray::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -112,7 +102,7 @@ matioCpp::CellArray::CellArray(CellArray &&other)
 matioCpp::CellArray::CellArray(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         size_t emptyDimensions[] = {0, 0};
@@ -230,6 +220,11 @@ void matioCpp::CellArray::resize(const std::vector<typename matioCpp::CellArray:
 {
     matioCpp::CellArray newArray(name(), newDimensions);
     fromOther(std::move(newArray));
+}
+
+void matioCpp::CellArray::clear()
+{
+    fromOther(std::move(CellArray(name())));
 }
 
 typename matioCpp::CellArray::index_type matioCpp::CellArray::numberOfElements() const

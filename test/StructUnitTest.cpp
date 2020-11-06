@@ -325,4 +325,7 @@ TEST_CASE("Modifications")
     REQUIRE(in.setField(3, anotherString));
     REQUIRE(in("name").asString()() == "anotherString");
     REQUIRE_FALSE(previousElement.isValid());
+
+    in.clear();
+    REQUIRE(in.numberOfFields() == 0);
 }

@@ -23,9 +23,11 @@ class matioCpp::StructArray : public matioCpp::Variable
     /**
      * @brief Check if an input matio pointer is compatible with the StructArray class.
      * @param inputPtr The input matvar_t pointer.
+     * @param variableType The type of variable.
+     * @param valueType The value type.
      * @return True if compatible. False otherwise, throwing errors.
      */
-    virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
+    virtual bool checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const final;
 
     template<bool>
     friend class StructArrayElement;
@@ -172,6 +174,11 @@ public:
      * @return The list of fields.
      */
     std::vector<std::string> fields() const;
+
+    /**
+     * @brief Clear the struct array
+     */
+    void clear();
 
     /**
      * @brief Check if a field is existing

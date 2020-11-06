@@ -88,7 +88,7 @@ public:
 
     MATIOCPP_CONSTEXPR vector_iterator& operator--()
     {
-        assert(index_ != 0 && index_ <= vector_->size());
+        assert(index_ != 0 && static_cast<size_t>(index_) <= vector_->size());
         --index_;
         return *this;
     }

@@ -153,7 +153,7 @@ TEST_CASE("Constructors")
     {
         std::vector<double> vec(8);
         std::vector<size_t> dimensions = {4,2};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar sharedMatvar(matioVar);
@@ -195,7 +195,7 @@ TEST_CASE("Assignments")
 
     std::vector<double> vec(8);
     std::vector<size_t> dimensions = {4,2};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     SECTION("From matio")
@@ -247,6 +247,10 @@ TEST_CASE("Assignments")
         matioCpp::MultiDimensionalArray<double> array;
         REQUIRE(array.fromOther(var));
         checkSameVariable(var, array);
+        matioCpp::Vector<double> vec("test", 5);
+        REQUIRE(array.fromOther(vec));
+        matioCpp::Element<double> el("el", 7);
+        REQUIRE(array.fromOther(el));
     }
 
     SECTION("From other variable (move)")
@@ -331,6 +335,10 @@ TEST_CASE("Modifications")
     REQUIRE(out.dimensions().size() == 2);
     REQUIRE(out.dimensions()[0] == 1);
     REQUIRE(out.dimensions()[1] == 5);
+    REQUIRE(out.asVector<int>().isValid());
+
+    out.clear();
+    REQUIRE(out.numberOfElements() == 0);
 }
 
 TEST_CASE("Data")

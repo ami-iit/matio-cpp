@@ -9,39 +9,30 @@
  */
 
 template<typename T>
-bool matioCpp::Element<T>::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::Element<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
 {
-    if (!inputPtr)
-    {
-        std::cerr << "[matioCpp::Element::checkCompatibility] The input pointer is null." << std::endl;
-        return false;
-    }
 
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
-
-    if (outputVariableType != matioCpp::VariableType::Element)
+    if (variableType != matioCpp::VariableType::Element)
     {
-        std::cerr << "[matioCpp::Element::checkCompatibility] The input variable is not an Element." << std::endl;
+        std::cerr << "[matioCpp::Element::checkCompatibility] The variable type is not compatible with an Element." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Element::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Element::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
-    if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
+    if (!matioCpp::is_convertible_to_primitive_type<T>(valueType))
     {
         std::string dataType = "";
         std::string classType = "";
 
         get_types_names_from_matvart(inputPtr, classType, dataType);
 
-        std::cerr << "[matioCpp::Element::checkCompatibility] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl <<
+        std::cerr << "[matioCpp::Element::checkCompatibility] The value type is not convertible to " <<
+            get_type<T>::toString() <<"." << std::endl <<
             "                                        Input class type: " << classType << std::endl <<
             "                                        Input data type: " << dataType << std::endl;
         return false;
@@ -101,7 +92,7 @@ template<typename T>
 matioCpp::Element<T>::Element(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         T empty;

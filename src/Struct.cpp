@@ -8,27 +8,18 @@
 
 #include <matioCpp/Struct.h>
 
-bool matioCpp::Struct::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::Struct::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
 {
-    if (!inputPtr)
-    {
-        std::cerr << "[matioCpp::Struct::checkCompatibility] The input pointer is null." << std::endl;
-        return false;
-    }
 
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
-
-    if (outputVariableType != matioCpp::VariableType::Struct)
+    if (variableType != matioCpp::VariableType::Struct)
     {
-        std::cerr << "[matioCpp::Struct::checkCompatibility] The input variable is not a struct." << std::endl;
+        std::cerr << "[matioCpp::Struct::checkCompatibility] The variable type is not compatible with a struct." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Struct::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Struct::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
@@ -86,7 +77,7 @@ matioCpp::Struct::Struct(matioCpp::Struct &&other)
 matioCpp::Struct::Struct(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    if (!checkCompatibility(handler.get()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         size_t emptyDimensions[] = {1, 1};
@@ -159,6 +150,11 @@ std::vector<std::string> matioCpp::Struct::fields() const
     }
 
     return output;
+}
+
+void matioCpp::Struct::clear()
+{
+    fromOther(std::move(Struct(name())));
 }
 
 bool matioCpp::Struct::isFieldExisting(const std::string &field) const

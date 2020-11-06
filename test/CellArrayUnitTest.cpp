@@ -185,7 +185,7 @@ TEST_CASE("Constructors")
         data.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
         data.emplace_back(Mat_VarDuplicate(matioCpp::CellArray("otherCell").toMatio(), 1));
 
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), data.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, static_cast<int>(dimensions.size()), dimensions.data(), data.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::SharedMatvar sharedMatvar(matioVar);
@@ -240,7 +240,7 @@ TEST_CASE("Assignments")
     pointers.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
     pointers.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
     pointers.emplace_back(Mat_VarDuplicate(matioCpp::CellArray("otherCell").toMatio(), 1));
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), pointers.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, static_cast<int>(dimensions.size()), dimensions.data(), pointers.data(), 0);
     REQUIRE(matioVar);
 
     SECTION("From matio")
@@ -345,5 +345,8 @@ TEST_CASE("Modifications")
     REQUIRE(in.setElement(4, anotherString));
     REQUIRE(in(4).asString()() == "anotherString");
     REQUIRE_FALSE(previousElement.isValid());
+
+    in.clear();
+    REQUIRE(in.numberOfElements() == 0);
 }
 

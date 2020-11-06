@@ -9,46 +9,38 @@
  */
 
 template<typename T>
-bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<T> inputVector)
+bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<const T> inputVector)
 {
     size_t dimensions[] = {1, static_cast<size_t>(inputVector.size())};
     return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputVector.data());
 }
 
 template<typename T>
-bool matioCpp::Vector<T>::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::Vector<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
 {
-    if (!inputPtr)
-    {
-        std::cerr << "[matioCpp::Vector::checkCompatibility] The input pointer is null." << std::endl;
-        return false;
-    }
 
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(inputPtr, outputVariableType, outputValueType);
-
-    if (outputVariableType != matioCpp::VariableType::Vector)
+    if ((variableType != matioCpp::VariableType::Vector) &&
+        (variableType != matioCpp::VariableType::Element))
     {
-        std::cerr << "[matioCpp::Vector::checkCompatibility] The input variable is not a vector." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The variable type is not compatible with a vector." << std::endl;
         return false;
     }
 
     if (inputPtr->isComplex)
     {
-        std::cerr << "[matioCpp::Vector::checkCompatibility] Cannot copy a complex variable to a non-complex one." << std::endl;
+        std::cerr << "[matioCpp::Vector::checkCompatibility] Cannot use a complex variable into a non-complex one." << std::endl;
         return false;
     }
 
-    if (!matioCpp::is_convertible_to_primitive_type<T>(outputValueType))
+    if (!matioCpp::is_convertible_to_primitive_type<T>(valueType))
     {
         std::string dataType = "";
         std::string classType = "";
 
         get_types_names_from_matvart(inputPtr, classType, dataType);
 
-        std::cerr << "[matioCpp::Vector::checkCompatibility] The input type is not convertible to " <<
-            typeid(T).name() <<"." << std::endl <<
+        std::cerr << "[matioCpp::Vector::checkCompatibility] The value type is not convertible to " <<
+            get_type<T>::toString() <<"." << std::endl <<
             "                                       Input class type: " << classType << std::endl <<
             "                                       Input data type: " << dataType << std::endl;
         return false;
@@ -91,7 +83,8 @@ matioCpp::Vector<T>::Vector(const std::string &name, matioCpp::Vector<T>::index_
 }
 
 template<typename T>
-matioCpp::Vector<T>::Vector(const std::string& name, Span<T> inputVector)
+template<typename, typename>
+matioCpp::Vector<T>::Vector(const std::string& name, Span<const T> inputVector)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     initializeVector(name, inputVector);
@@ -123,7 +116,7 @@ matioCpp::Vector<T>::Vector(const MatvarHandler &handler)
 {
     static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
 
-    if (!checkCompatibility(handler.get()))
+    if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
         std::vector<T> empty;
@@ -221,6 +214,12 @@ void matioCpp::Vector<T>::resize(typename matioCpp::Vector<T>::index_type newSiz
         memcpy(newVector.data(), data(), std::min(newSize, size()) * sizeof(T));
         this->operator=(newVector);
     }
+}
+
+template<typename T>
+void matioCpp::Vector<T>::clear()
+{
+    fromOther(std::move(Vector<T>(name())));
 }
 
 template<typename T>

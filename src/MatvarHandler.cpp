@@ -6,7 +6,82 @@
  */
 
 #include <matioCpp/MatvarHandler.h>
+#include <matioCpp/SharedMatvar.h>
 #include <matioCpp/ConversionUtilities.h>
+
+matioCpp::MatvarHandler::PointerInfo::PointerInfo()
+{
+    m_ptr = nullptr;
+    m_mode = DeleteMode::DoNotDelete;
+    m_varType = matioCpp::VariableType::Unsupported;
+    m_valueType = matioCpp::ValueType::UNSUPPORTED;
+}
+
+matioCpp::MatvarHandler::PointerInfo::PointerInfo(matvar_t *ptr, DeleteMode deleteMode)
+{
+    changePointer(ptr, deleteMode);
+}
+
+matioCpp::MatvarHandler::PointerInfo::~PointerInfo()
+{
+    //It does nothing by default. The ownership determines when to delete the pointer
+}
+
+void matioCpp::MatvarHandler::PointerInfo::changePointer(matvar_t *ptr, DeleteMode deleteMode)
+{
+    //The previous pointer is not deleted since it is the ownership triggering it
+    m_ptr = ptr;
+    m_mode = deleteMode;
+    m_varType = matioCpp::VariableType::Unsupported;
+    m_valueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(m_ptr, m_varType, m_valueType);
+}
+
+void matioCpp::MatvarHandler::PointerInfo::deletePointer()
+{
+    DeletePointer(m_ptr, m_mode);
+    m_ptr = nullptr;
+}
+
+matvar_t *matioCpp::MatvarHandler::PointerInfo::pointer()
+{
+    return m_ptr;
+}
+
+matioCpp::VariableType matioCpp::MatvarHandler::PointerInfo::variableType() const
+{
+    return m_varType;
+}
+
+matioCpp::ValueType matioCpp::MatvarHandler::PointerInfo::valueType() const
+{
+    return m_valueType;
+}
+
+matioCpp::DeleteMode matioCpp::MatvarHandler::PointerInfo::deleteMode() const
+{
+    return m_mode;
+}
+
+bool matioCpp::MatvarHandler::PointerInfo::operator!=(const matioCpp::MatvarHandler::PointerInfo &other) const
+{
+    return m_ptr != other.m_ptr;
+}
+
+void matioCpp::MatvarHandler::PointerInfo::DeletePointer(matvar_t *ptr, DeleteMode deleteMode)
+{
+    if (deleteMode == DeleteMode::Delete || deleteMode == DeleteMode::ShallowDelete)
+    {
+        if (deleteMode == DeleteMode::ShallowDelete)
+        {
+            ptr->data = nullptr; //When doing a shallow copy, the data pointer is copied.
+            //Hence, by freeing the shallowCopy, also the data would be deallocated.
+            //This avoids matio to attempt freeing the data
+            // See https://github.com/tbeu/matio/issues/158
+        }
+        Mat_VarFree(ptr);
+    }
+}
 
 void matioCpp::MatvarHandler::Ownership::dropDependencies(matvar_t *previouslyOwned)
 {
@@ -27,15 +102,12 @@ void matioCpp::MatvarHandler::Ownership::dropDependencies(matvar_t *previouslyOw
         dropDependencies(child);
     }
 
-    if (it->second.mode == matioCpp::DeleteMode::Delete)
-    {
-        Mat_VarFree(previouslyOwned);
-    }
+    PointerInfo::DeletePointer(previouslyOwned, it->second.mode);
 
     m_dependencyTree.erase(previouslyOwned);
 }
 
-matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<matvar_t *> pointerToDeallocate)
+matioCpp::MatvarHandler::Ownership::Ownership(std::weak_ptr<PointerInfo> pointerToDeallocate)
     : m_main(pointerToDeallocate)
 {
 
@@ -48,10 +120,10 @@ matioCpp::MatvarHandler::Ownership::~Ownership()
 
 bool matioCpp::MatvarHandler::Ownership::isOwning(matvar_t *test)
 {
-    return (test && ((test == *(m_main.lock())) || (m_dependencyTree.find(test) != m_dependencyTree.end())));
+    return (test && ((test == (m_main.lock()->pointer())) || (m_dependencyTree.find(test) != m_dependencyTree.end())));
 }
 
-void matioCpp::MatvarHandler::Ownership::own(matvar_t *owned, const MatvarHandler *owner, DeleteMode mode)
+void matioCpp::MatvarHandler::Ownership::own(matvar_t *owned, const matioCpp::MatvarHandler *owner, matioCpp::DeleteMode mode)
 {
     assert(owner);
     if (owned)
@@ -60,7 +132,7 @@ void matioCpp::MatvarHandler::Ownership::own(matvar_t *owned, const MatvarHandle
         dep.mode = mode;
         if (*(owner->m_ptr) != *(m_main.lock()))
         {
-            dep.parent = *(owner->m_ptr);
+            dep.parent = owner->m_ptr->pointer();
 
             assert(m_dependencyTree.find(dep.parent) != m_dependencyTree.end());
 
@@ -87,7 +159,7 @@ void matioCpp::MatvarHandler::Ownership::drop(matvar_t *previouslyOwned)
 
     std::unordered_map<matvar_t*, Dependency>::iterator parent = m_dependencyTree.find(it->second.parent);
 
-    if ((it->second.parent != *(m_main.lock())) && (parent != m_dependencyTree.end()))
+    if ((it->second.parent != m_main.lock()->pointer()) && (parent != m_dependencyTree.end()))
     {
         parent->second.dependencies.erase(previouslyOwned);
     }
@@ -99,34 +171,27 @@ void matioCpp::MatvarHandler::Ownership::drop(matvar_t *previouslyOwned)
 
 void matioCpp::MatvarHandler::Ownership::dropAll()
 {
-    std::shared_ptr<matvar_t*> locked = m_main.lock();
+    std::shared_ptr<PointerInfo> locked = m_main.lock();
     if (locked)
     {
-        if (*locked)
-        {
-            Mat_VarFree(*locked);
-            *locked = nullptr;
-        }
+        locked->deletePointer();
     }
 
     for(std::pair<matvar_t*, Dependency> dep : m_dependencyTree)
     {
-        if (dep.second.mode == matioCpp::DeleteMode::Delete)
-        {
-            Mat_VarFree(dep.first);
-        }
+        PointerInfo::DeletePointer(dep.first, dep.second.mode);
     }
 
     m_dependencyTree.clear();
 }
 
 matioCpp::MatvarHandler::MatvarHandler()
-    : m_ptr(std::make_shared<matvar_t*>(nullptr))
+    : m_ptr(std::make_shared<PointerInfo>())
 {
 }
 
-matioCpp::MatvarHandler::MatvarHandler(matvar_t *inputPtr)
-    : m_ptr(std::make_shared<matvar_t*>(inputPtr))
+matioCpp::MatvarHandler::MatvarHandler(matvar_t *inputPtr, DeleteMode deleteMode)
+    : m_ptr(std::make_shared<PointerInfo>(inputPtr, deleteMode))
 {
 
 }
@@ -141,6 +206,16 @@ matioCpp::MatvarHandler::MatvarHandler(matioCpp::MatvarHandler &&other)
     : m_ptr(other.m_ptr)
 {
 
+}
+
+matioCpp::ValueType matioCpp::MatvarHandler::valueType() const
+{
+    return m_ptr->valueType();
+}
+
+matioCpp::VariableType matioCpp::MatvarHandler::variableType() const
+{
+    return m_ptr->variableType();
 }
 
 matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
@@ -163,7 +238,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
 
     if (outputVariableType == matioCpp::VariableType::CellArray) // It is a different case because Mat_VarDuplicate segfaults with a CellArray
     {
-        matvar_t * shallowCopy = Mat_VarDuplicate(inputPtr, 0); // Shallow copy to remove const
+        SharedMatvar shallowCopy = SharedMatvar::GetMatvarShallowDuplicate(inputPtr); // Shallow copy to remove const
 
         size_t totalElements = 1;
 
@@ -175,7 +250,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         std::vector<matvar_t*> vectorOfPointers(totalElements, nullptr);
         for (size_t i = 0; i < totalElements; ++i)
         {
-            matvar_t* internalPointer = Mat_VarGetCell(shallowCopy, i);
+            matvar_t* internalPointer = Mat_VarGetCell(shallowCopy.get(), static_cast<int>(i));
             if (internalPointer)
             {
                 vectorOfPointers[i] = GetMatvarDuplicate(internalPointer); //Deep copy
@@ -183,17 +258,10 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         }
 
         outputPtr = Mat_VarCreate(inputPtr->name, inputPtr->class_type, inputPtr->data_type, inputPtr->rank, inputPtr->dims, vectorOfPointers.data(), 0);
-
-        shallowCopy->data = nullptr; //This is a workaround for what it seems a matio problem.
-            //When doing a shallow copy, the data is not copied,
-            //but it will try to free it anyway with Mat_VarFree.
-            //This avoids matio to attempt freeing the data
-            // See https://github.com/tbeu/matio/issues/158
-        Mat_VarFree(shallowCopy);
     }
     else if ((outputVariableType == matioCpp::VariableType::Struct) || (outputVariableType == matioCpp::VariableType::StructArray))
     {
-        matvar_t * shallowCopy = Mat_VarDuplicate(inputPtr, 0); // Shallow copy to remove const
+        SharedMatvar shallowCopy = SharedMatvar::GetMatvarShallowDuplicate(inputPtr); // Shallow copy to remove const
 
         size_t totalElements = 1;
 
@@ -202,7 +270,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
             totalElements *= inputPtr->dims[i];
         }
 
-        size_t numberOfFields = Mat_VarGetNumberOfFields(shallowCopy);
+        size_t numberOfFields = Mat_VarGetNumberOfFields(shallowCopy.get());
 
         std::vector<matvar_t*> vectorOfPointers(totalElements * numberOfFields + 1, nullptr); //The vector of pointers has to be nullptr terminated.
 
@@ -211,7 +279,7 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         {
             for (size_t field = 0; field < numberOfFields; ++field)
             {
-                matvar_t* internalPointer = Mat_VarGetStructFieldByIndex(shallowCopy, field, i);
+                matvar_t* internalPointer = Mat_VarGetStructFieldByIndex(shallowCopy.get(), field, i);
                 if (internalPointer)
                 {
                     vectorOfPointers[innerIndex] = GetMatvarDuplicate(internalPointer); //Deep copy
@@ -222,12 +290,6 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
         assert(innerIndex == totalElements * numberOfFields);
 
         outputPtr = Mat_VarCreate(inputPtr->name, inputPtr->class_type, inputPtr->data_type, inputPtr->rank, inputPtr->dims, vectorOfPointers.data(), 0);
-
-        shallowCopy->data = nullptr; //This is a workaround for what it seems a matio problem.
-            //When doing a shallow copy, the data is not copied,
-            //but it will try to free it anyway with Mat_VarFree.
-            //This avoids matio to attempt freeing the data
-        Mat_VarFree(shallowCopy);
     }
     else
     {
@@ -236,4 +298,9 @@ matvar_t *matioCpp::MatvarHandler::GetMatvarDuplicate(const matvar_t *inputPtr)
 
     return outputPtr;
 
+}
+
+void matioCpp::MatvarHandler::DeleteMatvar(matvar_t *pointerToDelete, DeleteMode mode)
+{
+    PointerInfo::DeletePointer(pointerToDelete, mode);
 }

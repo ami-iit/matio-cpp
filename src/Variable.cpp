@@ -5,6 +5,7 @@
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
 
+#define _CRT_NONSTDC_NO_DEPRECATE //Silence warning on deprecation of strdup
 
 #include <matioCpp/Variable.h>
 #include <matioCpp/CellArray.h>
@@ -38,14 +39,14 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), data, 0);
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), data, 0);
 
     if (m_handler)
     {
         if (!m_handler->importMatvar(newPtr))
         {
             std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
-            Mat_VarFree(newPtr);
+            MatvarHandler::DeleteMatvar(newPtr);
             return false;
         }
     }
@@ -106,13 +107,20 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matioCpp::MatvarHandler* previousHandler = m_handler;
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
-    m_handler = new matioCpp::SharedMatvar(Mat_VarCreate(name.c_str(), matioClass, matioType, dimensionsCopy.size(), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX)); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
-
-    if (previousHandler)
+    if (m_handler)
     {
-        delete previousHandler;
+        if (!m_handler->importMatvar(newPtr))
+        {
+            std::cerr << errorPrefix << "Failed to modify the variable." << std::endl;
+            MatvarHandler::DeleteMatvar(newPtr);
+            return false;
+        }
+    }
+    else
+    {
+        m_handler = new matioCpp::SharedMatvar(newPtr);
     }
 
     if (!m_handler || !m_handler->get())
@@ -156,37 +164,56 @@ size_t matioCpp::Variable::getArrayNumberOfElements() const
 
 bool matioCpp::Variable::setCellElement(size_t linearIndex, const matioCpp::Variable &newValue)
 {
-    Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
-    if (!copiedNonOwning.isValid())
+    if (!isValid())
     {
+        std::cerr << "[ERROR][matioCpp::Variable::setCellElement] The variable is not valid." << std::endl;
         return false;
     }
 
-    matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), linearIndex, copiedNonOwning.toMatio());
+    Variable copiedNonOwning(matioCpp::WeakMatvar(matioCpp::MatvarHandler::GetMatvarDuplicate(newValue.toMatio()), m_handler));
+    if (!copiedNonOwning.isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setCellElement] Could not copy the new value. ";
+        if (!newValue.isValid())
+        {
+            std::cerr << "The new value is not valid. " << std::endl;
+        }
+        else
+        {
+            std::cerr << "Matio internal problem. " << std::endl;
+        }
+        return false;
+    }
+
+    matvar_t* previousCell = Mat_VarSetCell(m_handler->get(), static_cast<int>(linearIndex), copiedNonOwning.toMatio());
 
     m_handler->dropOwnedPointer(previousCell); //This avoids that any variable that was using this pointer before tries to access it.
-    Mat_VarFree(previousCell);
+    MatvarHandler::DeleteMatvar(previousCell);
 
-    return Mat_VarGetCell(m_handler->get(), linearIndex);
+    return Mat_VarGetCell(m_handler->get(), static_cast<int>(linearIndex));
 }
 
 matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex)
 {
-    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+    assert(isValid());
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), static_cast<int>(linearIndex)), m_handler));
 }
 
 const matioCpp::Variable matioCpp::Variable::getCellElement(size_t linearIndex) const
 {
-    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), linearIndex), m_handler));
+    assert(isValid());
+    return Variable(matioCpp::WeakMatvar(Mat_VarGetCell(m_handler->get(), static_cast<int>(linearIndex)), m_handler));
 }
 
 size_t matioCpp::Variable::getStructNumberOfFields() const
 {
+    assert(isValid());
     return Mat_VarGetNumberOfFields(m_handler->get());
 }
 
 char * const * matioCpp::Variable::getStructFields() const
 {
+    assert(isValid());
     return Mat_VarGetStructFieldnames(m_handler->get());
 }
 
@@ -211,6 +238,12 @@ size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
 
 bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setStructField] The variable is not valid." << std::endl;
+        return false;
+    }
+
     if (!m_handler->isShared())
     {
         std::cerr << "[ERROR][matioCpp::Variable::setStructField] Cannot set the field if the variable is not owning the memory." << std::endl;
@@ -226,13 +259,19 @@ bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &
     matvar_t* previousField = Mat_VarSetStructFieldByIndex(m_handler->get(), index, structPositionInArray, copiedNonOwning.toMatio());
 
     m_handler->dropOwnedPointer(previousField); //This avoids that any variable that was using this pointer before tries to access it.
-    Mat_VarFree(previousField);
+    MatvarHandler::DeleteMatvar(previousField);
 
     return Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray);
 }
 
 bool matioCpp::Variable::addStructField(const std::string &newField)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::addStructField] The variable is not valid." << std::endl;
+        return false;
+    }
+
     if (m_handler->isShared()) //This means that the variable is not part of an array
     {
         int err = Mat_VarAddStructField(m_handler->get(), newField.c_str());
@@ -252,6 +291,12 @@ bool matioCpp::Variable::addStructField(const std::string &newField)
 
 bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
+    if (!isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::setStructField] The variable is not valid." << std::endl;
+        return false;
+    }
+
     size_t fieldindex = getStructFieldIndex(newValue.name());
 
     if ((fieldindex == getStructNumberOfFields()) && !((getArrayNumberOfElements() == 1) && addStructField(newValue.name())))
@@ -265,16 +310,20 @@ bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size
 
 matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray)
 {
+    assert(isValid());
     return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
 }
 
 const matioCpp::Variable matioCpp::Variable::getStructField(size_t index, size_t structPositionInArray) const
 {
+    assert(isValid());
     return Variable(matioCpp::WeakMatvar(Mat_VarGetStructFieldByIndex(m_handler->get(), index, structPositionInArray), m_handler));
 }
 
 matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex)
 {
+    assert(isValid());
+
     size_t numberOfFields = getStructNumberOfFields();
     std::vector<matvar_t*> fields(numberOfFields + 1, nullptr);
     for (size_t field = 0; field < numberOfFields; ++field)
@@ -289,6 +338,8 @@ matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex)
 
 const matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIndex) const
 {
+    assert(isValid());
+
     size_t numberOfFields = getStructNumberOfFields();
     std::vector<matvar_t*> fields(numberOfFields + 1, nullptr);
     for (size_t field = 0; field < numberOfFields; ++field)
@@ -301,7 +352,7 @@ const matioCpp::Struct matioCpp::Variable::getStructArrayElement(size_t linearIn
     return matioCpp::Struct(matioCpp::WeakMatvar(rawStruct, m_handler, matioCpp::DeleteMode::Delete));
 }
 
-bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr) const
+bool matioCpp::Variable::checkCompatibility(const matvar_t *inputPtr, matioCpp::VariableType, matioCpp::ValueType) const
 {
     return inputPtr;
 }
@@ -366,7 +417,17 @@ matioCpp::Variable &matioCpp::Variable::operator=(matioCpp::Variable &&other)
 
 bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 {
-    if (!checkCompatibility(inputVar))
+    if (!inputVar)
+    {
+        std::cerr << "[matioCpp::Variable::fromMatio] The input pointer is null." << std::endl;
+        return false;
+    }
+
+    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
+    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
+    get_types_from_matvart(inputVar, outputVariableType, outputValueType);
+
+    if (!checkCompatibility(inputVar, outputVariableType, outputValueType))
     {
         return false;
     }
@@ -376,17 +437,18 @@ bool matioCpp::Variable::fromMatio(const matvar_t *inputVar)
 
 bool matioCpp::Variable::fromOther(const matioCpp::Variable &other)
 {
-    if (!checkCompatibility(other.toMatio()))
-    {
-        return false;
-    }
-
-    return m_handler->duplicateMatvar(other.toMatio());
+    return fromMatio(other.toMatio());
 }
 
 bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
 {
-    if (!checkCompatibility(other.toMatio()))
+    if (!other.isValid())
+    {
+        std::cerr << "[matioCpp::Variable::fromOther] The input variable is not valid." << std::endl;
+        return false;
+    }
+
+    if (!checkCompatibility(other.toMatio(), other.variableType(), other.valueType()))
     {
         return false;
     }
@@ -397,16 +459,20 @@ bool matioCpp::Variable::fromOther(matioCpp::Variable &&other)
     }
     m_handler = other.m_handler;
     other.m_handler = nullptr;
-    return true;
+    return isValid();
 }
 
 const matvar_t *matioCpp::Variable::toMatio() const
 {
+    assert(isValid());
+
     return m_handler->get();
 }
 
 matvar_t *matioCpp::Variable::toMatio()
 {
+    assert(isValid());
+
     return m_handler->get();
 }
 
@@ -424,18 +490,12 @@ std::string matioCpp::Variable::name() const
 
 matioCpp::VariableType matioCpp::Variable::variableType() const
 {
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(m_handler->get(), outputVariableType, outputValueType);
-    return outputVariableType;
+    return m_handler->variableType();
 }
 
 matioCpp::ValueType matioCpp::Variable::valueType() const
 {
-    matioCpp::VariableType outputVariableType = matioCpp::VariableType::Unsupported;
-    matioCpp::ValueType outputValueType = matioCpp::ValueType::UNSUPPORTED;
-    get_types_from_matvart(m_handler->get(), outputVariableType, outputValueType);
-    return outputValueType;
+    return m_handler->valueType();
 }
 
 bool matioCpp::Variable::isComplex() const
@@ -464,7 +524,7 @@ matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 
 bool matioCpp::Variable::isValid() const
 {
-    return m_handler->get();
+    return m_handler->get() && checkCompatibility(m_handler->get(), m_handler->variableType(), m_handler->valueType());
 }
 
 matioCpp::CellArray matioCpp::Variable::asCellArray()

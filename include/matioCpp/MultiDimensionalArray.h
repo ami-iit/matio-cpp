@@ -24,9 +24,11 @@ class matioCpp::MultiDimensionalArray : public matioCpp::Variable
     /**
      * @brief Check if an input matio pointer is compatible with the MultiDimensionalArray class.
      * @param inputPtr The input matvar_t pointer.
+     * @param variableType The type of variable.
+     * @param valueType The value type.
      * @return True if compatible. False otherwise, throwing errors.
      */
-    virtual bool checkCompatibility(const matvar_t* inputPtr) const final;
+    virtual bool checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const final;
 
 public:
 
@@ -163,6 +165,11 @@ public:
      * @warning Previous data is lost.
      */
     void resize(const std::vector<index_type>& newDimensions);
+
+    /**
+     * @brief Clear the multidimensional array
+     */
+    void clear();
 
     /**
      * @brief Direct access to the underlying array.

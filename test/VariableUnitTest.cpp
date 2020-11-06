@@ -60,7 +60,7 @@ TEST_CASE("MatvarHandler")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::SharedMatvar sharedMatvar(matioVar);
@@ -83,7 +83,7 @@ TEST_CASE("From matio")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     matioCpp::Variable var(matioVar);
@@ -106,7 +106,7 @@ TEST_CASE("Copy/move constructor/assignment")
 {
     std::vector<double> vec(7);
     std::vector<size_t> dimensions = {vec.size(), 1};
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
     REQUIRE(matioVar);
 
     SECTION("Copy constructor")
@@ -164,7 +164,7 @@ TEST_CASE("Complex int")
     matioComplexSplit.Re = real.data();
     matioComplexSplit.Im = imaginary.data();
 
-    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_INT64, dimensions.size(), dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX);
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_INT64, static_cast<int>(dimensions.size()), dimensions.data(), &matioComplexSplit, MAT_F_COMPLEX);
     REQUIRE(matioVar);
 
     matioCpp::Variable var(matioVar);
@@ -181,7 +181,7 @@ TEST_CASE("Conversions")
     {
         std::vector<double> vec(7);
         std::vector<size_t> dimensions = {vec.size(), 1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
@@ -199,7 +199,7 @@ TEST_CASE("Conversions")
     {
         std::vector<double> vec(8);
         std::vector<size_t> dimensions = {4,2};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), vec.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), vec.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
@@ -217,7 +217,7 @@ TEST_CASE("Conversions")
     {
         double input = 3.14;
         std::vector<size_t> dimensions = {1,1};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, dimensions.size(), dimensions.data(), &input, 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_DOUBLE, matio_types::MAT_T_DOUBLE, static_cast<int>(dimensions.size()), dimensions.data(), &input, 0);
         REQUIRE(matioVar);
         matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
 
@@ -230,7 +230,7 @@ TEST_CASE("Conversions")
     {
         char inputString[] = "test_string";
         std::vector<size_t> dimensions = {1, strlen(inputString)};
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CHAR, matio_types::MAT_T_UTF8, dimensions.size(), dimensions.data(), inputString, 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CHAR, matio_types::MAT_T_UTF8, static_cast<int>(dimensions.size()), dimensions.data(), inputString, 0);
         REQUIRE(matioVar);
         matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
 
@@ -249,7 +249,7 @@ TEST_CASE("Conversions")
         pointers.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
         pointers.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
         pointers.emplace_back(Mat_VarDuplicate(matioCpp::CellArray("otherCell").toMatio(), 1));
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, dimensions.size(), dimensions.data(), pointers.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CELL, matio_types::MAT_T_CELL, static_cast<int>(dimensions.size()), dimensions.data(), pointers.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
@@ -261,7 +261,7 @@ TEST_CASE("Conversions")
         REQUIRE(cellArray.setElement({0,0,2}, anotherString));
         REQUIRE(cellArray({0,0,2}).asString()() == "anotherString");
 
-        matvar_t* cell = Mat_VarGetCell(matioVar, cellArray.rawIndexFromIndices({0,0,2}));
+        matvar_t* cell = Mat_VarGetCell(matioVar, static_cast<int>(cellArray.rawIndexFromIndices({0,0,2})));
         std::string expected = "anotherString";
         REQUIRE(strncmp((char*)cell->data, expected.c_str(), expected.size()) == 0);
     }
@@ -314,7 +314,7 @@ TEST_CASE("Conversions")
         }
         pointersArray.emplace_back(nullptr);
 
-        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, dimensions.size(), dimensions.data(), pointersArray.data(), 0);
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, static_cast<int>(dimensions.size()), dimensions.data(), pointersArray.data(), 0);
         REQUIRE(matioVar);
 
         matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));

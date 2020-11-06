@@ -47,7 +47,7 @@ matioCpp::SharedMatvar::~SharedMatvar()
 matvar_t *matioCpp::SharedMatvar::get() const
 {
     assert(m_ptr);
-    return *m_ptr;
+    return m_ptr->pointer();
 }
 
 bool matioCpp::SharedMatvar::isShared() const
@@ -66,7 +66,7 @@ bool matioCpp::SharedMatvar::importMatvar(matvar_t *inputPtr)
 
     m_ownership->dropAll();
 
-    *m_ptr = inputPtr;
+    m_ptr->changePointer(inputPtr, DeleteMode::Delete);
 
     return true;
 }
@@ -106,4 +106,12 @@ matioCpp::SharedMatvar &matioCpp::SharedMatvar::operator=(matioCpp::SharedMatvar
 std::weak_ptr<matioCpp::MatvarHandler::Ownership> matioCpp::SharedMatvar::ownership() const
 {
     return m_ownership;
+}
+
+matioCpp::SharedMatvar matioCpp::SharedMatvar::GetMatvarShallowDuplicate(const matvar_t *inputPtr)
+{
+    SharedMatvar output;
+    output.m_ptr = std::make_shared<PointerInfo>(Mat_VarDuplicate(inputPtr, 0), DeleteMode::ShallowDelete);
+    output.m_ownership = std::make_shared<MatvarHandler::Ownership>(output.m_ptr);
+    return output;
 }
