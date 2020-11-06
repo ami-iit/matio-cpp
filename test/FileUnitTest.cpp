@@ -60,15 +60,18 @@ TEST_CASE("Variable names")
     REQUIRE(input.isOpen());
 
     std::vector<std::string> names = input.variableNames();
-    REQUIRE(names[0] == "cell_array");
-    REQUIRE(names[1] == "cell_matrix");
-    REQUIRE(names[2] == "double");
-    REQUIRE(names[3] == "int");
-    REQUIRE(names[4] == "matrix");
-    REQUIRE(names[5] == "string");
-    REQUIRE(names[6] == "struct");
-    REQUIRE(names[7] == "struct_array");
-    REQUIRE(names[8] == "vector");
+    REQUIRE(names[0] == "boolean");
+    REQUIRE(names[1] == "cell_array");
+    REQUIRE(names[2] == "cell_matrix");
+    REQUIRE(names[3] == "double");
+    REQUIRE(names[4] == "int");
+    REQUIRE(names[5] == "matrix");
+    REQUIRE(names[6] == "matrix_bool");
+    REQUIRE(names[7] == "string");
+    REQUIRE(names[8] == "struct");
+    REQUIRE(names[9] == "struct_array");
+    REQUIRE(names[10] == "vector");
+    REQUIRE(names[11] == "vector_bool");
 }
 
 TEST_CASE("Read")
@@ -76,6 +79,9 @@ TEST_CASE("Read")
     matioCpp::File input(getMatPath("input.mat"));
 
     REQUIRE(input.isOpen());
+
+    matioCpp::Element<uint8_t> boolean = input.read("boolean").asElement<uint8_t>();
+    uint8_t value = boolean;
 
     matioCpp::CellArray cellArray = input.read("cell_array").asCellArray();
     REQUIRE(cellArray.isValid());
