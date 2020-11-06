@@ -5,6 +5,7 @@
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
 
+#define _CRT_NONSTDC_NO_DEPRECATE //Silence warning on deprecation of strdup
 
 #include <matioCpp/Variable.h>
 #include <matioCpp/CellArray.h>
