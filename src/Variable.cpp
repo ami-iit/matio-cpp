@@ -39,7 +39,14 @@ bool matioCpp::Variable::initializeVariable(const std::string& name, const Varia
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), data, 0);
+    int flags = 0;
+
+    if (valueType == matioCpp::ValueType::LOGICAL)
+    {
+        flags = flags | matio_flags::MAT_F_LOGICAL;
+    }
+
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), data, flags);
 
     if (m_handler)
     {
@@ -107,7 +114,14 @@ bool matioCpp::Variable::initializeComplexVariable(const std::string& name, cons
     std::vector<size_t> dimensionsCopy;
     dimensionsCopy.assign(dimensions.begin(), dimensions.end()); //This is needed since Mat_VarCreate needs a non-const pointer for the dimensions. This method already allocates memory
 
-    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), &matioComplexSplit, MAT_F_COMPLEX); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
+    int flags = MAT_F_COMPLEX;
+
+    if (valueType == matioCpp::ValueType::LOGICAL)
+    {
+        flags = flags | matio_flags::MAT_F_LOGICAL;
+    }
+
+    matvar_t* newPtr = Mat_VarCreate(name.c_str(), matioClass, matioType, static_cast<int>(dimensionsCopy.size()), dimensionsCopy.data(), &matioComplexSplit, flags); //Data is hard copied, since the flag MAT_F_DONT_COPY_DATA is not used
 
     if (m_handler)
     {

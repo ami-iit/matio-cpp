@@ -20,6 +20,7 @@ bool matioCpp::get_matio_types(const matioCpp::VariableType &inputVariableType, 
             outputMatioType =  matio_types::MAT_T_INT8;
             break;
         case matioCpp::ValueType::UINT8:
+        case matioCpp::ValueType::LOGICAL:
             outputMatioClasses = matio_classes::MAT_C_UINT8;
             outputMatioType =  matio_types::MAT_T_UINT8;
             break;
@@ -155,6 +156,14 @@ bool matioCpp::get_types_from_matvart(const matvar_t *input, matioCpp::VariableT
     case matio_types::MAT_T_UNKNOWN:
         outputValueType = matioCpp::ValueType::UNSUPPORTED;
         break;
+    }
+
+    if (input->isLogical)
+    {
+        if (outputValueType == matioCpp::ValueType::UINT8)
+        {
+            outputValueType = matioCpp::ValueType::LOGICAL;
+        }
     }
 
     if ((input->class_type == matio_classes::MAT_C_OBJECT) ||
@@ -293,6 +302,11 @@ bool matioCpp::get_types_names_from_matvart(const matvar_t *input, std::string &
     case matio_types::MAT_T_UNKNOWN:
         dataType = "UNKNOWN";
         break;
+    }
+
+    if (input->isLogical)
+    {
+        dataType = dataType + " (Logical)";
     }
 
     switch (input->class_type)

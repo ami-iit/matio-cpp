@@ -80,8 +80,8 @@ TEST_CASE("Read")
 
     REQUIRE(input.isOpen());
 
-    matioCpp::Element<uint8_t> boolean = input.read("boolean").asElement<uint8_t>();
-    uint8_t value = boolean;
+//    matioCpp::Element<uint8_t> boolean = input.read("boolean").asElement<uint8_t>();
+//    uint8_t value = boolean;
 
     matioCpp::CellArray cellArray = input.read("cell_array").asCellArray();
     REQUIRE(cellArray.isValid());
@@ -127,6 +127,9 @@ TEST_CASE("Read")
             }
         }
     }
+
+    matioCpp::Variable logicalMatrix = input.read("matrix_bool");
+    REQUIRE(logicalMatrix.isValid());
 
     matioCpp::String string = input.read("string").asString();
     REQUIRE(string.isValid());

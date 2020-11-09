@@ -118,6 +118,7 @@ enum class ValueType
     UTF16,
     UTF32,
     STRING,
+    LOGICAL,
     VARIABLE, //This is the case of composite containers, like Struct, CellArray, and Container
     UNSUPPORTED
 };
@@ -179,8 +180,6 @@ template<typename T>
 class Vector;
 
 using String = Vector<char>;
-
-using LogicalVector = Vector<matioCpp::Logical>;
 
 template<typename T>
 class MultiDimensionalArray;

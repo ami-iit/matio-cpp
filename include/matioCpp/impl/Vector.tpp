@@ -32,7 +32,7 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp:
         return false;
     }
 
-    if (!matioCpp::is_convertible_to_primitive_type<typename matioCpp::Vector<T>::element_type>(valueType))
+    if (!matioCpp::is_convertible_to_primitive_type<T>(valueType))
     {
         std::string dataType = "";
         std::string classType = "";
@@ -102,10 +102,9 @@ template <typename T>
 matioCpp::Vector<T>::Vector(const std::string &name, const std::vector<bool>& inputVector)
 {
     static_assert (std::is_same<T, matioCpp::Logical>::value,"The assignement operator from a vector of bool is available only if the type of the vector is Logical");
-    std::vector<typename matioCpp::Vector<T>::element_type> empty(static_cast<size_t>(inputVector.size()));
+    std::vector<typename matioCpp::Vector<T>::element_type> empty(inputVector.size());
     initializeVector(name, matioCpp::make_span(empty));
     this->operator=(inputVector);
-
 }
 
 template<typename T>
@@ -194,8 +193,13 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::vector<bool> &oth
     static_assert (std::is_same<T, matioCpp::Logical>::value,"The assignement operator from a vector of bool is available only if the type of the vector is Logical");
     if (size() != other.size())
     {
-        size_t dimensions[] = {1, static_cast<size_t>(other.size())};
-        initializeVariable(name(), VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, nullptr);
+        std::vector<typename matioCpp::Vector<T>::element_type> empty(other.size());
+        bool ok = initializeVector(name(), matioCpp::make_span(empty));
+        if (!ok)
+        {
+            assert(false && "Failed to resize.");
+            return *this;
+        }
     }
 
     for (size_t i = 0; i < size(); ++i)
