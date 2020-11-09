@@ -43,7 +43,8 @@ bool get_types_names_from_matvart(const matvar_t* input, std::string &classType,
  */
 template <typename Tp> struct get_type
 {
-    static_assert (matioCpp::dependent_false<Tp>::value, "Unsupported type");
+    static_assert (matioCpp::dependent_false<Tp>::value, "Unsupported type.");
+    static_assert (!std::is_same<Tp, bool>::value, "Use matioCpp::Logical instead of bool.");
 };
 // specializations
 template <> struct get_type<int8_t>    { using type = int8_t;   static inline ValueType valueType(){return ValueType::INT8;};     static inline std::string toString(){return "int8_t"            ;};};

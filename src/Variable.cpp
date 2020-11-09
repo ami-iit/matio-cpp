@@ -526,6 +526,8 @@ bool matioCpp::Variable::isComplex() const
 
 matioCpp::Span<const size_t> matioCpp::Variable::dimensions() const
 {
+    assert(isValid());
+
     if (isValid())
     {
         return matioCpp::make_span(m_handler->get()->dims, m_handler->get()->rank);

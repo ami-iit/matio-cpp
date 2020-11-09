@@ -23,6 +23,8 @@ class matioCpp::Vector : public matioCpp::Variable
 {
 public:
 
+    using type = T; /** Defines the type specified in the template. **/
+
     using element_type = typename get_type<T>::type; /** Defines the type of an element of the Vector. Needed to use the iterator. **/
 
     using value_type = std::remove_cv_t<element_type>; /** Defines the type of an element of the Vector without "const". Useful to use make_span. **/

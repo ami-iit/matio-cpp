@@ -104,6 +104,11 @@ void checkSameVector(const T& a, const T& b, double precision = 1e-15)
 
 TEST_CASE("Constructors")
 {
+    SECTION("Default")
+    {
+        matioCpp::MultiDimensionalArray<matioCpp::Logical> test;
+    }
+
     SECTION("Name")
     {
         matioCpp::MultiDimensionalArray<double> var("test");

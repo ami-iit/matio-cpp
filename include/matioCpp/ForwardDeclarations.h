@@ -154,7 +154,13 @@ enum class DeleteMode
     Delete /** The handler deletes the pointer. **/
 };
 
-class Logical {};
+/**
+ * @brief Utility class to consider logical values.
+ */
+class Logical {
+private:
+    Logical() {}; //Logical is meant to be used only as type.
+};
 
 // [views.constants], constants
 MATIOCPP_CONSTEXPR const std::ptrdiff_t dynamic_extent = -1;

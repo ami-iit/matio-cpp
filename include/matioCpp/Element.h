@@ -30,15 +30,17 @@ class matioCpp::Element : public matioCpp::Variable
 
 public:
 
-    using element_type = T; /** Defines the type of the Element. **/
+    using type = T; /** Defines the type specified in the template. **/
 
-    using value_type = std::remove_cv_t<T>; /** Defines the type of the Element. without "const". **/
+    using element_type = typename get_type<T>::type; /** Defines the type of the Element. **/
+
+    using value_type = std::remove_cv_t<element_type>; /** Defines the type of the Element. without "const". **/
 
     using reference = element_type&; /** The reference type. **/
 
-    using pointer = typename std::allocator_traits<std::allocator<T>>::pointer; /** The pointer type. **/
+    using pointer = typename std::allocator_traits<std::allocator<element_type>>::pointer; /** The pointer type. **/
 
-    using const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer; /** The const pointer type. **/
+    using const_pointer = typename std::allocator_traits<std::allocator<element_type>>::const_pointer; /** The const pointer type. **/
 
     /**
      * @brief Default Constructor
@@ -57,7 +59,7 @@ public:
      * @param name The name of the Element
      * @param inputValue The value to be given to the element
      */
-    Element(const std::string& name, T inputValue);
+    Element(const std::string& name, element_type inputValue);
 
     /**
      * @brief Copy constructor
@@ -101,7 +103,7 @@ public:
      * @param other The other Element.
      * @return A reference to this Element.
      */
-    Element<T>& operator=(T value);
+    Element<T>& operator=(element_type value);
 
     /**
      * @brief Change the name of the Variable
@@ -125,7 +127,7 @@ public:
     /**
      * @brief Casting operator to T
      */
-    operator T() const;
+    operator element_type() const;
 
 };
 

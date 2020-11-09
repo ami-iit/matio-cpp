@@ -45,7 +45,7 @@ bool matioCpp::MultiDimensionalArray<T>::checkCompatibility(const matvar_t* inpu
 template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray()
 {
-    std::vector<T> empty;
+    std::vector<typename matioCpp::MultiDimensionalArray<T>::element_type> empty;
     constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable("unnamed_multidimensional_array",
                        VariableType::MultiDimensionalArray,
@@ -56,7 +56,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray()
 template<typename T>
 matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name)
 {
-    std::vector<T> empty;
+    std::vector<typename matioCpp::MultiDimensionalArray<T>::element_type> empty;
     constexpr size_t emptyDimensions[] = {0, 0, 0};
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
@@ -79,7 +79,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
         totalElements *= dim;
     }
 
-    std::vector<T> dummy(totalElements);
+    std::vector<typename matioCpp::MultiDimensionalArray<T>::element_type> dummy(totalElements);
 
     initializeVariable(name,
                        VariableType::MultiDimensionalArray,
@@ -124,7 +124,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const MatvarHandler &h
     if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
-        std::vector<T> empty;
+        std::vector<typename matioCpp::MultiDimensionalArray<T>::element_type> empty;
         constexpr size_t emptyDimensions[] = {0, 0, 0};
         initializeVariable("unnamed_multidimensional_array",
                            VariableType::MultiDimensionalArray,
@@ -225,13 +225,13 @@ bool matioCpp::MultiDimensionalArray<T>::indicesFromRawIndex(size_t rawIndex, st
 }
 
 template<typename T>
-matioCpp::Span<T> matioCpp::MultiDimensionalArray<T>::toSpan()
+matioCpp::Span<typename matioCpp::MultiDimensionalArray<T>::element_type> matioCpp::MultiDimensionalArray<T>::toSpan()
 {
     return matioCpp::make_span(data(), numberOfElements());
 }
 
 template<typename T>
-const matioCpp::Span<const T> matioCpp::MultiDimensionalArray<T>::toSpan() const
+const matioCpp::Span<const typename matioCpp::MultiDimensionalArray<T>::element_type> matioCpp::MultiDimensionalArray<T>::toSpan() const
 {
     return matioCpp::make_span(data(), numberOfElements());
 }
@@ -257,7 +257,7 @@ void matioCpp::MultiDimensionalArray<T>::resize(const std::vector<typename matio
         totalElements *= dim;
     }
 
-    std::vector<T> dummy(totalElements);
+    std::vector<typename matioCpp::MultiDimensionalArray<T>::element_type> dummy(totalElements);
 
     initializeVariable(name(),
                        VariableType::MultiDimensionalArray,

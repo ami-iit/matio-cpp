@@ -51,7 +51,6 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp:
 template<typename T>
 matioCpp::Vector<T>::Vector()
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<typename matioCpp::Vector<T>::element_type> empty;
     initializeVector("unnamed_vector", matioCpp::make_span(empty));
 }
@@ -59,7 +58,6 @@ matioCpp::Vector<T>::Vector()
 template<typename T>
 matioCpp::Vector<T>::Vector(const std::string& name)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<typename matioCpp::Vector<T>::element_type> empty;
 
     if (std::is_same<T, char>::value) //If the type is char, the name corresponds to the content
@@ -77,7 +75,6 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 template<typename T>
 matioCpp::Vector<T>::Vector(const std::string &name, matioCpp::Vector<T>::index_type dimensions)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     std::vector<typename matioCpp::Vector<T>::element_type> empty(dimensions);
     initializeVector(name, matioCpp::make_span(empty));
 }
@@ -86,7 +83,6 @@ template<typename T>
 template<typename, typename>
 matioCpp::Vector<T>::Vector(const std::string& name, Span<const typename matioCpp::Vector<T>::element_type> inputVector)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     initializeVector(name, inputVector);
 }
 
@@ -123,8 +119,6 @@ template<typename T>
 matioCpp::Vector<T>::Vector(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
-
     if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
