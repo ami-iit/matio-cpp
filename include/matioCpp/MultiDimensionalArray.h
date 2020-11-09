@@ -32,19 +32,21 @@ class matioCpp::MultiDimensionalArray : public matioCpp::Variable
 
 public:
 
-    using element_type = T; /** Defines the type of an element of the MultiDimensionalArray. **/
+    using type = T; /** Defines the type specified in the template. **/
 
-    using value_type = std::remove_cv_t<T>; /** Defines the type of an element of the MultiDimensionalArray without "const". Useful to use make_span. **/
+    using element_type = typename get_type<T>::type; /** Defines the type of an element of the MultiDimensionalArray. **/
 
-    using allocator_type = std::allocator<T>; /** Defines how to allocate T. **/
+    using value_type = std::remove_cv_t<element_type>; /** Defines the type of an element of the MultiDimensionalArray without "const". Useful to use make_span. **/
+
+    using allocator_type = std::allocator<element_type>; /** Defines how to allocate T. **/
 
     using index_type = size_t; /** The type used for indices. **/
 
     using reference = element_type&; /** The reference type. **/
 
-    using pointer = typename std::allocator_traits<std::allocator<T>>::pointer; /** The pointer type. **/
+    using pointer = typename std::allocator_traits<std::allocator<element_type>>::pointer; /** The pointer type. **/
 
-    using const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer; /** The const pointer type. **/
+    using const_pointer = typename std::allocator_traits<std::allocator<element_type>>::const_pointer; /** The const pointer type. **/
 
     /**
      * @brief Default Constructor
@@ -144,12 +146,12 @@ public:
     /**
      * @brief Get this MultiDimensionalArray as a Span
      */
-    matioCpp::Span<T> toSpan();
+    matioCpp::Span<element_type> toSpan();
 
     /**
      * @brief Get this MultiDimensionalArray as a Span (const version)
      */
-    const matioCpp::Span<const T> toSpan() const;
+    const matioCpp::Span<const element_type> toSpan() const;
 
     /**
      * @brief Change the name of the Variable

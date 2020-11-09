@@ -21,43 +21,27 @@
 template<typename T>
 class matioCpp::Vector : public matioCpp::Variable
 {
-
-    /**
-     * @brief Private utility method to initialize the Vector from existing data.
-     * @param name The name of the Variable
-     * @param inputVector A span to an existing vector.
-     * @return true in case of success.
-     */
-    bool initializeVector(const std::string& name, Span<const T> inputVector);
-
-    /**
-     * @brief Check if an input matio pointer is compatible with the vector class.
-     * @param inputPtr The input matvar_t pointer.
-     * @param variableType The type of variable.
-     * @param valueType The value type.
-     * @return True if compatible. False otherwise, throwing errors.
-     */
-    virtual bool checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const final;
-
 public:
 
-    using element_type = T; /** Defines the type of an element of the Vector. Needed to use the iterator. **/
+    using type = T; /** Defines the type specified in the template. **/
 
-    using value_type = std::remove_cv_t<T>; /** Defines the type of an element of the Vector without "const". Useful to use make_span. **/
+    using element_type = typename get_type<T>::type; /** Defines the type of an element of the Vector. Needed to use the iterator. **/
 
-    using allocator_type = std::allocator<T>; /** Defines how to allocate T. Useful to use make_span. **/
+    using value_type = std::remove_cv_t<element_type>; /** Defines the type of an element of the Vector without "const". Useful to use make_span. **/
+
+    using allocator_type = std::allocator<element_type>; /** Defines how to allocate T. Useful to use make_span. **/
 
     using index_type = size_t; /** The type used for indices. **/
 
     using reference = element_type&; /** The reference type. **/
 
-    using pointer = typename std::allocator_traits<std::allocator<T>>::pointer; /** The pointer type. **/
+    using pointer = typename std::allocator_traits<std::allocator<element_type>>::pointer; /** The pointer type. **/
 
-    using const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer; /** The const pointer type. **/
+    using const_pointer = typename std::allocator_traits<std::allocator<element_type>>::const_pointer; /** The const pointer type. **/
 
-    using iterator = vector_iterator<Vector<T>, false>; /** The iterator type. **/
+    using iterator = vector_iterator<Vector<element_type>, false>; /** The iterator type. **/
 
-    using const_iterator = vector_iterator<Vector<T>, true>; /** The const iterator type. **/
+    using const_iterator = vector_iterator<Vector<element_type>, true>; /** The const iterator type. **/
 
     using reverse_iterator = std::reverse_iterator<iterator>; /** The reverse iterator type. **/
 
@@ -88,8 +72,10 @@ public:
      * @param name The name of the Vector
      * @param inputVector The input data.
      */
-    template<typename in = T, typename = typename std::enable_if<!std::is_same<T, const char>::value>::type>
-    Vector(const std::string& name, Span<const T> inputVector);
+    template<typename in = element_type,
+             typename = typename std::enable_if<!std::is_same<element_type, const char>::value &&
+                                                !std::is_same<value_type, bool>::value>::type>
+    Vector(const std::string& name, Span<const element_type> inputVector);
 
     /**
      * @brief Constructor
@@ -97,6 +83,13 @@ public:
      * @param inputString The input string.
      */
     Vector(const std::string& name, const std::string& inputString);
+
+    /**
+     * @brief Constructor
+     * @param name The name of the Vector
+     * @param inputVector The input vector of boolean.
+     */
+    Vector(const std::string& name, const std::vector<bool>& inputVector);
 
     /**
      * @brief Copy constructor
@@ -140,7 +133,7 @@ public:
      * @param other The input span.
      * @return A reference to this Vector.
      */
-    Vector<T>& operator=(const Span<T>& other);
+    Vector<element_type>& operator=(const Span<element_type>& other);
 
     /**
      * @brief Assignement operator from another string.
@@ -151,14 +144,22 @@ public:
     Vector<T>& operator=(const std::string& other);
 
     /**
+     * @brief Assignement operator from a vector of booleans.
+     * @param other The input vector.
+     * @note This is available only if the type is Logical.
+     * @return A reference to this Vector.
+     */
+    Vector<T>& operator=(const std::vector<bool>& other);
+
+    /**
      * @brief Get this Vector as a Span
      */
-    matioCpp::Span<T> toSpan();
+    matioCpp::Span<element_type> toSpan();
 
     /**
      * @brief Get this Vector as a Span (const version)
      */
-    const matioCpp::Span<const T> toSpan() const;
+    const matioCpp::Span<const element_type> toSpan() const;
 
     /**
      * @brief Change the name of the Variable
@@ -320,6 +321,26 @@ public:
      * @warning This element acts as a placeholder; attempting to access it results in undefined behavior.
      */
     const_reverse_iterator crend() const;
+
+private:
+
+    /**
+     * @brief Private utility method to initialize the Vector from existing data.
+     * @param name The name of the Variable
+     * @param inputVector A span to an existing vector.
+     * @return true in case of success.
+     */
+    bool initializeVector(const std::string& name, Span<const element_type> inputVector);
+
+    /**
+     * @brief Check if an input matio pointer is compatible with the vector class.
+     * @param inputPtr The input matvar_t pointer.
+     * @param variableType The type of variable.
+     * @param valueType The value type.
+     * @return True if compatible. False otherwise, throwing errors.
+     */
+    virtual bool checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const final;
+
 };
 
 #include "impl/Vector.tpp"

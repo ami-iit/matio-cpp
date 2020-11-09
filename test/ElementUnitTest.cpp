@@ -103,6 +103,10 @@ TEST_CASE("Constructors")
         matioCpp::Element<char32_t> c32;
         REQUIRE(c32.isValid());
         REQUIRE(c32.valueType() == matioCpp::ValueType::UTF32);
+
+        matioCpp::Element<matioCpp::Logical> logical;
+        REQUIRE(logical.isValid());
+        REQUIRE(logical.valueType() == matioCpp::ValueType::LOGICAL);
     }
 
     SECTION("Name")

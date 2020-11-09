@@ -60,15 +60,18 @@ TEST_CASE("Variable names")
     REQUIRE(input.isOpen());
 
     std::vector<std::string> names = input.variableNames();
-    REQUIRE(names[0] == "cell_array");
-    REQUIRE(names[1] == "cell_matrix");
-    REQUIRE(names[2] == "double");
-    REQUIRE(names[3] == "int");
-    REQUIRE(names[4] == "matrix");
-    REQUIRE(names[5] == "string");
-    REQUIRE(names[6] == "struct");
-    REQUIRE(names[7] == "struct_array");
-    REQUIRE(names[8] == "vector");
+    REQUIRE(names[0] == "boolean");
+    REQUIRE(names[1] == "cell_array");
+    REQUIRE(names[2] == "cell_matrix");
+    REQUIRE(names[3] == "double");
+    REQUIRE(names[4] == "int");
+    REQUIRE(names[5] == "matrix");
+    REQUIRE(names[6] == "matrix_bool");
+    REQUIRE(names[7] == "string");
+    REQUIRE(names[8] == "struct");
+    REQUIRE(names[9] == "struct_array");
+    REQUIRE(names[10] == "vector");
+    REQUIRE(names[11] == "vector_bool");
 }
 
 TEST_CASE("Read")
@@ -76,6 +79,10 @@ TEST_CASE("Read")
     matioCpp::File input(getMatPath("input.mat"));
 
     REQUIRE(input.isOpen());
+
+    matioCpp::Element<matioCpp::Logical> boolean = input.read("boolean").asElement<matioCpp::Logical>();
+    REQUIRE(boolean.isValid());
+    REQUIRE(boolean);
 
     matioCpp::CellArray cellArray = input.read("cell_array").asCellArray();
     REQUIRE(cellArray.isValid());
@@ -122,6 +129,19 @@ TEST_CASE("Read")
         }
     }
 
+    matioCpp::MultiDimensionalArray<matioCpp::Logical> logicalMatrix = input.read("matrix_bool").asMultiDimensionalArray<matioCpp::Logical>();
+    REQUIRE(logicalMatrix.isValid());
+    REQUIRE(logicalMatrix.dimensions()(0) == 2);
+    REQUIRE(logicalMatrix.dimensions()(1) == 4);
+    REQUIRE(logicalMatrix({0,0}));
+    REQUIRE_FALSE(logicalMatrix({0,1}));
+    REQUIRE(logicalMatrix({0,2}));
+    REQUIRE_FALSE(logicalMatrix({0,3}));
+    REQUIRE(logicalMatrix({1,0}));
+    REQUIRE_FALSE(logicalMatrix({1,1}));
+    REQUIRE(logicalMatrix({1,2}));
+    REQUIRE_FALSE(logicalMatrix({1,3}));
+
     matioCpp::String string = input.read("string").asString();
     REQUIRE(string.isValid());
     REQUIRE(string() == "test");
@@ -157,6 +177,14 @@ TEST_CASE("Read")
     {
         REQUIRE(vector[i] == i+1);
     }
+
+    matioCpp::Vector<matioCpp::Logical> logicalVector = input.read("vector_bool").asVector<matioCpp::Logical>();
+    REQUIRE(logicalVector.isValid());
+    REQUIRE(logicalVector.size() == 4);
+    REQUIRE(logicalVector(0));
+    REQUIRE_FALSE(logicalVector(1));
+    REQUIRE(logicalVector(2));
+    REQUIRE_FALSE(logicalVector(3));
 }
 
 TEST_CASE("Create and delete file")
@@ -184,6 +212,10 @@ TEST_CASE("Write")
     matioCpp::Element<int> intVar("int", 5);
     REQUIRE(file.write(intVar));
     REQUIRE(file.read("int").asElement<int>()() == 5);
+
+    matioCpp::Element<matioCpp::Logical> logicalVar("boolean", true);
+    REQUIRE(file.write(logicalVar));
+    REQUIRE(file.read("boolean").asElement<matioCpp::Logical>());
 
     matioCpp::MultiDimensionalArray<double> matrixInput("matrix", {3,3,3});
     for (size_t i = 0; i < 3; ++i)
@@ -230,6 +262,17 @@ TEST_CASE("Write")
     {
         REQUIRE(vector[i] == i+1);
     }
+
+    std::vector<bool> boolData({true, false, true, false});
+    matioCpp::Vector<matioCpp::Logical> boolVectorInput("bool_vector", boolData);
+    REQUIRE(file.write(boolVectorInput));
+    matioCpp::Vector<matioCpp::Logical> boolVector = file.read("bool_vector").asVector<matioCpp::Logical>();
+    REQUIRE(boolVector.isValid());
+    REQUIRE(boolVector.size() == 4);
+    REQUIRE(boolVector(0));
+    REQUIRE_FALSE(boolVector(1));
+    REQUIRE(boolVector(2));
+    REQUIRE_FALSE(boolVector(3));
 
 
     std::vector<matioCpp::Variable> dataCell;

@@ -118,6 +118,7 @@ enum class ValueType
     UTF16,
     UTF32,
     STRING,
+    LOGICAL,
     VARIABLE, //This is the case of composite containers, like Struct, CellArray, and Container
     UNSUPPORTED
 };
@@ -151,6 +152,14 @@ enum class DeleteMode
     DoNotDelete, /** The handler does not delete the pointer. **/
     ShallowDelete, /** The handler deletes the pointer but not the data. **/
     Delete /** The handler deletes the pointer. **/
+};
+
+/**
+ * @brief Utility class to consider logical values.
+ */
+class Logical {
+private:
+    Logical() {}; //Logical is meant to be used only as type.
 };
 
 // [views.constants], constants

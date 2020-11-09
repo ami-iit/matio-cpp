@@ -112,6 +112,15 @@ TEST_CASE("Constructors")
         REQUIRE(var.valueType() == matioCpp::ValueType::INT64);
     }
 
+    SECTION("Name and vector of bool")
+    {
+        std::vector<bool> test = {true, false, true};
+        matioCpp::Vector<matioCpp::Logical> logicalVector("test", test);
+        REQUIRE(logicalVector(0));
+        REQUIRE_FALSE(logicalVector(1));
+        REQUIRE(logicalVector(2));
+    }
+
     SECTION("Name and String")
     {
         matioCpp::Vector<char> var("test", "test_string");
@@ -245,6 +254,16 @@ TEST_CASE("Assignments")
         matioCpp::Vector<char> string;
         string = "test";
         REQUIRE(string() == "test");
+    }
+
+    SECTION("Vector of bool")
+    {
+        std::vector<bool> test = {true, false, true};
+        matioCpp::Vector<matioCpp::Logical> logicalVector("test");
+        logicalVector = test;
+        REQUIRE(logicalVector(0));
+        REQUIRE_FALSE(logicalVector(1));
+        REQUIRE(logicalVector(2));
     }
 
     Mat_VarFree(matioVar);

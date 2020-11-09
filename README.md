@@ -15,7 +15,7 @@ It can be used for reading and writing binary MATLAB `.mat` files from C++, with
 # Installation
 ## Dependencies
 
-The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``matio``](https://github.com/tbeu/matio) . While we suggest to follow the build instructions provided in the [``matio`` home page](https://github.com/tbeu/matio), it can also installed from common package managers:
+The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``matio``](https://github.com/tbeu/matio). While we suggest to follow the build instructions provided in the [``matio`` home page](https://github.com/tbeu/matio), it can also installed from common package managers:
 - Linux: ``sudo apt install libmatio-dev``
 - macOS: ``brew install libmatio``
 - Windows, via [``vcpkg``](https://github.com/microsoft/vcpkg): ``vcpkg install --triplet x64-windows matio``
@@ -110,7 +110,6 @@ file.write(testString);
 ```
 
 # Known Limitations
- - Boolean arrays are not yet supported
  - Complex arrays are not yet supported
  - Cannot read timeseries from a ``.mat`` file (this is a ``matio`` limitation https://github.com/tbeu/matio/issues/99)
  - Cannot read string arrays from a ``.mat`` file (this is a ``matio`` limitation https://github.com/tbeu/matio/issues/98)

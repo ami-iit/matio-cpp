@@ -9,7 +9,7 @@
  */
 
 template<typename T>
-bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<const T> inputVector)
+bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<const typename matioCpp::Vector<T>::element_type> inputVector)
 {
     size_t dimensions[] = {1, static_cast<size_t>(inputVector.size())};
     return initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputVector.data());
@@ -51,16 +51,14 @@ bool matioCpp::Vector<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp:
 template<typename T>
 matioCpp::Vector<T>::Vector()
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
-    std::vector<T> empty;
+    std::vector<typename matioCpp::Vector<T>::element_type> empty;
     initializeVector("unnamed_vector", matioCpp::make_span(empty));
 }
 
 template<typename T>
 matioCpp::Vector<T>::Vector(const std::string& name)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
-    std::vector<T> empty;
+    std::vector<typename matioCpp::Vector<T>::element_type> empty;
 
     if (std::is_same<T, char>::value) //If the type is char, the name corresponds to the content
     {
@@ -77,16 +75,14 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 template<typename T>
 matioCpp::Vector<T>::Vector(const std::string &name, matioCpp::Vector<T>::index_type dimensions)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
-    std::vector<T> empty(dimensions);
+    std::vector<typename matioCpp::Vector<T>::element_type> empty(dimensions);
     initializeVector(name, matioCpp::make_span(empty));
 }
 
 template<typename T>
 template<typename, typename>
-matioCpp::Vector<T>::Vector(const std::string& name, Span<const T> inputVector)
+matioCpp::Vector<T>::Vector(const std::string& name, Span<const typename matioCpp::Vector<T>::element_type> inputVector)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
     initializeVector(name, inputVector);
 }
 
@@ -96,6 +92,15 @@ matioCpp::Vector<T>::Vector(const std::string &name, const std::string &inputStr
     static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
     size_t dimensions[] = {1, static_cast<size_t>(inputString.size())};
     initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputString.c_str());
+}
+
+template <typename T>
+matioCpp::Vector<T>::Vector(const std::string &name, const std::vector<bool>& inputVector)
+{
+    static_assert (std::is_same<T, matioCpp::Logical>::value,"The assignement operator from a vector of bool is available only if the type of the vector is Logical");
+    std::vector<typename matioCpp::Vector<T>::element_type> empty(inputVector.size());
+    initializeVector(name, matioCpp::make_span(empty));
+    this->operator=(inputVector);
 }
 
 template<typename T>
@@ -114,12 +119,10 @@ template<typename T>
 matioCpp::Vector<T>::Vector(const MatvarHandler &handler)
     : matioCpp::Variable(handler)
 {
-    static_assert (!std::is_same<T, bool>::value, "Vector<bool> is not supported." );
-
     if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
-        std::vector<T> empty;
+        std::vector<typename matioCpp::Vector<T>::element_type> empty;
         initializeVector("unnamed_vector", matioCpp::make_span(empty));
     }
 }
@@ -145,11 +148,11 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(matioCpp::Vector<T> &&other)
 }
 
 template<typename T>
-matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const Span<T> &other)
+matioCpp::Vector<typename matioCpp::Vector<T>::element_type> &matioCpp::Vector<T>::operator=(const Span<typename matioCpp::Vector<T>::element_type> &other)
 {
     if (size() == other.size())
     {
-        memcpy(toMatio()->data, other.data(), size() * sizeof(T));
+        memcpy(toMatio()->data, other.data(), size() * sizeof(typename matioCpp::Vector<T>::element_type));
     }
     else
     {
@@ -179,13 +182,37 @@ matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::string &other)
 }
 
 template<typename T>
-matioCpp::Span<T> matioCpp::Vector<T>::toSpan()
+matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::vector<bool> &other)
+{
+    static_assert (std::is_same<T, matioCpp::Logical>::value,"The assignement operator from a vector of bool is available only if the type of the vector is Logical");
+    if (size() != other.size())
+    {
+        std::vector<typename matioCpp::Vector<T>::element_type> empty(other.size());
+        bool ok = initializeVector(name(), matioCpp::make_span(empty));
+        if (!ok)
+        {
+            assert(false && "Failed to resize.");
+            return *this;
+        }
+    }
+
+    for (size_t i = 0; i < size(); ++i)
+    {
+        this->operator()(i) = other[i];
+    }
+
+    return *this;
+
+}
+
+template<typename T>
+matioCpp::Span<typename matioCpp::Vector<T>::element_type> matioCpp::Vector<T>::toSpan()
 {
     return matioCpp::make_span(*this);
 }
 
 template<typename T>
-const matioCpp::Span<const T> matioCpp::Vector<T>::toSpan() const
+const matioCpp::Span<const typename matioCpp::Vector<T>::element_type> matioCpp::Vector<T>::toSpan() const
 {
     return matioCpp::make_span(*this);
 }
@@ -210,8 +237,8 @@ void matioCpp::Vector<T>::resize(typename matioCpp::Vector<T>::index_type newSiz
 {
     if (newSize != size())
     {
-        std::vector<T> newVector(newSize);
-        memcpy(newVector.data(), data(), std::min(newSize, size()) * sizeof(T));
+        std::vector<typename matioCpp::Vector<T>::element_type> newVector(newSize);
+        memcpy(newVector.data(), data(), std::min(newSize, size()) * sizeof(typename matioCpp::Vector<T>::element_type));
         this->operator=(newVector);
     }
 }
@@ -225,13 +252,13 @@ void matioCpp::Vector<T>::clear()
 template<typename T>
 typename matioCpp::Vector<T>::pointer matioCpp::Vector<T>::data()
 {
-    return static_cast<T*>(toMatio()->data);
+    return static_cast<typename matioCpp::Vector<T>::pointer>(toMatio()->data);
 }
 
 template<typename T>
 typename matioCpp::Vector<T>::const_pointer matioCpp::Vector<T>::data() const
 {
-    return static_cast<const T*>(toMatio()->data);
+    return static_cast<typename matioCpp::Vector<T>::const_pointer>(toMatio()->data);
 }
 
 template<typename T>

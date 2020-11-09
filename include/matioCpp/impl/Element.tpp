@@ -44,7 +44,7 @@ template<typename T>
 matioCpp::Element<T>::Element()
 {
     static_assert(!std::is_same<T, std::string>::value, "A string is not handled by matio. Use Vector<char> instead." );
-    T empty;
+    typename matioCpp::Element<T>::element_type empty;
     size_t emptyDimensions[] = {1, 1};
     initializeVariable("unnamed_element",
                        VariableType::Element,
@@ -56,7 +56,7 @@ template<typename T>
 matioCpp::Element<T>::Element(const std::string &name)
 {
     static_assert(!std::is_same<T, std::string>::value, "A string is not handled by matio. Use Vector<char> instead." );
-    T empty;
+    typename matioCpp::Element<T>::element_type empty;
     size_t emptyDimensions[] = {1, 1};
     initializeVariable(name,
                        VariableType::Element,
@@ -65,10 +65,10 @@ matioCpp::Element<T>::Element(const std::string &name)
 }
 
 template<typename T>
-matioCpp::Element<T>::Element(const std::string &name, T inputValue)
+matioCpp::Element<T>::Element(const std::string &name, typename matioCpp::Element<T>::element_type inputValue)
 {
     static_assert(!std::is_same<T, std::string>::value, "A string is not handled by matio. Use Vector<char> instead." );
-    T empty = inputValue;
+    typename matioCpp::Element<T>::element_type empty = inputValue;
     size_t emptyDimensions[] = {1, 1};
     initializeVariable(name,
                        VariableType::Element,
@@ -95,7 +95,7 @@ matioCpp::Element<T>::Element(const MatvarHandler &handler)
     if (!handler.get() || !checkCompatibility(handler.get(), handler.variableType(), handler.valueType()))
     {
         assert(false);
-        T empty;
+        typename matioCpp::Element<T>::element_type empty;
         size_t emptyDimensions[] = {1, 1};
         initializeVariable("unnamed_element",
                            VariableType::Element,
@@ -125,7 +125,7 @@ matioCpp::Element<T> &matioCpp::Element<T>::operator=(Element<T> &&other)
 }
 
 template<typename T>
-matioCpp::Element<T> &matioCpp::Element<T>::operator=(T value)
+matioCpp::Element<T> &matioCpp::Element<T>::operator=(typename matioCpp::Element<T>::element_type value)
 {
     operator()() = value;
     return *this;
@@ -150,7 +150,7 @@ typename matioCpp::Element<T>::value_type matioCpp::Element<T>::operator()() con
 }
 
 template<typename T>
-matioCpp::Element<T>::operator T() const
+matioCpp::Element<T>::operator typename matioCpp::Element<T>::element_type() const
 {
     return (((typename matioCpp::Element<T>::const_pointer)(toMatio()->data))[0]);
 }
