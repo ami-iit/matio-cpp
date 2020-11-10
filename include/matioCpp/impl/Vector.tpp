@@ -376,14 +376,4 @@ const matioCpp::Vector<T> matioCpp::Variable::asVector() const
     return matioCpp::Vector<T>(*m_handler);
 }
 
-matioCpp::String matioCpp::Variable::asString()
-{
-    return matioCpp::Vector<char>(*m_handler);
-}
-
-const matioCpp::String matioCpp::Variable::asString() const
-{
-    return matioCpp::Vector<char>(*m_handler);
-}
-
 #endif // MATIOCPP_VECTOR_TPP
