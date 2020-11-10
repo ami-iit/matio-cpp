@@ -11,6 +11,7 @@
 #include <matioCpp/CellArray.h>
 #include <matioCpp/Struct.h>
 #include <matioCpp/StructArray.h>
+#include <matioCpp/Vector.h>
 
 bool matioCpp::Variable::initializeVariable(const std::string& name, const VariableType& variableType, const ValueType& valueType, matioCpp::Span<const size_t> dimensions, void* data)
 {
@@ -571,4 +572,14 @@ matioCpp::StructArray matioCpp::Variable::asStructArray()
 const matioCpp::StructArray matioCpp::Variable::asStructArray() const
 {
     return matioCpp::StructArray(*m_handler);
+}
+
+matioCpp::String matioCpp::Variable::asString()
+{
+    return matioCpp::Vector<char>(*m_handler);
+}
+
+const matioCpp::String matioCpp::Variable::asString() const
+{
+    return matioCpp::Vector<char>(*m_handler);
 }
