@@ -68,6 +68,17 @@ public:
     ~File();
 
     /**
+     * @brief Deleted copy assignment, to avoid confusion on whether the content has been copied or not
+     */
+    void operator=(const File& other) = delete;
+
+    /**
+     * @brief Move assignement
+     * @param other The other File from which the internal status has been taken.
+     */
+    void operator=(File&& other);
+
+    /**
      * @brief Close the file
      */
     void close();
@@ -99,6 +110,13 @@ public:
      * @return True if successful, false otherwise (for example, in Windows the file will not be deleted if open).
      */
     static bool Delete(const std::string& name);
+
+    /**
+     * @brief Check if file exists and can be opened
+     * @param name The name of the file to check
+     * @return True if the specified file exists, false otherwise
+     */
+    static bool Exists(const std::string& name);
 
     /**
      * @brief The file name
@@ -133,7 +151,7 @@ public:
      * @brief Get the list of variables in the file.
      * @return The list of variables in the file.
      */
-    const std::vector<std::string>& variableNames() const;
+    std::vector<std::string> variableNames() const;
 
     /**
      * @brief Read a variable given the name

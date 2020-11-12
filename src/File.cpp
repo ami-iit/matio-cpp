@@ -12,12 +12,10 @@ class matioCpp::File::Impl
 {
 public:
     mat_t* mat_ptr{nullptr};
-    std::vector<std::string> variableNames;
     matioCpp::FileMode fileMode{matioCpp::FileMode::ReadOnly};
 
     void close()
     {
-        variableNames.clear();
         fileMode = matioCpp::FileMode::ReadOnly;
         freePtr();
     }
@@ -37,20 +35,8 @@ public:
         mat_ptr = newPtr;
         fileMode = mode;
 
-        if (newPtr)
+        if (!newPtr)
         {
-            size_t list_size;
-            char** list = Mat_GetDir(newPtr, &list_size);
-
-            variableNames.resize(list_size);
-            for (size_t i = 0; i < list_size; ++i)
-            {
-                variableNames[i] = list[i];
-            }
-        }
-        else
-        {
-            variableNames.clear();
             mode = matioCpp::FileMode::ReadOnly;
         }
     }
@@ -61,6 +47,31 @@ public:
     ~Impl()
     {
         close();
+    }
+
+    std::string isVariableValid(const matioCpp::Variable& input)
+    {
+        if (!input.isValid())
+        {
+            return "The input variable is not valid.";
+        }
+
+        const std::string& inputName = input.name();
+
+        if (!isalpha(inputName[0]))
+        {
+            return std::string("The first character of the variable name has to be a letter (Variable name = " + inputName + ").");
+        }
+
+        for (size_t i = 1; i < inputName.size(); ++i)
+        {
+            if (!isalpha(inputName[i]) && (inputName[i] != '_'))
+            {
+                return std::string("The variable name can contain only alphanumeric characters or underscores (Variable name = \"" + inputName + "\").");
+            }
+        }
+
+        return std::string(); //Empty string, no error
     }
 };
 
@@ -78,12 +89,17 @@ matioCpp::File::File(const std::string &name, matioCpp::FileMode mode)
 
 matioCpp::File::File(matioCpp::File &&other)
 {
-    m_pimpl = std::move(other.m_pimpl);
+    operator=(std::forward<matioCpp::File>(other));
 }
 
 matioCpp::File::~File()
 {
 
+}
+
+void matioCpp::File::operator=(matioCpp::File &&other)
+{
+    m_pimpl = std::move(other.m_pimpl);
 }
 
 void matioCpp::File::close()
@@ -143,6 +159,12 @@ bool matioCpp::File::Delete(const std::string &name)
     return std::remove(name.c_str()) == 0;
 }
 
+bool matioCpp::File::Exists(const std::string &name)
+{
+    matioCpp::File test(name, matioCpp::FileMode::ReadOnly);
+    return test.isOpen();
+}
+
 std::string matioCpp::File::name() const
 {
     if (!isOpen())
@@ -196,9 +218,22 @@ matioCpp::FileMode matioCpp::File::mode() const
     return m_pimpl->fileMode;
 }
 
-const std::vector<std::string> &matioCpp::File::variableNames() const
+std::vector<std::string> matioCpp::File::variableNames() const
 {
-    return m_pimpl->variableNames;
+    std::vector<std::string> outputNames;
+    if (isOpen())
+    {
+        size_t list_size;
+        char** list = Mat_GetDir(m_pimpl->mat_ptr, &list_size);
+
+        outputNames.resize(list_size);
+        for (size_t i = 0; i < list_size; ++i)
+        {
+            outputNames[i] = list[i];
+        }
+    }
+
+    return outputNames;
 }
 
 matioCpp::Variable matioCpp::File::read(const std::string &name) const
@@ -230,9 +265,10 @@ bool matioCpp::File::write(const Variable &variable)
         return false;
     }
 
-    if (!variable.isValid())
+    std::string error = m_pimpl->isVariableValid(variable);
+    if (error.size() != 0)
     {
-        std::cerr << "[ERROR][matioCpp::File::write] The input variable is not valid." <<std::endl;
+        std::cerr << "[ERROR][matioCpp::File::write] " << error << std::endl;
         return false;
     }
 
