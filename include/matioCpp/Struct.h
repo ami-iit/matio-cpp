@@ -144,6 +144,16 @@ public:
     bool setField(index_type index, const Variable& newValue);
 
     /**
+     * @brief Set the given field to the newValue
+     * @param field The name of the field to set
+     * @param newValue The Variable that will be copied in the specified field
+     * @return True if successful, false otherwise (for example if the newValue is not valid)
+     * @note If the field is not found, a new field is created and appended to the struct.
+     * @note The field is searched linearly. The name of newValue is not used
+     */
+    bool setField(const std::string& field, const Variable& newValue);
+
+    /**
      * @brief Set the field given the newValue name
      * @param newValue The Variable that will be copied in the specified field
      * @return True if successful, false otherwise (for example if the newValue is not valid)

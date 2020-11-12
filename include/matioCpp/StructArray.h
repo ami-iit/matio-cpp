@@ -66,11 +66,21 @@ public:
      * @param elements The elements to be added to the StructArray (they are copied)
      * @note The name of the variables is not used
      * @note The vector is supposed to contain the variables in column-major format.
-     * @note Each element is supposed to have the same set fields.
+     * @note Each element is supposed to have the same set of fields.
      */
     StructArray(const std::string& name,
                 const std::vector<index_type>& dimensions,
                 const std::vector<matioCpp::Struct>& elements);
+
+    /**
+     * @brief Constructor
+     * @param name The name of the StructArray
+     * @param dimensions The dimensions of the StructArray
+     * @param fields The fields to be added to the StructArray
+     */
+    StructArray(const std::string& name,
+                const std::vector<index_type>& dimensions,
+                const std::vector<std::string>& fields);
 
     /**
      * @brief Copy constructor
@@ -152,7 +162,6 @@ public:
      * @brief Resize the array.
      * @param newDimensions The new dimensions.
      *
-     * @warning This requires to allocate memory for twice the new size.
      * @warning Previous data is lost.
      */
     void resize(const std::vector<index_type>& newDimensions);
@@ -202,8 +211,15 @@ public:
     bool addField(const std::string& newField);
 
     /**
+     * @brief Add the fields to all the structs
+     * @param newFields The new fields to add
+     * @return True on success, false otherwise
+     */
+    bool addFields(const std::vector<std::string>& newFields);
+
+    /**
      * @brief Set the element at the specified position
-     * @param el The indices of the specified elementconst StructArrayElement
+     * @param el The indices of the specified element
      * @param newValue The Struct that will be copied in the specified location
      * @return True if successful, false otherwise (for example if the newValue is not valid)
      * @note An assertion is thrown if el is out of bounds, but only in debug mode

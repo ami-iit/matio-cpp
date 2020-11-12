@@ -19,9 +19,10 @@ class matioCpp::File
     std::unique_ptr<Impl> m_pimpl; /** Pointer to implementation. **/
 
     /**
-     * @brief Convert the input to a Variable.
-     * This is useful to get the dereferenced value of an iterator.
-     * @param input The dereferenced value of an iterator.
+     * @brief Utility function to get the input as a output.
+     *
+     * This is a small trick used to have the same interface in case of iterators that, when dereferenced, return either the value itself, or a pair.
+     * @param it The dereferenced value of an iterator.
      * @return The same input
      */
     template<class input>
@@ -30,7 +31,7 @@ class matioCpp::File
     /**
      * @brief Convert the input to a Variable.
      * This is useful to get the dereferenced value of an iterator. This particular version is needed when using map containers.
-     * @param input The dereferenced value of an iterator.
+     * @param it The dereferenced value of an iterator.
      * @return The second element of the input
      */
     template<class key, class input>

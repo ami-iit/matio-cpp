@@ -328,6 +328,9 @@ TEST_CASE("Write")
 
     REQUIRE_FALSE(file.write(matioCpp::Element<double>("Should Fail", 1.0)));
 
+    matioCpp::StructArray empty("emptyStructArray", {2,2});
+    empty.addField("empty field");
+    REQUIRE(file.write(empty));
 }
 
 TEST_CASE("Batch write")

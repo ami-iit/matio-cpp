@@ -144,6 +144,28 @@ matioCpp::StructArray::StructArray(const std::string &name, const std::vector<ma
 
 }
 
+matioCpp::StructArray::StructArray(const std::string &name, const std::vector<matioCpp::StructArray::index_type> &dimensions, const std::vector<std::string> &fields)
+{
+    for (matioCpp::StructArray::index_type dim : dimensions)
+    {
+        if (dim == 0)
+        {
+            std::cerr << "[ERROR][matioCpp::StructArray::StructArray] Zero dimension detected." << std::endl;
+            assert(false);
+        }
+    }
+
+    initializeVariable(name,
+                       VariableType::StructArray,
+                       matioCpp::ValueType::VARIABLE, dimensions,
+                       nullptr);
+
+    for (const std::string& field : fields)
+    {
+        addField(field);
+    }
+}
+
 matioCpp::StructArray::StructArray(const matioCpp::StructArray &other)
 {
     fromOther(other);
@@ -359,7 +381,23 @@ size_t matioCpp::StructArray::getFieldIndex(const std::string &field) const
 
 bool matioCpp::StructArray::addField(const std::string &newField)
 {
-    return addStructField(newField);
+    if (!addStructField(newField))
+    {
+        std::cerr << "[ERROR][matioCpp::StructArray::addField] Failed to add field " << newField << "." <<std::endl;
+    }
+    return true;
+}
+
+bool matioCpp::StructArray::addFields(const std::vector<std::string> &newFields)
+{
+    for (const std::string& field : newFields)
+    {
+        if (!addField(field))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool matioCpp::StructArray::setElement(const std::vector<matioCpp::StructArray::index_type> &el, const matioCpp::Struct &newValue)

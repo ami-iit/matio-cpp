@@ -326,6 +326,11 @@ TEST_CASE("Modifications")
     REQUIRE(in("name").asString()() == "anotherString");
     REQUIRE_FALSE(previousElement.isValid());
 
+    matioCpp::String string("yetAnotherString");
+    REQUIRE(in.setField("name", string));
+    REQUIRE(in("name").asString()() == "yetAnotherString");
+
+
     in.clear();
     REQUIRE(in.numberOfFields() == 0);
 }
