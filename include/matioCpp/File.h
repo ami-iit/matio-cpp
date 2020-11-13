@@ -19,9 +19,10 @@ class matioCpp::File
     std::unique_ptr<Impl> m_pimpl; /** Pointer to implementation. **/
 
     /**
-     * @brief Convert the input to a Variable.
-     * This is useful to get the dereferenced value of an iterator.
-     * @param input The dereferenced value of an iterator.
+     * @brief Utility function to get the input as a output.
+     *
+     * This is a small trick used to have the same interface in case of iterators that, when dereferenced, return either the value itself, or a pair.
+     * @param it The dereferenced value of an iterator.
      * @return The same input
      */
     template<class input>
@@ -30,7 +31,7 @@ class matioCpp::File
     /**
      * @brief Convert the input to a Variable.
      * This is useful to get the dereferenced value of an iterator. This particular version is needed when using map containers.
-     * @param input The dereferenced value of an iterator.
+     * @param it The dereferenced key-value pair of an iterator.
      * @return The second element of the input
      */
     template<class key, class input>
@@ -68,6 +69,17 @@ public:
     ~File();
 
     /**
+     * @brief Deleted copy assignment, to avoid confusion on whether the content has been copied or not
+     */
+    void operator=(const File& other) = delete;
+
+    /**
+     * @brief Move assignement
+     * @param other The other File from which the internal status has been taken.
+     */
+    void operator=(File&& other);
+
+    /**
      * @brief Close the file
      */
     void close();
@@ -99,6 +111,13 @@ public:
      * @return True if successful, false otherwise (for example, in Windows the file will not be deleted if open).
      */
     static bool Delete(const std::string& name);
+
+    /**
+     * @brief Check if file exists and can be opened
+     * @param name The name of the file to check
+     * @return True if the specified file exists, false otherwise
+     */
+    static bool Exists(const std::string& name);
 
     /**
      * @brief The file name
@@ -133,7 +152,7 @@ public:
      * @brief Get the list of variables in the file.
      * @return The list of variables in the file.
      */
-    const std::vector<std::string>& variableNames() const;
+    std::vector<std::string> variableNames() const;
 
     /**
      * @brief Read a variable given the name

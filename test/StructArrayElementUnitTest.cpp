@@ -137,7 +137,11 @@ TEST_CASE("Struct array element")
 
         REQUIRE(element.setField(1, matioCpp::Element<double>("test", 1.5)));
         REQUIRE(element[1].asElement<double>() == 1.5);
+        REQUIRE(element.setField(modified));
+        REQUIRE(element("name").asString()() == "modified");
 
+        REQUIRE(element.setField("element", matioCpp::Element<matioCpp::Logical>("logical", true)));
+        REQUIRE(element["element"].asElement<matioCpp::Logical>());
     }
 
 }

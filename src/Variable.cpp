@@ -304,7 +304,7 @@ bool matioCpp::Variable::addStructField(const std::string &newField)
     return true;
 }
 
-bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size_t structPositionInArray)
+bool matioCpp::Variable::setStructField(const std::string& field, const matioCpp::Variable &newValue, size_t structPositionInArray)
 {
     if (!isValid())
     {
@@ -312,9 +312,9 @@ bool matioCpp::Variable::setStructField(const matioCpp::Variable &newValue, size
         return false;
     }
 
-    size_t fieldindex = getStructFieldIndex(newValue.name());
+    size_t fieldindex = getStructFieldIndex(field);
 
-    if ((fieldindex == getStructNumberOfFields()) && !((getArrayNumberOfElements() == 1) && addStructField(newValue.name())))
+    if ((fieldindex == getStructNumberOfFields()) && !((getArrayNumberOfElements() == 1) && addStructField(field)))
     {
         //This is the case when the field has not been found and, either there are more than one elements (i.e. it is part of an array), or there was an error in adding the field
         return false;

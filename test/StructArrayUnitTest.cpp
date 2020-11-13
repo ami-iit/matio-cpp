@@ -109,6 +109,19 @@ TEST_CASE("Constructors")
                       matioCpp::ValueType::VARIABLE, false, {1,2,3});
     }
 
+    SECTION("Name, dimensions and fields")
+    {
+        matioCpp::StructArray var("test", {1,2,3}, {"a", "b", "c"});
+
+        checkVariable(var, "test", matioCpp::VariableType::StructArray,
+                      matioCpp::ValueType::VARIABLE, false, {1,2,3});
+        REQUIRE(var.numberOfFields() == 3);
+        std::vector<std::string> fields = var.fields();
+        REQUIRE(fields[0] == "a");
+        REQUIRE(fields[1] == "b");
+        REQUIRE(fields[2] == "c");
+    }
+
     SECTION("Name, dimensions and data")
     {
         std::vector<matioCpp::Variable> data;
@@ -348,6 +361,13 @@ TEST_CASE("Assignments and modifications")
 
             REQUIRE(in.numberOfFields() == numberOfFields + 1);
             REQUIRE(in.getFieldIndex("addedField") == numberOfFields);
+
+            REQUIRE(in.addFields({"new1", "new2", "new3"}));
+            REQUIRE(in.numberOfFields() == numberOfFields + 4);
+            REQUIRE(in.getFieldIndex("new1") == numberOfFields +1);
+            REQUIRE(in.getFieldIndex("new2") == numberOfFields +2);
+            REQUIRE(in.getFieldIndex("new3") == numberOfFields +3);
+
         }
 
         SECTION("Set element")

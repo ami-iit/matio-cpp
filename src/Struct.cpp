@@ -8,7 +8,7 @@
 
 #include <matioCpp/Struct.h>
 
-bool matioCpp::Struct::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
+bool matioCpp::Struct::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType) const
 {
 
     if (variableType != matioCpp::VariableType::Struct)
@@ -173,9 +173,14 @@ bool matioCpp::Struct::setField(matioCpp::Struct::index_type index, const matioC
     return setStructField(index, newValue);
 }
 
+bool matioCpp::Struct::setField(const std::string &field, const matioCpp::Variable &newValue)
+{
+    return setStructField(field, newValue);
+}
+
 bool matioCpp::Struct::setField(const matioCpp::Variable &newValue)
 {
-    return setStructField(newValue);
+    return setStructField(newValue.name(), newValue);
 }
 
 matioCpp::Variable matioCpp::Struct::operator()(matioCpp::Struct::index_type el)

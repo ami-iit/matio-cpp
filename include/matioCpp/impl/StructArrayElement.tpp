@@ -163,24 +163,27 @@ bool matioCpp::StructArrayElement<isConst>::setField(index_type index, const Var
 
 template <bool isConst>
 template<bool B, typename >
-bool matioCpp::StructArrayElement<isConst>::setField(const Variable &newValue) const
+bool matioCpp::StructArrayElement<isConst>::setField(const std::string& field, const Variable &newValue) const
 {
     static_assert ((B == isConst) && !B, "This method can be used only if the the element is not const.");
 
-    if (!newValue.isValid())
-    {
-        std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] The input variable is not valid." << std::endl;
-        return false;
-    }
-
-    size_t index = getFieldIndex(newValue.name());
+    size_t index = getFieldIndex(field);
     if (index == numberOfFields())
     {
-        std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] No field named " << newValue.name() << "." << std::endl;
+        std::cerr << "[ERROR][matioCpp::StructArrayElement::setField] No field named " << field << "." << std::endl;
         return false;
     }
 
     return setField(index, newValue);
+}
+
+template <bool isConst>
+template<bool B, typename >
+bool matioCpp::StructArrayElement<isConst>::setField(const Variable &newValue) const
+{
+    static_assert ((B == isConst) && !B, "This method can be used only if the the element is not const.");
+
+    return setField(newValue.name(), newValue);
 }
 
 template <bool isConst>

@@ -146,6 +146,15 @@ public:
     bool setField(index_type index, const Variable& newValue) const;
 
     /**
+     * @brief Set the field given the field name
+     * @param field The field to change
+     * @param newValue The Variable that will be copied in the specified field (the name is not considered)
+     * @return True if successful, false otherwise (for example if the newValue is not valid or the field is not found)
+     */
+    template<bool B = isConst, typename = typename std::enable_if_t<(B == isConst) && !B>>
+    bool setField(const std::string& field, const Variable& newValue) const;
+
+    /**
      * @brief Set the field given the newValue name
      * @param newValue The Variable that will be copied in the specified field
      * @return True if successful, false otherwise (for example if the newValue is not valid or the field is not found)

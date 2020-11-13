@@ -30,6 +30,19 @@ TEST_CASE("Constructors"){
     REQUIRE(other.isOpen());
 }
 
+TEST_CASE("Move assignement")
+{
+    matioCpp::File input(getMatPath("input.mat"));
+
+    REQUIRE(input.isOpen());
+
+    matioCpp::File other;
+
+    other = std::move(input);
+
+    REQUIRE(other.isOpen());
+}
+
 
 TEST_CASE("File properties")
 {
@@ -76,6 +89,7 @@ TEST_CASE("Variable names")
 
 TEST_CASE("Read")
 {
+    REQUIRE(matioCpp::File::Exists(getMatPath("input.mat")));
     matioCpp::File input(getMatPath("input.mat"));
 
     REQUIRE(input.isOpen());
@@ -197,7 +211,7 @@ TEST_CASE("Create and delete file")
     REQUIRE(newFile.variableNames().size() == 0);
     newFile.close();
     REQUIRE(matioCpp::File::Delete("test.mat"));
-    REQUIRE_FALSE(test.open("test.mat", matioCpp::FileMode::ReadOnly));
+    REQUIRE_FALSE(matioCpp::File::Exists("test.mat"));
 }
 
 TEST_CASE("Write")
@@ -312,6 +326,11 @@ TEST_CASE("Write")
     REQUIRE(readStructArrayVar.isValid());
     REQUIRE(readStructArrayVar(0)("element").asElement<int>()() == 3);
 
+    REQUIRE_FALSE(file.write(matioCpp::Element<double>("Should Fail", 1.0)));
+
+    matioCpp::StructArray empty("emptyStructArray", {2,2});
+    empty.addField("empty field");
+    REQUIRE(file.write(empty));
 }
 
 TEST_CASE("Batch write")

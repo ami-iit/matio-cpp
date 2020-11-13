@@ -10,6 +10,7 @@
 #include <algorithm> // for lexicographical_compare
 #include <array>     // for array
 #include <cassert>
+#include <cctype> // for isalpha, isalnum
 #include <complex>
 #include <cstddef>   // for ptrdiff_t, size_t, nullptr_t
 #include <cstdio>  //for remove
