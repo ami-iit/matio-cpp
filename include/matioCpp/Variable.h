@@ -149,6 +149,7 @@ protected:
 
     /**
      * @brief Set the field of the struct given the newValue name
+     * @param field The field to set
      * @param newValue The Variable that will be copied in the specified field
      * @param structPositionInArray The linear position of the struct to set in the struct array
      * @return True if successful, false otherwise (for example if the newValue is not valid)

@@ -31,7 +31,7 @@ class matioCpp::File
     /**
      * @brief Convert the input to a Variable.
      * This is useful to get the dereferenced value of an iterator. This particular version is needed when using map containers.
-     * @param it The dereferenced value of an iterator.
+     * @param it The dereferenced key-value pair of an iterator.
      * @return The second element of the input
      */
     template<class key, class input>

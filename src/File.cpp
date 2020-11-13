@@ -58,6 +58,16 @@ public:
 
         const std::string& inputName = input.name();
 
+        if (inputName.size() == 0)
+        {
+            return std::string("The input variable has an empty name.");
+        }
+
+        if (inputName.size() > 63)
+        {
+            return std::string("The input variable name is too long (maximum 63 char allowed)."); // Many Matlab versions have this limitation
+        }
+
         if (!isalpha(inputName[0]))
         {
             return std::string("The first character of the variable name has to be a letter (Variable name = " + inputName + ").");
