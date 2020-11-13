@@ -65,7 +65,7 @@ public:
 
         for (size_t i = 1; i < inputName.size(); ++i)
         {
-            if (!isalpha(inputName[i]) && (inputName[i] != '_'))
+            if (!isalnum(inputName[i]) && (inputName[i] != '_'))
             {
                 return std::string("The variable name can contain only alphanumeric characters or underscores (Variable name = \"" + inputName + "\").");
             }
@@ -289,5 +289,4 @@ bool matioCpp::File::isOpen() const
 {
     return m_pimpl->mat_ptr;
 }
-
 
