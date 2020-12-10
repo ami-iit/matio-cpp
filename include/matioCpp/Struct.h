@@ -94,7 +94,7 @@ public:
      * @note Previous fields are lost
      * @return True if successful. False otherwise, for example if one of the input variables is not valid.
      */
-    bool fromVectorOfVariables(std::vector<Variable> &elements);
+    bool fromVectorOfVariables(const std::vector<Variable> &elements);
 
     /**
      * @brief Change the name of the Struct

@@ -105,7 +105,7 @@ matioCpp::Struct &matioCpp::Struct::operator=(matioCpp::Struct &&other)
     return *this;
 }
 
-bool matioCpp::Struct::fromVectorOfVariables(std::vector<matioCpp::Variable> &elements)
+bool matioCpp::Struct::fromVectorOfVariables(const std::vector<Variable> &elements)
 {
     std::vector<matvar_t*> vectorOfPointers(elements.size() + 1, nullptr); //The vector of pointers has to be null terminated
     for (size_t i = 0; i < elements.size(); ++i)
