@@ -43,7 +43,7 @@ jobs:
     # then provision vcpkg, install desired ports, finally cache everything for the next run.
     - name: Dependencies [Windows]
       if: matrix.os == 'windows-latest'
-      uses: lukka/run-vcpkg@v3
+      uses: lukka/run-vcpkg@v6
       with:
         vcpkgArguments: '--triplet x64-windows matio catch2'
         vcpkgGitCommitId: ${{ env.vcpkg_TAG }}

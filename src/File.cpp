@@ -7,6 +7,8 @@
 
 
 #include <matioCpp/File.h>
+#include <time.h>
+#include <matioCpp/Config.h>
 
 class matioCpp::File::Impl
 {
@@ -152,7 +154,34 @@ matioCpp::File matioCpp::File::Create(const std::string &name, matioCpp::FileVer
         break;
     }
 
-    const char * matioHeader = header.size() ? header.c_str() : NULL;
+    std::string fileHeader = header;
+
+    if (!fileHeader.size())
+    {
+        time_t rawtime;
+        time(&rawtime);
+        std::string timeString(ctime(&rawtime));
+        size_t end = timeString.find_last_of('\n');
+        timeString = timeString.substr(0,end);
+
+        if (fileVer == mat_ft::MAT_FT_MAT73)
+        {
+            fileHeader = std::string("MATLAB 7.3 MAT-file, created by matioCpp v") + MATIOCPP_VER +
+                         " via libmatio v" + std::to_string(MATIO_MAJOR_VERSION)
+                         + "." + std::to_string(MATIO_MINOR_VERSION) + "." + std::to_string(MATIO_RELEASE_LEVEL) +
+                         " on " + timeString + " HDF5 schema 0.5.";
+        }
+        else if (fileVer == mat_ft::MAT_FT_MAT5)
+        {
+            fileHeader = std::string("MATLAB 5.0 MAT-file, created by matioCpp v") + MATIOCPP_VER +
+                         " via libmatio v" + std::to_string(MATIO_MAJOR_VERSION)
+                         + "." + std::to_string(MATIO_MINOR_VERSION) + "." + std::to_string(MATIO_RELEASE_LEVEL) +
+                         " on " + timeString + ".";
+        }
+        //MAT4 does not have a header
+    }
+
+    const char * matioHeader = fileHeader.size() ? fileHeader.c_str() : NULL;
 
     newFile.m_pimpl->reset(Mat_CreateVer(name.c_str(), matioHeader, fileVer), matioCpp::FileMode::ReadAndWrite);
 

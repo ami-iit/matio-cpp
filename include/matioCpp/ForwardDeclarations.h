@@ -68,12 +68,6 @@ namespace matioCpp
 {
 
 /**
- * Implementation of the c++17 <code>void_t<\code> metafunction to avoid some static analyzer warnings.
- */
-template<typename... Ts> struct make_void { typedef void type;};
-template<typename... Ts> using void_t = typename make_void<Ts...>::type;
-
-/**
  * dependent_false is a type-dependent expression that is always false. Please check
  * https://en.cppreference.com/w/cpp/language/if for further details.
  */

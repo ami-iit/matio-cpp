@@ -32,6 +32,52 @@
 namespace matioCpp
 {
 
+namespace SpanUtils {
+
+template <typename... Ts> struct make_void { typedef void type; };
+template <typename... Ts> using void_t = typename make_void<Ts...>::type;
+
+//Small utility to detect if type T has value_type defined
+template <typename T, typename = void> struct is_value_defined : std::false_type
+{
+};
+
+template <typename T>
+struct is_value_defined<T, void_t<typename T::value_type>> : std::true_type
+{
+};
+
+//Small utility to detect if type T has element_type defined
+template <typename T, typename = void> struct is_element_defined : std::false_type
+{
+};
+
+template <typename T>
+struct is_element_defined<T, void_t<typename T::element_type>> : std::true_type
+{
+};
+
+//Small utility to detect if class T has the data() method defined
+template <typename T, typename = void> struct has_data_method : std::false_type
+{
+};
+
+template <typename T>
+struct has_data_method<T, void_t<decltype(std::declval<T>().data())>> : std::true_type
+{
+};
+
+//Small utility to detect if class T has the size() method defined
+template <typename T, typename = void> struct has_size_method : std::false_type
+{
+};
+
+template <typename T>
+struct has_size_method<T, void_t<decltype(std::declval<T>().size())>> : std::true_type
+{
+};
+}
+
 // implementation details
 namespace details
 {
@@ -294,6 +340,7 @@ public:
     using index_type = std::ptrdiff_t;
     using pointer = element_type*;
     using reference = element_type&;
+    using const_reference = const element_type&;
 
     using iterator = details::span_iterator<Span<ElementType, Extent>, false>;
     using const_iterator = details::span_iterator<Span<ElementType, Extent>, true>;
@@ -348,21 +395,19 @@ public:
     // on Container to be a contiguous sequence container.
 #ifndef SWIG
     template <class Container,
-              class = std::enable_if_t<
-                  !details::is_span<Container>::value && !details::is_std_array<Container>::value &&
-                  std::is_convertible<typename Container::pointer, pointer>::value &&
-                  std::is_convertible<typename Container::pointer,
-                                      decltype(std::declval<Container>().data())>::value>>
+             class = std::enable_if_t<SpanUtils::has_data_method<Container>::value && SpanUtils::has_size_method<Container>::value>,
+             class = std::enable_if_t<
+                 !details::is_span<Container>::value && !details::is_std_array<Container>::value &&
+                 std::is_convertible<decltype(std::declval<Container>().data()), pointer>::value>>
     MATIOCPP_CONSTEXPR Span(Container& cont) : Span(cont.data(), static_cast<index_type>(cont.size()))
     {
     }
 
     template <class Container,
-              class = std::enable_if_t<
-                  std::is_const<element_type>::value && !details::is_span<Container>::value &&
-                  std::is_convertible<typename Container::pointer, pointer>::value &&
-                  std::is_convertible<typename Container::pointer,
-                                      decltype(std::declval<Container>().data())>::value>>
+             class = std::enable_if_t<SpanUtils::has_data_method<Container>::value && SpanUtils::has_size_method<Container>::value>,
+             class = std::enable_if_t<
+                 std::is_const<element_type>::value && !details::is_span<Container>::value &&
+                 std::is_convertible<decltype(std::declval<Container>().data()), pointer>::value>>
     MATIOCPP_CONSTEXPR Span(const Container& cont) : Span(cont.data(), static_cast<index_type>(cont.size()))
     {
     }
@@ -444,8 +489,8 @@ public:
         return data()[idx];
     }
 
-    MATIOCPP_CONSTEXPR double getVal(index_type idx) const { return this->operator[](idx);}
-    MATIOCPP_CONSTEXPR bool setVal(index_type idx, double val)
+    MATIOCPP_CONSTEXPR const_reference getVal(index_type idx) const { return this->operator[](idx);}
+    MATIOCPP_CONSTEXPR bool setVal(index_type idx, const_reference val)
     {
         assert(idx >= 0 && idx < storage_.size());
         data()[idx] = val;
@@ -641,7 +686,7 @@ MATIOCPP_CONSTEXPR Span<typename Container::value_type> make_span(Container& con
     return Span<typename Container::value_type>(cont);
 }
 
-template <class Container>
+template <class Container, typename = typename std::enable_if<SpanUtils::is_value_defined<Container>::value>::type>
 MATIOCPP_CONSTEXPR Span<const typename Container::value_type> make_span(const Container& cont)
 {
     return Span<const typename Container::value_type>(cont);
@@ -653,20 +698,18 @@ MATIOCPP_CONSTEXPR Span<typename Ptr::element_type> make_span(Ptr& cont, std::pt
     return Span<typename Ptr::element_type>(cont, count);
 }
 
-//Small utility to detect if type T has value_type defined
-template <typename T, typename = void> struct is_value_defined : std::false_type
-{
-};
-
-template <typename T>
-struct is_value_defined<T, void_t<typename T::value_type>> : std::true_type
-{
-};
-
-template <class Ptr, typename = typename std::enable_if<!is_value_defined<Ptr>::value, void>::type>
+template <class Ptr, typename = typename std::enable_if<!SpanUtils::is_value_defined<Ptr>::value && SpanUtils::is_element_defined<Ptr>::value>::type>
 MATIOCPP_CONSTEXPR Span<typename Ptr::element_type> make_span(Ptr& cont)
 {
     return Span<typename Ptr::element_type>(cont);
+}
+
+template <class Container, typename = typename std::enable_if<!SpanUtils::is_value_defined<Container>::value &&
+                                                             !SpanUtils::is_element_defined<Container>::value &&
+                                                             SpanUtils::has_data_method<Container>::value>::type>
+MATIOCPP_CONSTEXPR Span<typename std::remove_pointer<decltype (std::declval<Container>().data())>::type> make_span(Container& cont)
+{
+    return Span<typename std::remove_pointer<decltype (std::declval<Container>().data())>::type>(cont);
 }
 
 } // namespace matioCpp
