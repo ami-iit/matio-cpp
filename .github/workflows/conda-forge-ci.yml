@@ -61,4 +61,4 @@ jobs:
       shell: bash -l {0}
       run: |
         cd build
-        ctest --output-on-failure --config ${{ matrix.build_type }}
+        ctest --output-on-failure -C ${{ matrix.build_type }}
