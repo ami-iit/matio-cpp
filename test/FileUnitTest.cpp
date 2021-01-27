@@ -156,9 +156,15 @@ TEST_CASE("Read")
     REQUIRE(logicalMatrix({1,2}));
     REQUIRE_FALSE(logicalMatrix({1,3}));
 
-    matioCpp::String string = input.read("string").asString();
-    REQUIRE(string.isValid());
-    REQUIRE(string() == "test");
+    matioCpp::String inputString = input.read("string").asString();
+    REQUIRE(inputString.isValid());
+    std::string stringValue = inputString();
+    bool ok = stringValue == "test";
+    if (!ok)
+    {
+        std::cerr << stringValue << "!= test" << std::endl;
+    }
+    REQUIRE(ok); //REQUIRE(inputString() == "test") is failing in some systems. (https://github.com/dic-iit/matio-cpp/issues/28)
 
     matioCpp::Struct structVar = input.read("struct").asStruct();
     REQUIRE(structVar.isValid());
@@ -264,7 +270,8 @@ TEST_CASE("Write")
 
     matioCpp::String inputString("string", "test");
     REQUIRE(file.write(inputString));
-    REQUIRE(file.read("string").asString()() == "test");
+    bool ok = file.read("string").asString()() == "test";
+    REQUIRE(ok); //REQUIRE(file.read("string").asString()() == "test") fails on some systems, see https://github.com/dic-iit/matio-cpp/issues/28
 
     std::vector<double> data({1, 2, 3, 4, 5, 6});
     matioCpp::Vector<double> vectorInput("vector", data);
