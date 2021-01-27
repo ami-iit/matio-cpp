@@ -41,7 +41,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
+        cmake -GNinja -DBUILD_TESTING:BOOL=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
       
     - name: Configure [Windows]
       if: contains(matrix.os, 'windows')
@@ -49,7 +49,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -G"Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
+        cmake -G"Visual Studio 16 2019" -DBUILD_TESTING:BOOL=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
 
     - name: Build 
       shell: bash -l {0}
