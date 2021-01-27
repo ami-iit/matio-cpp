@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: '[${{ matrix.os }}@${{ matrix.build_type }}@conda-forge]'
+    name: '[${{ matrix.os }}@${{ matrix.build_type }}@conda]'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
