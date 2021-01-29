@@ -47,6 +47,10 @@ public:
 
     using const_reverse_iterator =std::reverse_iterator<const_iterator>; /** The const reverse iterator type. **/
 
+    using string_output_type = typename std::conditional<std::is_same<T, char>::value, std::string,
+                               typename std::conditional<std::is_same<T, char16_t>::value, std::u16string,
+                               typename std::conditional<std::is_same<T, char32_t>::value, std::u32string, void>::type>::type>::type;
+
     /**
      * @brief Default Constructor
      * @note The name is set to "unnamed_vector".
@@ -220,7 +224,7 @@ public:
      * @return A string that copies the internal data.
      * @note This is available only if the type is char.
      */
-    std::string operator()() const;
+    string_output_type operator()() const;
 
     /**
      * @brief Access specified element.

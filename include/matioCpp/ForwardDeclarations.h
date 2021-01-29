@@ -182,6 +182,10 @@ class Vector;
 
 using String = Vector<char>;
 
+using String16 = Vector<char16_t>;
+
+using String32 = Vector<char32_t>;
+
 template<typename T>
 class MultiDimensionalArray;
 

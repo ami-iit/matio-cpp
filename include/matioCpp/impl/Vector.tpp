@@ -274,10 +274,11 @@ typename matioCpp::Vector<T>::value_type matioCpp::Vector<T>::operator()(typenam
 }
 
 template<typename T>
-std::string matioCpp::Vector<T>::operator()() const
+typename matioCpp::Vector<T>::string_output_type matioCpp::Vector<T>::operator()() const
 {
-    static_assert (std::is_same<T, char>::value,"The operator () to convert to a string is available only if the type of the vector is char");
-    return std::string(data(), size());
+    static_assert ((std::is_same<T, char>::value || std::is_same<T, char16_t>::value || std::is_same<T, char32_t>::value),
+                   "The operator () to convert to a string is available only if the type of the vector is a char type.");
+    return matioCpp::Vector<T>::string_output_type(data(), size());
 }
 
 template<typename T>
