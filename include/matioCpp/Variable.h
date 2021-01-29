@@ -366,9 +366,29 @@ public:
     matioCpp::String asString();
 
     /**
-     * @brief Cast the variable as a const Vector
+     * @brief Cast the variable as a const String
      */
     const matioCpp::String asString() const;
+
+    /**
+     * @brief Cast the variable as a String16.
+     */
+    matioCpp::String16 asString16();
+
+    /**
+     * @brief Cast the variable as a const String16
+     */
+    const matioCpp::String16 asString16() const;
+
+    /**
+     * @brief Cast the variable as a String32.
+     */
+    matioCpp::String32 asString32();
+
+    /**
+     * @brief Cast the variable as a const String32
+     */
+    const matioCpp::String32 asString32() const;
 
     /**
      * @brief Cast the variable as a MultiDimensionalArray.

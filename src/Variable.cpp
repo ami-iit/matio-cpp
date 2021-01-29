@@ -583,3 +583,23 @@ const matioCpp::String matioCpp::Variable::asString() const
 {
     return matioCpp::Vector<char>(*m_handler);
 }
+
+matioCpp::String16 matioCpp::Variable::asString16()
+{
+    return matioCpp::Vector<char16_t>(*m_handler);
+}
+
+const matioCpp::String16 matioCpp::Variable::asString16() const
+{
+    return matioCpp::Vector<char16_t>(*m_handler);
+}
+
+matioCpp::String32 matioCpp::Variable::asString32()
+{
+    return matioCpp::Vector<char32_t>(*m_handler);
+}
+
+const matioCpp::String32 matioCpp::Variable::asString32() const
+{
+    return matioCpp::Vector<char32_t>(*m_handler);
+}
