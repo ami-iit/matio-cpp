@@ -75,19 +75,19 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
         return std::is_same<T, int8_t>::value;
         break;
     case matioCpp::ValueType::UINT8:
-        return std::is_same<T, uint8_t>::value;
+        return (std::is_same<T, uint8_t>::value || std::is_same<T, char>::value);
         break;
     case matioCpp::ValueType::INT16:
         return std::is_same<T, int16_t>::value;
         break;
     case matioCpp::ValueType::UINT16:
-        return std::is_same<T, uint16_t>::value;
+        return (std::is_same<T, uint16_t>::value || std::is_same<T, char16_t>::value);
         break;
     case matioCpp::ValueType::INT32:
         return std::is_same<T, int32_t>::value;
         break;
     case matioCpp::ValueType::UINT32:
-        return std::is_same<T, uint32_t>::value;
+        return (std::is_same<T, uint32_t>::value || std::is_same<T, char32_t>::value);
         break;
     case matioCpp::ValueType::SINGLE:
         return std::is_same<T, float>::value;
@@ -102,13 +102,13 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
         return std::is_same<T, uint64_t>::value;
         break;
     case matioCpp::ValueType::UTF8:
-        return std::is_same<T, char>::value;
+        return (std::is_same<T, char>::value || std::is_same<T, uint8_t>::value);
         break;
     case matioCpp::ValueType::UTF16:
-        return std::is_same<T, char16_t>::value;
+        return (std::is_same<T, char16_t>::value || std::is_same<T, uint16_t>::value);
         break;
     case matioCpp::ValueType::UTF32:
-        return std::is_same<T, char32_t>::value;
+        return (std::is_same<T, char32_t>::value || std::is_same<T, uint32_t>::value);
         break;
     case matioCpp::ValueType::LOGICAL:
         return std::is_same<T, matioCpp::Logical>::value;
