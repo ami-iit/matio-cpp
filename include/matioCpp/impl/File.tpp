@@ -24,11 +24,11 @@ const input &matioCpp::File::getVariable(const std::pair<key, input>& it)
 }
 
 template <class iterator>
-bool matioCpp::File::write(iterator begin, iterator end)
+bool matioCpp::File::write(iterator begin, iterator end, Compression compression)
 {
     for (iterator it = begin; it != end; ++it)
     {
-        if (!write(getVariable(*it)))
+        if (!write(getVariable(*it), compression))
         {
             return false;
         }

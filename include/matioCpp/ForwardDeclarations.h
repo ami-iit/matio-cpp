@@ -140,6 +140,15 @@ enum class FileVersion
 };
 
 /**
+ * @brief Compression type when writing to a file
+ */
+enum class Compression
+{
+    None, /** @brief No compression. **/
+    zlib /** @brief Use zlib compression. **/
+};
+
+/**
  * @brief The delete mode of matvar_t pointers.
  */
 enum class DeleteMode

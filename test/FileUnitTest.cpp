@@ -220,9 +220,9 @@ TEST_CASE("Create and delete file")
     REQUIRE_FALSE(matioCpp::File::Exists("test.mat"));
 }
 
-TEST_CASE("Write")
+TEST_CASE("Write version 5")
 {
-    matioCpp::File file = matioCpp::File::Create("test.mat");
+    matioCpp::File file = matioCpp::File::Create("test.mat", matioCpp::FileVersion::MAT5);
 
     matioCpp::Element<double> doubleVar("double");
     doubleVar = 3.14;
@@ -270,12 +270,11 @@ TEST_CASE("Write")
 
     matioCpp::String inputString("string", "test");
     REQUIRE(file.write(inputString));
-    bool ok = file.read("string").asString()() == "test";
-    REQUIRE(ok); //REQUIRE(file.read("string").asString()() == "test") fails on some systems, see https://github.com/dic-iit/matio-cpp/issues/28
+    REQUIRE(file.read("string").asString()() == "test"); //In a MAT5, a string should be always retrieved with type UTF8
 
     std::vector<double> data({1, 2, 3, 4, 5, 6});
     matioCpp::Vector<double> vectorInput("vector", data);
-    REQUIRE(file.write(vectorInput));
+    REQUIRE(file.write(vectorInput, matioCpp::Compression::zlib));
     matioCpp::Vector<double> vector = file.read("vector").asVector<double>();
     REQUIRE(vector.isValid());
     REQUIRE(vector.size() == 6);
@@ -364,4 +363,194 @@ TEST_CASE("Batch write")
     dataMap.insert(std::make_pair("name", matioCpp::String("name", "content")));
 
     REQUIRE(file2.write(dataMap.cbegin(), dataMap.cend()));
+}
+
+#if !defined(_MSC_VER) || MATIO_VERSION >= 1519 //Reading from a MAT7.3 file on Windows with a matio version lower than 1.5.19 causes segfaults
+
+TEST_CASE("Write version 7.3")
+{
+    matioCpp::File::Delete("test73.mat");
+    matioCpp::File file = matioCpp::File::Create("test73.mat", matioCpp::FileVersion::MAT7_3);
+
+    matioCpp::Element<double> doubleVar("double");
+    doubleVar = 3.14;
+    REQUIRE(file.write(doubleVar));
+    REQUIRE(file.read("double").asElement<double>()() == 3.14);
+
+    matioCpp::Element<int> intVar("int", 5);
+    REQUIRE(file.write(intVar));
+    REQUIRE(file.read("int").asElement<int>()() == 5);
+
+    matioCpp::Element<matioCpp::Logical> logicalVar("boolean", true);
+    REQUIRE(file.write(logicalVar));
+    REQUIRE(file.read("boolean").asElement<matioCpp::Logical>());
+
+    matioCpp::MultiDimensionalArray<double> matrixInput("matrix", {3,3,3});
+    for (size_t i = 0; i < 3; ++i)
+    {
+        for (size_t j = 0; j < 3; ++j)
+        {
+            for (size_t k = 0; k < 3; ++k)
+            {
+                matrixInput({i,j,k}) = i + 3.0*j + 9.0*k;
+            }
+        }
+    }
+    REQUIRE(file.write(matrixInput));
+
+    matioCpp::MultiDimensionalArray<double> matrix = file.read("matrix").asMultiDimensionalArray<double>();
+    REQUIRE(matrix.isValid());
+    REQUIRE(matrix.dimensions().size() == 3);
+    REQUIRE(matrix.dimensions()[0] == 3);
+    REQUIRE(matrix.dimensions()[1] == 3);
+    REQUIRE(matrix.dimensions()[2] == 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        for (size_t j = 0; j < 3; ++j)
+        {
+            for (size_t k = 0; k < 3; ++k)
+            {
+                REQUIRE(matrix({i,j,k}) == i + 3*j + 9*k);
+            }
+        }
+    }
+
+    matioCpp::String inputString("string", "test");
+    REQUIRE(file.write(inputString));
+    matioCpp::Variable readString = file.read("string");
+    if ((readString.valueType() == matioCpp::ValueType::UTF8) || (readString.valueType() == matioCpp::ValueType::UINT8))
+    {
+        REQUIRE(readString.asString()() == "test");
+    }
+    else //In some systems, the string ,may be read with type UINT16
+    {
+        REQUIRE(readString.asString16()() == u"test");
+    }
+
+    std::vector<double> data({1, 2, 3, 4, 5, 6});
+    matioCpp::Vector<double> vectorInput("vector", data);
+    REQUIRE(file.write(vectorInput, matioCpp::Compression::zlib));
+    matioCpp::Vector<double> vector = file.read("vector").asVector<double>();
+    REQUIRE(vector.isValid());
+    REQUIRE(vector.size() == 6);
+    for (size_t i = 0; i < 5; ++i)
+    {
+        REQUIRE(vector[i] == i+1);
+    }
+
+    std::vector<bool> boolData({true, false, true, false});
+    matioCpp::Vector<matioCpp::Logical> boolVectorInput("bool_vector", boolData);
+    REQUIRE(file.write(boolVectorInput));
+    matioCpp::Vector<matioCpp::Logical> boolVector = file.read("bool_vector").asVector<matioCpp::Logical>();
+    REQUIRE(boolVector.isValid());
+    REQUIRE(boolVector.size() == 4);
+    REQUIRE(boolVector(0));
+    REQUIRE_FALSE(boolVector(1));
+    REQUIRE(boolVector(2));
+    REQUIRE_FALSE(boolVector(3));
+
+
+    std::vector<matioCpp::Variable> dataCell;
+    dataCell.emplace_back(matioCpp::Vector<double>("vector", 4));
+    dataCell.emplace_back(matioCpp::Element<int>("element", 3));
+    dataCell.emplace_back(matioCpp::String("name", "content"));
+    dataCell.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    dataCell.emplace_back(matioCpp::String("otherString", "content"));
+    dataCell.emplace_back(matioCpp::CellArray("otherCell"));
+
+    matioCpp::CellArray cellArray("cellArray", {1,2,3}, dataCell);
+    REQUIRE(file.write(cellArray));
+    matioCpp::CellArray readCellArray = file.read("cellArray").asCellArray();
+
+    REQUIRE(readCellArray.isValid());
+    REQUIRE(readCellArray({0,1,0}).asElement<int>() == 3);
+
+    std::vector<matioCpp::Variable> dataVector;
+    dataVector.emplace_back(matioCpp::Vector<double>("vector", 4));
+    dataVector.emplace_back(matioCpp::Element<int>("element", 3));
+    dataVector.emplace_back(matioCpp::MultiDimensionalArray<double>("array"));
+    dataVector.emplace_back(matioCpp::String("name", "content"));
+    dataVector.emplace_back(matioCpp::Struct("otherStruct"));
+
+    matioCpp::Struct structVar("struct", dataVector);
+    REQUIRE(file.write(structVar));
+    matioCpp::Struct readStructVar = file.read("struct").asStruct();
+
+    REQUIRE(readStructVar.isValid());
+    REQUIRE(readStructVar("element").asElement<int>()() == 3);
+
+    std::vector<matioCpp::Struct> structVector(6, structVar);
+    matioCpp::StructArray structArray("structArray", {1,2,3}, structVector);
+    REQUIRE(file.write(structArray, matioCpp::Compression::zlib));
+//    matioCpp::StructArray readStructArrayVar = file.read("structArray").asStructArray(); //Disabling this for now. Reading a struct array from a mat73 file may result in a memory leak. This has been fixed in new versions of matio. See https://github.com/tbeu/matio/commit/b783c3e234ceac1d933266707e453b085f1112c6
+//    REQUIRE(readStructArrayVar.isValid());
+//    REQUIRE(readStructArrayVar(0)("element").asElement<int>()() == 3);
+}
+#endif
+
+TEST_CASE("Write version 4")
+{
+    //MAT_4 version supports only numeric variables of rank at most 2 (hence only element, vectors and matrices).
+    matioCpp::File::Delete("test4.mat");
+    matioCpp::File file = matioCpp::File::Create("test4.mat", matioCpp::FileVersion::MAT4);
+
+    matioCpp::Element<double> doubleVar("double");
+    doubleVar = 3.14;
+    REQUIRE(file.write(doubleVar));
+    REQUIRE(file.read("double").asElement<double>()() == 3.14);
+
+    matioCpp::Element<int> intVar("int", 5);
+    REQUIRE(file.write(intVar));
+    REQUIRE(file.read("int").asElement<double>()() == 5); //For some reason, when storing an int into a MAT4, it is retrieved as a double
+
+    matioCpp::Element<matioCpp::Logical> logicalVar("boolean", true);
+    REQUIRE(file.write(logicalVar));
+    REQUIRE(file.read("boolean").asElement<double>() == 1.0); //For some reason, when storing an bool into a MAT4, it is retrieved as a double
+
+    matioCpp::MultiDimensionalArray<double> matrixInput("matrix", {3,3});
+    for (size_t i = 0; i < 3; ++i)
+    {
+        for (size_t j = 0; j < 3; ++j)
+        {
+            matrixInput({i,j}) = i + 3.0*j;
+        }
+    }
+    REQUIRE(file.write(matrixInput, matioCpp::Compression::zlib));
+
+    matioCpp::MultiDimensionalArray<double> matrix = file.read("matrix").asMultiDimensionalArray<double>();
+    REQUIRE(matrix.isValid());
+    REQUIRE(matrix.dimensions().size() == 2);
+    REQUIRE(matrix.dimensions()[0] == 3);
+    REQUIRE(matrix.dimensions()[1] == 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        for (size_t j = 0; j < 3; ++j)
+        {
+            REQUIRE(matrix({i,j}) == i + 3*j);
+        }
+    }
+
+    std::vector<double> data({1, 2, 3, 4, 5, 6});
+    matioCpp::Vector<double> vectorInput("vector", data);
+    REQUIRE(file.write(vectorInput, matioCpp::Compression::zlib));
+    matioCpp::Vector<double> vector = file.read("vector").asVector<double>();
+    REQUIRE(vector.isValid());
+    REQUIRE(vector.size() == 6);
+    for (size_t i = 0; i < 5; ++i)
+    {
+        REQUIRE(vector[i] == i+1);
+    }
+
+    std::vector<bool> boolData({true, false, true, false});
+    matioCpp::Vector<matioCpp::Logical> boolVectorInput("bool_vector", boolData);
+    REQUIRE(file.write(boolVectorInput));
+    matioCpp::Vector<double> boolVector = file.read("bool_vector").asVector<double>();
+    REQUIRE(boolVector.isValid());
+    REQUIRE(boolVector.size() == 4);
+    REQUIRE(boolVector(0));
+    REQUIRE_FALSE(boolVector(1));
+    REQUIRE(boolVector(2));
+    REQUIRE_FALSE(boolVector(3));
 }
