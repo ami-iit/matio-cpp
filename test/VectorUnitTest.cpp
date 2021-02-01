@@ -128,6 +128,16 @@ TEST_CASE("Constructors")
         REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
         REQUIRE(var.valueType() == matioCpp::ValueType::UTF8);
         REQUIRE(var() == "test_string");
+
+        matioCpp::String16 var16("test", u"test_string16");
+        REQUIRE(var16.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var16.valueType() == matioCpp::ValueType::UTF16);
+        REQUIRE(var16() == u"test_string16");
+
+        matioCpp::String32 var32("test", U"test_string32");
+        REQUIRE(var32.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var32.valueType() == matioCpp::ValueType::UTF32);
+        REQUIRE(var32() == U"test_string32");
     }
 
     SECTION("Copy constructor")

@@ -47,9 +47,12 @@ public:
 
     using const_reverse_iterator =std::reverse_iterator<const_iterator>; /** The const reverse iterator type. **/
 
+    using string_input_type =  typename std::conditional<std::is_same<T, char16_t>::value, std::u16string,
+                               typename std::conditional<std::is_same<T, char32_t>::value, std::u32string, std::string>::type>::type; /** The type of string that can be used as initialization. **/
+
     using string_output_type = typename std::conditional<std::is_same<T, char>::value, std::string,
                                typename std::conditional<std::is_same<T, char16_t>::value, std::u16string,
-                               typename std::conditional<std::is_same<T, char32_t>::value, std::u32string, void>::type>::type>::type;
+                               typename std::conditional<std::is_same<T, char32_t>::value, std::u32string, void>::type>::type>::type; /** The output type of the conversion to string. **/
 
     /**
      * @brief Default Constructor
@@ -78,6 +81,8 @@ public:
      */
     template<typename in = element_type,
              typename = typename std::enable_if<!std::is_same<element_type, const char>::value &&
+                                                !std::is_same<element_type, const char16_t>::value &&
+                                                !std::is_same<element_type, const char32_t>::value &&
                                                 !std::is_same<value_type, bool>::value>::type>
     Vector(const std::string& name, Span<const element_type> inputVector);
 
@@ -86,7 +91,7 @@ public:
      * @param name The name of the Vector
      * @param inputString The input string.
      */
-    Vector(const std::string& name, const std::string& inputString);
+    Vector(const std::string& name, const string_input_type &inputString);
 
     /**
      * @brief Constructor

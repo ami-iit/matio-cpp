@@ -87,9 +87,12 @@ matioCpp::Vector<T>::Vector(const std::string& name, Span<const typename matioCp
 }
 
 template <typename T>
-matioCpp::Vector<T>::Vector(const std::string &name, const std::string &inputString)
+matioCpp::Vector<T>::Vector(const std::string &name, const string_input_type &inputString)
 {
-    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    static_assert (std::is_same<T, char>::value ||
+                   std::is_same<T, char16_t>::value ||
+                   std::is_same<T, char32_t>::value,
+                   "The assignement operator from a string is available only if the type of the vector is char");
     size_t dimensions[] = {1, static_cast<size_t>(inputString.size())};
     initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputString.c_str());
 }
