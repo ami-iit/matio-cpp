@@ -140,6 +140,15 @@ enum class FileVersion
 };
 
 /**
+ * @brief Compression type when writing to a file
+ */
+enum class Compression
+{
+    None, /** @brief No compression. **/
+    zlib /** @brief Use zlib compression. **/
+};
+
+/**
  * @brief The delete mode of matvar_t pointers.
  */
 enum class DeleteMode
@@ -181,6 +190,10 @@ template<typename T>
 class Vector;
 
 using String = Vector<char>;
+
+using String16 = Vector<char16_t>;
+
+using String32 = Vector<char32_t>;
 
 template<typename T>
 class MultiDimensionalArray;

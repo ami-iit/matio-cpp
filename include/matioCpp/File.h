@@ -168,7 +168,7 @@ public:
      * @note The it performs a shallow copy of the variable.
      * @return True if successful.
      */
-    bool write(const Variable &variable);
+    bool write(const Variable &variable, matioCpp::Compression compression = matioCpp::Compression::None);
 
     /**
      * @brief Write a Variable to a file in a batch
@@ -177,7 +177,7 @@ public:
      * @return True if successful.
      */
     template <class iterator>
-    bool write(iterator begin, iterator end);
+    bool write(iterator begin, iterator end, matioCpp::Compression compression = matioCpp::Compression::None);
 
     /**
      * @brief Check if the file is open

@@ -124,10 +124,34 @@ TEST_CASE("Constructors")
     SECTION("Name and String")
     {
         matioCpp::Vector<char> var("test", "test_string");
-
         REQUIRE(var.variableType() == matioCpp::VariableType::Vector);
         REQUIRE(var.valueType() == matioCpp::ValueType::UTF8);
         REQUIRE(var() == "test_string");
+
+        matioCpp::Vector<uint8_t> varUint("test", "test_string_int");
+        REQUIRE(varUint.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(varUint.valueType() == matioCpp::ValueType::UINT8);
+        REQUIRE(varUint() == "test_string_int");
+
+        matioCpp::String16 var16("test", u"test_string16");
+        REQUIRE(var16.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var16.valueType() == matioCpp::ValueType::UTF16);
+        REQUIRE(var16() == u"test_string16");
+
+        matioCpp::Vector<uint16_t> varUint16("test", u"test_string_int16");
+        REQUIRE(varUint16.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(varUint16.valueType() == matioCpp::ValueType::UINT16);
+        REQUIRE(varUint16() == u"test_string_int16");
+
+        matioCpp::String32 var32("test", U"test_string32");
+        REQUIRE(var32.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(var32.valueType() == matioCpp::ValueType::UTF32);
+        REQUIRE(var32() == U"test_string32");
+
+        matioCpp::Vector<uint32_t> varUint32("test", U"test_string_int32");
+        REQUIRE(varUint32.variableType() == matioCpp::VariableType::Vector);
+        REQUIRE(varUint32.valueType() == matioCpp::ValueType::UINT32);
+        REQUIRE(varUint32() == U"test_string_int32");
     }
 
     SECTION("Copy constructor")

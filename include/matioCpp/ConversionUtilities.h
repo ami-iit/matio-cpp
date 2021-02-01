@@ -62,6 +62,30 @@ template <> struct get_type<char32_t>  { using type = char32_t; static inline Va
 template <> struct get_type<Logical>   { using type = uint8_t;  static inline ValueType valueType(){return ValueType::LOGICAL;};  static inline std::string toString(){return "matioCpp::Logical" ;};};
 
 /**
+ * @brief Utility meta-function to check if a type is compatible with a std::string
+ */
+template <typename T>
+struct is_string_compatible : std::false_type { };
+template<> struct is_string_compatible<char> : std::true_type { };
+template<> struct is_string_compatible<uint8_t> : std::true_type { };
+
+/**
+ * @brief Utility meta-function to check if a type is compatible with a std::u16string
+ */
+template <typename T>
+struct is_string16_compatible : std::false_type { };
+template<> struct is_string16_compatible<char16_t> : std::true_type { };
+template<> struct is_string16_compatible<uint16_t> : std::true_type { };
+
+/**
+ * @brief Utility meta-function to check if a type is compatible with a std::u32string
+ */
+template <typename T>
+struct is_string32_compatible : std::false_type { };
+template<> struct is_string32_compatible<char32_t> : std::true_type { };
+template<> struct is_string32_compatible<uint32_t> : std::true_type { };
+
+/**
  * @brief Utility function to check if certain ValueType can be converted to a primitive type T.
  * @param type The input ValueType to test.
  * @return True in case it is possible to convert the input type to the primitive type T.
@@ -75,19 +99,19 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
         return std::is_same<T, int8_t>::value;
         break;
     case matioCpp::ValueType::UINT8:
-        return std::is_same<T, uint8_t>::value;
+        return (std::is_same<T, uint8_t>::value || std::is_same<T, char>::value);
         break;
     case matioCpp::ValueType::INT16:
         return std::is_same<T, int16_t>::value;
         break;
     case matioCpp::ValueType::UINT16:
-        return std::is_same<T, uint16_t>::value;
+        return (std::is_same<T, uint16_t>::value || std::is_same<T, char16_t>::value);
         break;
     case matioCpp::ValueType::INT32:
         return std::is_same<T, int32_t>::value;
         break;
     case matioCpp::ValueType::UINT32:
-        return std::is_same<T, uint32_t>::value;
+        return (std::is_same<T, uint32_t>::value || std::is_same<T, char32_t>::value);
         break;
     case matioCpp::ValueType::SINGLE:
         return std::is_same<T, float>::value;
@@ -102,13 +126,13 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
         return std::is_same<T, uint64_t>::value;
         break;
     case matioCpp::ValueType::UTF8:
-        return std::is_same<T, char>::value;
+        return (std::is_same<T, char>::value || std::is_same<T, uint8_t>::value);
         break;
     case matioCpp::ValueType::UTF16:
-        return std::is_same<T, char16_t>::value;
+        return (std::is_same<T, char16_t>::value || std::is_same<T, uint16_t>::value);
         break;
     case matioCpp::ValueType::UTF32:
-        return std::is_same<T, char32_t>::value;
+        return (std::is_same<T, char32_t>::value || std::is_same<T, uint32_t>::value);
         break;
     case matioCpp::ValueType::LOGICAL:
         return std::is_same<T, matioCpp::Logical>::value;

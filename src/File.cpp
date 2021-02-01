@@ -5,6 +5,7 @@
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
 
+#define _CRT_SECURE_NO_WARNINGS //to silence the warning about c_time being unsafe
 
 #include <matioCpp/File.h>
 #include <time.h>
@@ -39,7 +40,7 @@ public:
 
         if (!newPtr)
         {
-            mode = matioCpp::FileMode::ReadOnly;
+            fileMode = matioCpp::FileMode::ReadOnly;
         }
     }
 
@@ -283,6 +284,14 @@ matioCpp::Variable matioCpp::File::read(const std::string &name) const
         return matioCpp::Variable();
     }
 
+#if defined(_MSC_VER) && MATIO_VERSION < 1519
+    if (version() == matioCpp::FileVersion::MAT7_3)
+    {
+        std::cerr << "[ERROR][matioCpp::File::read] Reading to a 7.3 file on Windows with a matio version previous to 1.5.19 causes segfaults. The output will be an invalid Variable." << std::endl;
+        return matioCpp::Variable();
+    }
+#endif
+
     matvar_t *matVar = Mat_VarRead(m_pimpl->mat_ptr, name.c_str());
 
     matioCpp::Variable output((matioCpp::SharedMatvar(matVar)));
@@ -290,7 +299,7 @@ matioCpp::Variable matioCpp::File::read(const std::string &name) const
     return output;
 }
 
-bool matioCpp::File::write(const Variable &variable)
+bool matioCpp::File::write(const Variable &variable, Compression compression)
 {
     if (!isOpen())
     {
@@ -313,7 +322,41 @@ bool matioCpp::File::write(const Variable &variable)
 
     SharedMatvar shallowCopy = SharedMatvar::GetMatvarShallowDuplicate(variable.toMatio()); // Shallow copy to remove const
 
-    bool success = Mat_VarWrite(m_pimpl->mat_ptr, shallowCopy.get(), matio_compression::MAT_COMPRESSION_NONE) == 0;
+    matio_compression matioCompression =
+            (compression == matioCpp::Compression::zlib) ? matio_compression::MAT_COMPRESSION_ZLIB : matio_compression::MAT_COMPRESSION_NONE;
+
+    if (version() == matioCpp::FileVersion::MAT4)
+    {
+        switch (variable.variableType())
+        {
+        case matioCpp::VariableType::Element:
+            break;
+        case matioCpp::VariableType::Vector:
+            break;
+        case matioCpp::VariableType::MultiDimensionalArray:
+            if (variable.dimensions().size() > 2)
+            {
+                std::cerr << "[ERROR][matioCpp::File::write] A MAT4 version does not support arrays with number of dimensions greater than 2." << std::endl;
+                return false;
+            }
+            break;
+        default:
+            std::cerr << "[ERROR][matioCpp::File::write] A MAT4 supports only element, vectors or matrices." << std::endl;
+            return false;
+        }
+
+        matioCpp::ValueType valueType = variable.valueType();
+
+        if ((valueType != matioCpp::ValueType::DOUBLE) && (valueType != matioCpp::ValueType::SINGLE) && (valueType != matioCpp::ValueType::LOGICAL)
+                && (valueType != matioCpp::ValueType::UINT8) && (valueType != matioCpp::ValueType::INT32)
+                && (valueType != matioCpp::ValueType::INT16) && (valueType != matioCpp::ValueType::UINT16))
+        {
+            std::cerr << "[ERROR][matioCpp::File::write] A MAT4 supports only variables of type LOGICAL, DOUBLE, SINGLE, UINT8, UINT16, INT16 and INT32." << std::endl;
+            return false;
+        }
+    }
+
+    bool success = Mat_VarWrite(m_pimpl->mat_ptr, shallowCopy.get(), matioCompression) == 0;
 
     if (!success)
     {

@@ -239,6 +239,31 @@ TEST_CASE("Conversions")
         REQUIRE(asElement() == "test_string");
     }
 
+    SECTION("To String16")
+    {
+        char16_t inputString[] = u"test_string";
+        std::vector<size_t> dimensions = {1, strlen("test_string")};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CHAR, matio_types::MAT_T_UINT16, static_cast<int>(dimensions.size()), dimensions.data(), inputString, 0);
+        REQUIRE(matioVar);
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::String16 outputString16 = sharedVar.asString16();
+        REQUIRE(outputString16() == u"test_string");
+    }
+
+    SECTION("To String32")
+    {
+        char32_t inputString[] = U"test_string";
+        std::vector<size_t> dimensions = {1, strlen("test_string")};
+        matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_CHAR, matio_types::MAT_T_UINT32, static_cast<int>(dimensions.size()), dimensions.data(), inputString, 0);
+        REQUIRE(matioVar);
+        matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+        matioCpp::String32 outputString32 = sharedVar.asString32();
+        REQUIRE(outputString32() == U"test_string");
+    }
+
+
     SECTION("To Cell Array")
     {
         std::vector<matvar_t*> pointers;

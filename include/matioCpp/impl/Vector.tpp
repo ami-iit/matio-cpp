@@ -87,9 +87,12 @@ matioCpp::Vector<T>::Vector(const std::string& name, Span<const typename matioCp
 }
 
 template <typename T>
-matioCpp::Vector<T>::Vector(const std::string &name, const std::string &inputString)
+matioCpp::Vector<T>::Vector(const std::string &name, const string_input_type &inputString)
 {
-    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    static_assert (matioCpp::is_string_compatible<T>::value ||
+                   matioCpp::is_string16_compatible<T>::value ||
+                   matioCpp::is_string32_compatible<T>::value,
+                   "The assignement operator from a string is available only if the type of the vector is char, char16_t, char32_t, uint8_t, uint16_t or uint32_t.");
     size_t dimensions[] = {1, static_cast<size_t>(inputString.size())};
     initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)inputString.c_str());
 }
@@ -274,10 +277,13 @@ typename matioCpp::Vector<T>::value_type matioCpp::Vector<T>::operator()(typenam
 }
 
 template<typename T>
-std::string matioCpp::Vector<T>::operator()() const
+typename matioCpp::Vector<T>::string_output_type matioCpp::Vector<T>::operator()() const
 {
-    static_assert (std::is_same<T, char>::value,"The operator () to convert to a string is available only if the type of the vector is char");
-    return std::string(data(), size());
+    static_assert (matioCpp::is_string_compatible<T>::value ||
+                   matioCpp::is_string16_compatible<T>::value ||
+                   matioCpp::is_string32_compatible<T>::value,
+                   "The operator () to convert to a string is available only if the type of the vector is a char type or uint type.");
+    return matioCpp::Vector<T>::string_output_type((typename matioCpp::Vector<T>::string_output_type::value_type*) data(), size());
 }
 
 template<typename T>
