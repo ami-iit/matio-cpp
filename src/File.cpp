@@ -5,6 +5,7 @@
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
 
+#define _CRT_SECURE_NO_WARNINGS //to silence the warning about c_time being unsafe
 
 #include <matioCpp/File.h>
 #include <time.h>
@@ -39,7 +40,7 @@ public:
 
         if (!newPtr)
         {
-            mode = matioCpp::FileMode::ReadOnly;
+            fileMode = matioCpp::FileMode::ReadOnly;
         }
     }
 
