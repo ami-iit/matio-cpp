@@ -47,12 +47,12 @@ public:
 
     using const_reverse_iterator =std::reverse_iterator<const_iterator>; /** The const reverse iterator type. **/
 
-    using string_input_type =  typename std::conditional<std::is_same<T, char16_t>::value, std::u16string,
-                               typename std::conditional<std::is_same<T, char32_t>::value, std::u32string, std::string>::type>::type; /** The type of string that can be used as initialization. **/
+    using string_input_type =  typename std::conditional<matioCpp::is_string16_compatible<T>::value, std::u16string,
+                               typename std::conditional<matioCpp::is_string32_compatible<T>::value, std::u32string, std::string>::type>::type; /** The type of string that can be used as initialization. **/
 
-    using string_output_type = typename std::conditional<std::is_same<T, char>::value, std::string,
-                               typename std::conditional<std::is_same<T, char16_t>::value, std::u16string,
-                               typename std::conditional<std::is_same<T, char32_t>::value, std::u32string, void>::type>::type>::type; /** The output type of the conversion to string. **/
+    using string_output_type = typename std::conditional<matioCpp::is_string_compatible<T>::value, std::string,
+                               typename std::conditional<matioCpp::is_string16_compatible<T>::value, std::u16string,
+                               typename std::conditional<matioCpp::is_string32_compatible<T>::value, std::u32string, void>::type>::type>::type; /** The output type of the conversion to string. **/
 
     /**
      * @brief Default Constructor

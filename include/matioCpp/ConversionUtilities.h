@@ -62,6 +62,30 @@ template <> struct get_type<char32_t>  { using type = char32_t; static inline Va
 template <> struct get_type<Logical>   { using type = uint8_t;  static inline ValueType valueType(){return ValueType::LOGICAL;};  static inline std::string toString(){return "matioCpp::Logical" ;};};
 
 /**
+ * @brief Utility meta-function to check if a type is compatible with a std::string
+ */
+template <typename T>
+struct is_string_compatible : std::false_type { };
+template<> struct is_string_compatible<char> : std::true_type { };
+template<> struct is_string_compatible<uint8_t> : std::true_type { };
+
+/**
+ * @brief Utility meta-function to check if a type is compatible with a std::u16string
+ */
+template <typename T>
+struct is_string16_compatible : std::false_type { };
+template<> struct is_string16_compatible<char16_t> : std::true_type { };
+template<> struct is_string16_compatible<uint16_t> : std::true_type { };
+
+/**
+ * @brief Utility meta-function to check if a type is compatible with a std::u32string
+ */
+template <typename T>
+struct is_string32_compatible : std::false_type { };
+template<> struct is_string32_compatible<char32_t> : std::true_type { };
+template<> struct is_string32_compatible<uint32_t> : std::true_type { };
+
+/**
  * @brief Utility function to check if certain ValueType can be converted to a primitive type T.
  * @param type The input ValueType to test.
  * @return True in case it is possible to convert the input type to the primitive type T.
