@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['packaged_5ftask_2263',['packaged_task',['https://en.cppreference.com/w/cpp/thread/packaged_task.html',1,'std']]],
+  ['pair_2264',['pair',['https://en.cppreference.com/w/cpp/utility/pair.html',1,'std']]],
+  ['pattern_2265',['pattern',['https://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_base::pattern'],['https://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_get::pattern'],['https://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_put::pattern'],['https://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::moneypunct::pattern'],['https://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::moneypunct_byname::pattern']]],
+  ['peta_2266',['peta',['https://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
+  ['pico_2267',['pico',['https://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
+  ['piecewise_5fconstant_5fdistribution_2268',['piecewise_constant_distribution',['https://en.cppreference.com/w/cpp/numeric/random/piecewise_constant_distribution.html',1,'std']]],
+  ['piecewise_5fconstruct_5ft_2269',['piecewise_construct_t',['https://en.cppreference.com/w/cpp/utility/piecewise_construct_t.html',1,'std']]],
+  ['piecewise_5flinear_5fdistribution_2270',['piecewise_linear_distribution',['https://en.cppreference.com/w/cpp/numeric/random/piecewise_linear_distribution.html',1,'std']]],
+  ['placeholders_2271',['placeholders',['https://en.cppreference.com/w/cpp/utility/functional/placeholders.html',1,'std']]],
+  ['plus_2272',['plus',['https://en.cppreference.com/w/cpp/utility/functional/plus.html',1,'std']]],
+  ['pointer_5fsafety_2273',['pointer_safety',['https://en.cppreference.com/w/cpp/memory/gc/pointer_safety.html',1,'std']]],
+  ['pointer_5ftraits_2274',['pointer_traits',['https://en.cppreference.com/w/cpp/memory/pointer_traits.html',1,'std']]],
+  ['pointerinfo_2275',['PointerInfo',['../classmatioCpp_1_1MatvarHandler_1_1PointerInfo.html',1,'matioCpp::MatvarHandler']]],
+  ['poisson_5fdistribution_2276',['poisson_distribution',['https://en.cppreference.com/w/cpp/numeric/random/poisson_distribution.html',1,'std']]],
+  ['priority_5fqueue_2277',['priority_queue',['https://en.cppreference.com/w/cpp/container/priority_queue.html',1,'std']]],
+  ['promise_2278',['promise',['https://en.cppreference.com/w/cpp/thread/promise.html',1,'std']]],
+  ['ptrdiff_5ft_2279',['ptrdiff_t',['https://en.cppreference.com/w/cpp/types/ptrdiff_t.html',1,'std']]]
+];

@@ -1,0 +1,4 @@
+<map id="matioCpp::SpanUtils::is_span_constructible&lt; Class, typename std::enable_if&lt; std::is_constructible&lt; Span&lt; typename container_data&lt; Class &gt;::type &gt;, Class &amp; &gt;::value &gt;::type &gt;" name="matioCpp::SpanUtils::is_span_constructible&lt; Class, typename std::enable_if&lt; std::is_constructible&lt; Span&lt; typename container_data&lt; Class &gt;::type &gt;, Class &amp; &gt;::value &gt;::type &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="5,80,260,195"/>
+<area shape="rect" id="node2" href="/home/runner/work/matio-cpp/matio-cpp/gh-pages/doxygen/tags/cppreference-doxygen-web.tag.xml$cpp/types/integral_constant.html" title=" " alt="" coords="77,5,189,32"/>
+</map>

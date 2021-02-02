@@ -1,0 +1,4 @@
+var structmatioCpp_1_1SpanUtils_1_1container__data_3_01T_00_01typename_01std_1_1enable__if_3_9has__t49592ec76ebbcff387db846040c9ef3c =
+[
+    [ "type", "structmatioCpp_1_1SpanUtils_1_1container__data_3_01T_00_01typename_01std_1_1enable__if_3_9has__t49592ec76ebbcff387db846040c9ef3c.html#a6d059d97a2eb499b644e2dbdcb46fef3", null ]
+];
