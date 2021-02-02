@@ -34,7 +34,7 @@ bool get_types_from_matvart(const matvar_t* input, VariableType& outputVariableT
  * @brief Get the type names from the input pointer
  * @param input The input pointer
  * @param classType The class type
- * @param valueType The value type
+ * @param dataType The data type
  */
 bool get_types_names_from_matvart(const matvar_t* input, std::string &classType, std::string &dataType);
 

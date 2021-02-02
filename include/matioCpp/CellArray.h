@@ -122,7 +122,7 @@ public:
 
     /**
      * @brief Get the indices given the raw index
-     * @paragraph rawIndex The input raw index from which to compute the indices
+     * @param rawIndex The input raw index from which to compute the indices
      * @param el The output indices
 
     * @return True if successful, false otherwise (for example if rawIndex is out of bounds)

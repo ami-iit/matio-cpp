@@ -100,7 +100,7 @@ public:
 
     /**
      * @brief Assignement operator (copy) from an element of type T.
-     * @param other The other Element.
+     * @param value The element to copy.
      * @return A reference to this Element.
      */
     Element<T>& operator=(element_type value);
