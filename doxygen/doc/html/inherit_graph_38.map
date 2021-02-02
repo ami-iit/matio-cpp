@@ -1,0 +1,43 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="/home/runner/work/matio-cpp/matio-cpp/gh-pages/doxygen/tags/cppreference-doxygen-web.tag.xml$cpp/types/integral_constant.html" title=" " alt="" coords="5,685,124,711"/>
+<area shape="rect" id="Node000001" href="$structmatioCpp_1_1details_1_1is__span__oracle.html" title=" " alt="" coords="198,5,365,60"/>
+<area shape="poly" id="edge9_Node000000_Node000001" title=" " alt="" coords="64,671,72,546,90,367,103,275,121,190,143,120,156,92,170,71,196,50,199,54,174,74,160,95,148,122,126,191,109,276,95,368,77,546,70,672"/>
+<area shape="rect" id="Node000003" href="$structmatioCpp_1_1details_1_1is__std__array__oracle.html" title=" " alt="" coords="180,84,383,139"/>
+<area shape="poly" id="edge11_Node000000_Node000003" title=" " alt="" coords="65,671,75,559,94,404,108,325,125,252,146,192,170,150,184,137,187,141,174,153,151,194,130,253,113,326,100,405,80,560,70,671"/>
+<area shape="rect" id="Node000005" href="$structmatioCpp_1_1SpanUtils_1_1has__data__method.html" title=" " alt="" coords="195,163,368,217"/>
+<area shape="poly" id="edge13_Node000000_Node000005" title=" " alt="" coords="66,671,78,574,99,442,130,314,149,264,170,228,193,210,196,214,174,232,153,266,135,316,104,443,83,575,71,672"/>
+<area shape="rect" id="Node000006" href="$structmatioCpp_1_1SpanUtils_1_1has__size__method.html" title=" " alt="" coords="196,241,367,296"/>
+<area shape="poly" id="edge14_Node000000_Node000006" title=" " alt="" coords="63,672,66,601,79,504,93,452,112,400,137,351,170,307,194,288,197,292,174,311,142,353,117,402,98,453,85,505,71,601,68,672"/>
+<area shape="rect" id="Node000007" href="$structmatioCpp_1_1SpanUtils_1_1has__type__member.html" title=" " alt="" coords="180,320,383,375"/>
+<area shape="poly" id="edge15_Node000000_Node000007" title=" " alt="" coords="65,671,72,613,89,537,103,496,121,457,143,419,170,385,186,373,189,377,174,389,147,422,125,459,108,498,94,538,77,614,70,672"/>
+<area shape="rect" id="Node000008" href="$structmatioCpp_1_1SpanUtils_1_1is__element__defined.html" title=" " alt="" coords="203,399,360,453"/>
+<area shape="poly" id="edge16_Node000000_Node000008" title=" " alt="" coords="69,671,80,626,100,571,129,514,148,488,170,464,201,444,204,448,174,468,152,491,134,517,105,573,85,628,74,672"/>
+<area shape="rect" id="Node000009" href="$structmatioCpp_1_1SpanUtils_1_1is__make__span__callable.html" title=" " alt="" coords="191,477,371,532"/>
+<area shape="poly" id="edge17_Node000000_Node000009" title=" " alt="" coords="75,671,112,608,139,573,170,543,190,530,193,534,174,547,143,576,116,611,80,674"/>
+<area shape="rect" id="Node000010" href="$structmatioCpp_1_1SpanUtils_1_1is__span__constructible.html" title=" " alt="" coords="196,556,367,611"/>
+<area shape="poly" id="edge18_Node000000_Node000010" title=" " alt="" coords="90,675,127,648,171,621,198,608,200,613,173,626,130,652,93,679"/>
+<area shape="rect" id="Node000011" href="$structmatioCpp_1_1SpanUtils_1_1is__value__defined.html" title=" " alt="" coords="204,635,359,689"/>
+<area shape="poly" id="edge19_Node000000_Node000011" title=" " alt="" coords="138,683,203,672,204,677,139,689"/>
+<area shape="rect" id="Node000012" href="$structmatioCpp_1_1dependent__false.html" title="dependent_false is a type&#45;dependent expression that is always false." alt="" coords="200,714,363,754"/>
+<area shape="poly" id="edge20_Node000000_Node000012" title=" " alt="" coords="138,707,200,718,199,723,137,713"/>
+<area shape="rect" id="Node000013" href="$structmatioCpp_1_1details_1_1is__span__oracle.html" title=" " alt="" coords="203,778,359,818"/>
+<area shape="poly" id="edge21_Node000000_Node000013" title=" " alt="" coords="95,717,132,741,173,764,204,776,202,781,171,768,129,745,92,721"/>
+<area shape="rect" id="Node000014" href="$structmatioCpp_1_1details_1_1is__std__array__oracle.html" title=" " alt="" coords="188,842,375,882"/>
+<area shape="poly" id="edge22_Node000000_Node000014" title=" " alt="" coords="82,721,119,775,144,804,173,828,195,840,193,844,171,832,141,808,115,779,77,724"/>
+<area shape="rect" id="Node000015" href="$structmatioCpp_1_1is__eigen__matrix.html" title="is_eigen_matrix is a template metafunction to check if T is an Eigen matrix." alt="" coords="195,907,368,961"/>
+<area shape="poly" id="edge23_Node000000_Node000015" title=" " alt="" coords="76,723,89,760,110,806,138,852,174,892,196,907,193,911,170,896,133,855,105,808,84,762,71,725"/>
+<area shape="rect" id="Node000016" href="$structmatioCpp_1_1is__make__variable__callable.html" title="is_make_variable_callable is a template utility to check if the make_variable works for a give type" alt="" coords="172,986,391,1026"/>
+<area shape="poly" id="edge24_Node000000_Node000016" title=" " alt="" coords="71,724,80,777,97,843,128,913,149,944,174,972,190,984,187,988,170,976,144,948,123,915,92,845,74,778,66,725"/>
+<area shape="rect" id="Node000017" href="$structmatioCpp_1_1is__string16__compatible.html" title="Utility meta&#45;function to check if a type is compatible with a std::u16string." alt="" coords="199,1050,363,1090"/>
+<area shape="poly" id="edge25_Node000000_Node000017" title=" " alt="" coords="69,724,74,788,89,871,102,916,120,960,144,1000,174,1036,200,1054,198,1058,170,1040,140,1003,116,962,97,918,84,873,68,788,64,725"/>
+<area shape="rect" id="Node000018" href="$structmatioCpp_1_1is__string32__compatible.html" title="Utility meta&#45;function to check if a type is compatible with a std::u32string." alt="" coords="199,1114,363,1154"/>
+<area shape="poly" id="edge26_Node000000_Node000018" title=" " alt="" coords="72,724,85,809,108,922,137,1030,155,1072,174,1100,201,1118,198,1123,170,1104,150,1074,132,1032,102,923,80,810,67,725"/>
+<area shape="rect" id="Node000019" href="$structmatioCpp_1_1is__string__compatible.html" title="Utility meta&#45;function to check if a type is compatible with a std::string." alt="" coords="207,1178,355,1218"/>
+<area shape="poly" id="edge27_Node000000_Node000019" title=" " alt="" coords="71,724,82,821,103,954,117,1020,134,1081,153,1131,174,1164,190,1177,208,1185,206,1190,187,1181,170,1168,148,1133,129,1083,112,1022,98,955,77,822,66,725"/>
+<area shape="rect" id="Node000020" href="$structmatioCpp_1_1is__vector__compatible.html" title="is_vector_compatible is a utility metafunction to check if the input vector T is compatible with mati..." alt="" coords="180,1243,383,1297"/>
+<area shape="poly" id="edge28_Node000000_Node000020" title=" " alt="" coords="71,724,81,832,100,983,114,1060,131,1131,151,1189,174,1228,187,1241,184,1245,170,1232,146,1191,126,1132,109,1061,95,984,75,833,65,724"/>
+<area shape="rect" id="Node000002" href="$structmatioCpp_1_1details_1_1is__span.html" title=" " alt="" coords="439,13,584,53"/>
+<area shape="poly" id="edge10_Node000001_Node000002" title=" " alt="" coords="379,30,439,30,439,35,379,35"/>
+<area shape="rect" id="Node000004" href="$structmatioCpp_1_1details_1_1is__std__array.html" title=" " alt="" coords="439,91,584,131"/>
+<area shape="poly" id="edge12_Node000003_Node000004" title=" " alt="" coords="397,109,438,109,438,114,397,114"/>
+</map>

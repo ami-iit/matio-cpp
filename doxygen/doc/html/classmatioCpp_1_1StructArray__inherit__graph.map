@@ -1,0 +1,5 @@
+<map id="matioCpp::StructArray" name="matioCpp::StructArray">
+<area shape="rect" id="Node000001" title="StructArray is a particular type of Variable specialized for array of structs." alt="" coords="5,79,172,104"/>
+<area shape="rect" id="Node000002" href="$classmatioCpp_1_1Variable.html" title="The matioCpp::Variable class is the equivalent of matvar_t in matio." alt="" coords="15,5,162,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,44,91,79,86,79,86,44"/>
+</map>

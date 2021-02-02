@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classmatioCpp_1_1MatvarHandler.html" title=" " alt="" coords="5,31,196,56"/>
+<area shape="rect" id="Node000001" href="$classmatioCpp_1_1SharedMatvar.html" title=" " alt="" coords="244,5,428,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="209,29,243,25,244,31,210,34"/>
+<area shape="rect" id="Node000002" href="$classmatioCpp_1_1WeakMatvar.html" title=" " alt="" coords="249,55,423,80"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="210,52,249,56,248,61,209,57"/>
+</map>

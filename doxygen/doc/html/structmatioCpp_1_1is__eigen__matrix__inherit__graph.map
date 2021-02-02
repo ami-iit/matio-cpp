@@ -1,0 +1,5 @@
+<map id="matioCpp::is_eigen_matrix&lt; T, typename, typename &gt;" name="matioCpp::is_eigen_matrix&lt; T, typename, typename &gt;">
+<area shape="rect" id="Node000001" title="is_eigen_matrix is a template metafunction to check if T is an Eigen matrix." alt="" coords="5,79,179,133"/>
+<area shape="rect" id="Node000002" href="/home/runner/work/matio-cpp/matio-cpp/gh-pages/doxygen/tags/cppreference-doxygen-web.tag.xml$cpp/types/integral_constant.html" title=" " alt="" coords="33,5,151,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,44,95,79,89,79,89,44"/>
+</map>
