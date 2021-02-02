@@ -165,6 +165,7 @@ public:
     /**
      * @brief Write a Variable to a file
      * @param variable The input variable.
+     * @param compression The compression type to be used for writing the variable.
      * @note The it performs a shallow copy of the variable.
      * @return True if successful.
      */
@@ -174,6 +175,7 @@ public:
      * @brief Write a Variable to a file in a batch
      * @param begin Iterator to the first element to be written
      * @param end Iterator to the first element that is not written
+     * @param compression The compression type to be used for writing the variable.
      * @return True if successful.
      */
     template <class iterator>

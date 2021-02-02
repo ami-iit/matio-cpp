@@ -122,7 +122,7 @@ protected:
 
         /**
          * @brief Constructor
-         * @param ponterToDeallocate A weak pointer toward the PointerInfo that contains the pointer to be freed.
+         * @param pointerToDeallocate A weak pointer toward the PointerInfo that contains the pointer to be freed.
          */
         Ownership(std::weak_ptr<PointerInfo> pointerToDeallocate);
 

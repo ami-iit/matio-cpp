@@ -178,7 +178,7 @@ protected:
     /**
      * @brief Get an element of the variable, considered as a StructArray
      * @note This allocates memory, one pointer per sruct field, but the pointers point to data in the array
-     * @param index The linear index of the struct to retrieve
+     * @param linearIndex The linear index of the struct to retrieve
      * @return A Struct with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the variable cannot be resized and the name cannot change.
      */
@@ -187,7 +187,7 @@ protected:
     /**
      * @brief Get an element of the variable, considered as a StructArray
      * @note This allocates memory, one pointer per sruct field, but the pointers point to data in the array
-     * @param index The linear index of the struct to retrieve
+     * @param linearIndex The linear index of the struct to retrieve
      * @return A const Struct with a weak ownership to the underlying mat variable.
      */
     const Struct getStructArrayElement(size_t linearIndex) const;
