@@ -3,7 +3,7 @@
 # BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
 
 cmake_minimum_required(VERSION 3.10)
-project(matioCpp VERSION 0.1.0 LANGUAGES CXX)
+project(matioCpp VERSION 0.1.1 LANGUAGES CXX)
 
 # Defines the CMAKE_INSTALL_LIBDIR, CMAKE_INSTALL_BINDIR and many other useful macros.
 # See https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html

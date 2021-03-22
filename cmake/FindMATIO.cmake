@@ -14,8 +14,9 @@
 
 include(FindPackageHandleStandardArgs)
 
-set(MATIO_ROOT_DIR "" CACHE PATH "Folder contains MatIO")
-find_path(MATIO_INCLUDE_DIR matio.h PATHS ${MATIO_ROOT_DIR})
+set(MATIO_ROOT_DIR "$ENV{MATIO_DIR}" CACHE PATH "Folder contains MatIO")
+
+find_path(MATIO_INCLUDE_DIR matio.h PATHS ${MATIO_ROOT_DIR} PATH_SUFFIXES include)
 mark_as_advanced(MATIO_INCLUDE_DIR)
 find_library(MATIO_LIBRARY matio libmatio PATHS ${MATIO_ROOT_DIR} PATH_SUFFIXES lib)
 mark_as_advanced(MATIO_LIBRARY)
