@@ -46,7 +46,7 @@ matioCpp::Element<T>::Element()
     static_assert(!std::is_same<T, std::string>::value, "A string is not handled by matio. Use Vector<char> instead." );
     typename matioCpp::Element<T>::element_type empty;
 
-    if (std::is_same<T, char>::value) //If the type is char, the name corresponds to the content
+    if (std::is_same<T, char>::value) //If the type is char, use \0 to make sure strlen works well, if used
     {
         empty = '\0';
     }
