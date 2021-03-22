@@ -275,9 +275,29 @@ TEST_CASE("Assignments")
 
     SECTION("String")
     {
-        matioCpp::Vector<char> string;
-        string = "test";
-        REQUIRE(string() == "test");
+        matioCpp::Vector<char> string8;
+        string8 = "test";
+        REQUIRE(string8() == "test");
+
+        matioCpp::Vector<uint8_t> varUint("test");
+        varUint = "test_string_int";
+        REQUIRE(varUint() == "test_string_int");
+
+        matioCpp::String16 var16("test");
+        var16 = u"test_string16";
+        REQUIRE(var16() == u"test_string16");
+
+        matioCpp::Vector<uint16_t> varUint16("test");
+        varUint16 = u"test_string_int16";
+        REQUIRE(varUint16() == u"test_string_int16");
+
+        matioCpp::String32 var32("test");
+        var32 = U"test_string32";
+        REQUIRE(var32() == U"test_string32");
+
+        matioCpp::Vector<uint32_t> varUint32("test");
+        varUint32 = U"test_string_int32";
+        REQUIRE(varUint32() == U"test_string_int32");
     }
 
     SECTION("Vector of bool")

@@ -194,9 +194,12 @@ matioCpp::Vector<typename matioCpp::Vector<T>::element_type> &matioCpp::Vector<T
 }
 
 template<typename T>
-matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const std::string &other)
+matioCpp::Vector<T> &matioCpp::Vector<T>::operator=(const string_input_type &other)
 {
-    static_assert (std::is_same<T, char>::value,"The assignement operator from a string is available only if the type of the vector is char");
+    static_assert (matioCpp::is_string_compatible<T>::value ||
+                   matioCpp::is_string16_compatible<T>::value ||
+                   matioCpp::is_string32_compatible<T>::value,
+                   "The assignement operator from a string is available only if the type of the vector is char, char16_t, char32_t, uint8_t, uint16_t or uint32_t.");
     if (size() == other.size())
     {
         memcpy(toMatio()->data, other.data(), size() * sizeof(T));
