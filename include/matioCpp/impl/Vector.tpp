@@ -52,7 +52,18 @@ template<typename T>
 matioCpp::Vector<T>::Vector()
 {
     std::vector<typename matioCpp::Vector<T>::element_type> empty;
-    initializeVector("unnamed_vector", matioCpp::make_span(empty));
+
+    if (std::is_same<T, char>::value) //If the type is char, matio may use strlen
+    {
+        empty.push_back('\0');
+
+        size_t dimensions[] = {1, 0};
+        initializeVariable("unnamed_vector", VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)empty.data());
+    }
+    else
+    {
+        initializeVector("unnamed_vector", matioCpp::make_span(empty));
+    }
 }
 
 template<typename T>
@@ -62,21 +73,37 @@ matioCpp::Vector<T>::Vector(const std::string& name)
 
     if (std::is_same<T, char>::value) //If the type is char, the name corresponds to the content
     {
-        empty.resize(name.size());
         for (size_t i = 0; i < name.size(); ++i)
         {
-            empty[i] = name[i];
+            empty.push_back(name[i]);
         }
-    }
+        empty.push_back('\0');
 
-    initializeVector(name, matioCpp::make_span(empty));
+        size_t dimensions[] = {1, static_cast<size_t>(name.size())};
+        initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensions, (void*)empty.data());
+    }
+    else
+    {
+        initializeVector(name, matioCpp::make_span(empty));
+    }
 }
 
 template<typename T>
 matioCpp::Vector<T>::Vector(const std::string &name, matioCpp::Vector<T>::index_type dimensions)
 {
     std::vector<typename matioCpp::Vector<T>::element_type> empty(dimensions);
-    initializeVector(name, matioCpp::make_span(empty));
+
+    if (std::is_same<T, char>::value) //If the type is char, matio may use strlen
+    {
+        empty.push_back('\0');
+
+        size_t dimensionsVec[] = {1, dimensions};
+        initializeVariable(name, VariableType::Vector, matioCpp::get_type<T>::valueType(), dimensionsVec, (void*)empty.data());
+    }
+    else
+    {
+        initializeVector(name, matioCpp::make_span(empty));
+    }
 }
 
 template<typename T>
