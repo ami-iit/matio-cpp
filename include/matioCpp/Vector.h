@@ -147,10 +147,10 @@ public:
     /**
      * @brief Assignement operator from another string.
      * @param other The input string.
-     * @note This is available only if the type is char.
+     * @note This is available only if the type is char, char16_t, char32_t, uint8_t, uint16_t or uint32_t.
      * @return A reference to this Vector.
      */
-    Vector<T>& operator=(const std::string& other);
+    Vector<T>& operator=(const string_input_type &other);
 
     /**
      * @brief Assignement operator from a vector of booleans.
