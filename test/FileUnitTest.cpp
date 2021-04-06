@@ -212,6 +212,8 @@ TEST_CASE("Create and delete file")
     matioCpp::File::Delete("test.mat");
     matioCpp::File test;
     REQUIRE_FALSE(test.open("test.mat", matioCpp::FileMode::ReadOnly));
+    matioCpp::File dummy = matioCpp::File::Create("/shouldFail/test.mat");
+    REQUIRE_FALSE(dummy.isOpen());
     matioCpp::File newFile = matioCpp::File::Create("test.mat");
     REQUIRE(newFile.isOpen());
     REQUIRE(newFile.variableNames().size() == 0);
