@@ -10,6 +10,8 @@
 #include <matioCpp/File.h>
 #include <time.h>
 #include <matioCpp/Config.h>
+#include <sys/types.h> //To check if the directory in which we want to create a new file exists
+#include <sys/stat.h> //To check if the directory in which we want to create a new file exists
 
 class matioCpp::File::Impl
 {
@@ -131,6 +133,31 @@ matioCpp::File matioCpp::File::Create(const std::string &name, matioCpp::FileVer
 {
     matioCpp::File newFile;
 
+    std::size_t found = name.find_last_of("/\\");
+
+    if (found != std::string::npos)
+    {
+        std::string path = name.substr(0, found);
+
+        struct stat info;
+
+        if( stat( path.c_str(), &info ) != 0 )
+        {
+            std::cerr << "[ERROR][matioCpp::File::Create] The path "<< path
+                      << " does not exists (input file name " << name
+                      << ")." <<std::endl;
+            return newFile;
+        }
+        else if(!(info.st_mode & S_IFDIR))
+        {
+            std::cerr << "[ERROR][matioCpp::File::Create] The path "<< path
+                      << " is not a directory (input file name " << name
+                      << ")." <<std::endl;
+            return newFile;
+        }
+
+    }
+
     if (version == matioCpp::FileVersion::Undefined)
     {
         std::cerr << "[ERROR][matioCpp::File::Create] Cannot use Undefined as input version type." <<std::endl;
@@ -188,7 +215,7 @@ matioCpp::File matioCpp::File::Create(const std::string &name, matioCpp::FileVer
 
     if (!newFile.isOpen())
     {
-        std::cerr << "[ERROR][matioCpp::File::Create] Failed to open the file." <<std::endl;
+        std::cerr << "[ERROR][matioCpp::File::Create] Failed to open the file named "<< name << "." <<std::endl;
     }
 
     return newFile;
