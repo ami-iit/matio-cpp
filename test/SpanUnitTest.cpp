@@ -376,10 +376,19 @@ TEST_CASE("from_std_array_const_constructor")
     }
 }
 
+size_t foo(Span<const int> input)
+{
+    return input.size();
+}
+
 TEST_CASE("from_container_constructor")
 {
     std::vector<int> v = {1, 2, 3};
     const std::vector<int> cv = v;
+
+    size_t sizeAfterDeducton = foo(cv);
+
+    REQUIRE(sizeAfterDeducton == v.size());
 
     {
         Span<int> s{v};
@@ -427,6 +436,14 @@ TEST_CASE("from_container_constructor")
 
         auto cs = make_span(cv);
         REQUIRE((cs.size() == static_cast<std::ptrdiff_t>(cv.size()) && cs.data() == cv.data()));
+    }
+
+    {
+        auto lambdaSize = [](Span<const int> input){return input.size();};
+
+        size_t sizeAfterDeducton = lambdaSize(cv);
+
+        REQUIRE(sizeAfterDeducton == v.size());
     }
 }
 
