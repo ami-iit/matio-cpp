@@ -8,34 +8,34 @@
 #define MATIOCPP_EXOGENOUSCONVERSIONS_TPP
 
 template <class Vector, typename>
-matioCpp::Vector<typename std::remove_cv_t<typename  matioCpp::SpanUtils::container_data<Vector>::type>> matioCpp::make_variable(const Vector& input, const std::string& name)
+inline matioCpp::Vector<typename std::remove_cv_t<typename  matioCpp::SpanUtils::container_data<Vector>::type>> matioCpp::make_variable(const std::string& name, const Vector& input)
 {
     using type = typename  matioCpp::SpanUtils::container_data<Vector>::type;
     return matioCpp::Vector<typename std::remove_cv_t<type>>(name, matioCpp::make_span(input)); //data is copied
 }
 
-inline matioCpp::String matioCpp::make_variable(const std::string& input, const std::string& name)
+inline matioCpp::String matioCpp::make_variable(const std::string& name, const std::string& input)
 {
     return matioCpp::String(name, input);
 }
 
-inline matioCpp::Vector<matioCpp::Logical> matioCpp::make_variable(const std::vector<bool>& input, const std::string& name)
+inline matioCpp::Vector<matioCpp::Logical> matioCpp::make_variable(const std::string& name, const std::vector<bool>& input)
 {
     return matioCpp::Vector<matioCpp::Logical>(name, input);
 }
 
 template<typename type, typename>
-matioCpp::Element<type> matioCpp::make_variable(const type& input, const std::string& name)
+inline matioCpp::Element<type> matioCpp::make_variable(const std::string& name, const type& input)
 {
     return matioCpp::Element<type>(name, input);
 }
 
-inline matioCpp::Element<matioCpp::Logical> matioCpp::make_variable(bool input, const std::string& name)
+inline matioCpp::Element<matioCpp::Logical> matioCpp::make_variable(const std::string& name, bool input)
 {
     return matioCpp::Element<matioCpp::Logical>(name, input);
 }
 
-inline matioCpp::CellArray matioCpp::make_variable(const std::vector<std::string>& input, const std::string& name)
+inline matioCpp::CellArray matioCpp::make_variable(const std::string& name, const std::vector<std::string>& input)
 {
     matioCpp::CellArray stringsArray(name, {input.size(), 1});
     for (size_t i = 0; i < input.size(); ++i)
@@ -48,12 +48,12 @@ inline matioCpp::CellArray matioCpp::make_variable(const std::vector<std::string
 
 template<class iterator,
           typename>
-matioCpp::Struct matioCpp::make_struct(iterator begin, iterator end, const std::string& name)
+inline matioCpp::Struct matioCpp::make_struct(const std::string& name, iterator begin, iterator end)
 {
     matioCpp::Struct matioStruct(name);
     for (iterator it = begin; it != end; it++)
     {
-        bool ok = matioStruct.setField(make_variable(it->second, it->first));
+        bool ok = matioStruct.setField(make_variable(it->first, it->second));
         unused(ok);
         assert(ok);
     }
@@ -63,7 +63,7 @@ matioCpp::Struct matioCpp::make_struct(iterator begin, iterator end, const std::
 
 template<class iterator,
          typename std::enable_if_t<matioCpp::is_pair_iterator_string<iterator>::value>*>
-matioCpp::CellArray matioCpp::make_cell_array(const iterator& begin, const iterator& end, const std::string& name)
+inline matioCpp::CellArray matioCpp::make_cell_array(const std::string& name, const iterator& begin, const iterator& end)
 {
     matioCpp::CellArray matioCellArray(name, {static_cast<size_t>(std::distance(begin, end)), 1});
 
@@ -71,7 +71,7 @@ matioCpp::CellArray matioCpp::make_cell_array(const iterator& begin, const itera
     iterator it = begin;
     while (it != end)
     {
-        bool ok = matioCellArray.setElement(index, make_variable(it->second, it->first));
+        bool ok = matioCellArray.setElement(index, make_variable(it->first, it->second));
         unused(ok);
         assert(ok);
         index++;
@@ -83,7 +83,7 @@ matioCpp::CellArray matioCpp::make_cell_array(const iterator& begin, const itera
 
 template<class iterator,
          typename std::enable_if_t<!matioCpp::is_pair<decltype(*std::declval<iterator>())>::value>*>
-matioCpp::CellArray matioCpp::make_cell_array(const iterator& begin, const iterator& end, const std::string& name)
+inline matioCpp::CellArray matioCpp::make_cell_array(const std::string& name, const iterator& begin, const iterator& end)
 {
     matioCpp::CellArray matioCellArray(name, {static_cast<size_t>(std::distance(begin, end)), 1});
 
@@ -91,7 +91,7 @@ matioCpp::CellArray matioCpp::make_cell_array(const iterator& begin, const itera
     iterator it = begin;
     while (it != end)
     {
-        bool ok = matioCellArray.setElement(index, make_variable(*it, "imported_element_" + std::to_string(index)));
+        bool ok = matioCellArray.setElement(index, make_variable("imported_element_" + std::to_string(index), *it));
         unused(ok);
         assert(ok);
         index++;

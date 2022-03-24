@@ -11,7 +11,7 @@
 #include <cassert>
 
 template <typename type>
-Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> matioCpp::to_eigen(matioCpp::MultiDimensionalArray<type>& input)
+inline Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> matioCpp::to_eigen(matioCpp::MultiDimensionalArray<type>& input)
 {
     assert(input.isValid());
     assert(input.dimensions().size() == 2);
@@ -19,7 +19,7 @@ Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> matioCpp::to_eig
 }
 
 template <typename type>
-const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> matioCpp::to_eigen(const matioCpp::MultiDimensionalArray<type>& input)
+inline const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> matioCpp::to_eigen(const matioCpp::MultiDimensionalArray<type>& input)
 {
     assert(input.isValid());
     assert(input.dimensions().size() == 2);
@@ -27,21 +27,21 @@ const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> matioCpp::
 }
 
 template <typename type>
-Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, 1>> matioCpp::to_eigen(matioCpp::Vector<type>& input)
+inline Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, 1>> matioCpp::to_eigen(matioCpp::Vector<type>& input)
 {
     assert(input.isValid());
     return Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, 1>>(input.data(), input.size());
 }
 
 template <typename type>
-const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, 1>> matioCpp::to_eigen(const matioCpp::Vector<type>& input)
+inline const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, 1>> matioCpp::to_eigen(const matioCpp::Vector<type>& input)
 {
     assert(input.isValid());
     return Eigen::Map<const Eigen::Matrix<type, Eigen::Dynamic, 1>>(input.data(), input.size());
 }
 
 template <typename EigenDerived, typename>
-matioCpp::MultiDimensionalArray<typename EigenDerived::Scalar> matioCpp::make_variable(const Eigen::MatrixBase<EigenDerived>& input, const std::string& name)
+inline matioCpp::MultiDimensionalArray<typename EigenDerived::Scalar> matioCpp::make_variable(const std::string& name, const Eigen::MatrixBase<EigenDerived>& input)
 {
     matioCpp::MultiDimensionalArray<typename EigenDerived::Scalar> matio(name, {static_cast<size_t>(input.rows()), static_cast<size_t>(input.cols())});
     matioCpp::to_eigen(matio) = input;

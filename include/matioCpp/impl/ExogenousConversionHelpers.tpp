@@ -10,6 +10,32 @@
 namespace matioCpp
 {
 /**
+ * is_eigen_matrix is a template metafunction to check if T is an Eigen matrix.
+ */
+template <typename T, typename = void, typename = void>
+struct is_eigen_matrix : std::false_type
+{
+};
+
+#ifdef MATIOCPP_HAS_EIGEN
+
+/**
+ * is_eigen_matrix is a template metafunction to check if T is an Eigen matrix. In this specialization, we first check if
+ * the template parameter inherits from Eigen::MatrixBase<Derived> (Eigen exploits CRTP). If this is the case,
+ * we check that neither the rows, nor the columns at compile time are identically equal to 1. If that is the case,
+ * is_eigen_matrix<T>::value is true.
+ */
+template <typename Derived>
+struct is_eigen_matrix<Derived,
+                       typename std::enable_if_t<std::is_base_of<Eigen::MatrixBase<Derived>, Derived>::value>,
+                       typename std::enable_if_t<Eigen::MatrixBase<Derived>::RowsAtCompileTime != 1 &&
+                                                 Eigen::MatrixBase<Derived>::ColsAtCompileTime != 1>>: std::true_type
+{
+};
+
+#endif
+
+/**
  * is_vector_compatible is a utility metafunction to check if the input vector T is compatible with matioCpp
  */
 template <typename T, typename = void, typename = void>
