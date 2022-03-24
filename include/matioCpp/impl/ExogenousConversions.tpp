@@ -14,36 +14,10 @@ inline matioCpp::Vector<typename std::remove_cv_t<typename  matioCpp::SpanUtils:
     return matioCpp::Vector<typename std::remove_cv_t<type>>(name, matioCpp::make_span(input)); //data is copied
 }
 
-inline matioCpp::String matioCpp::make_variable(const std::string& name, const std::string& input)
-{
-    return matioCpp::String(name, input);
-}
-
-inline matioCpp::Vector<matioCpp::Logical> matioCpp::make_variable(const std::string& name, const std::vector<bool>& input)
-{
-    return matioCpp::Vector<matioCpp::Logical>(name, input);
-}
-
 template<typename type, typename>
 inline matioCpp::Element<type> matioCpp::make_variable(const std::string& name, const type& input)
 {
     return matioCpp::Element<type>(name, input);
-}
-
-inline matioCpp::Element<matioCpp::Logical> matioCpp::make_variable(const std::string& name, bool input)
-{
-    return matioCpp::Element<matioCpp::Logical>(name, input);
-}
-
-inline matioCpp::CellArray matioCpp::make_variable(const std::string& name, const std::vector<std::string>& input)
-{
-    matioCpp::CellArray stringsArray(name, {input.size(), 1});
-    for (size_t i = 0; i < input.size(); ++i)
-    {
-        stringsArray.setElement(i, make_variable(input[i], input[i]));
-    }
-
-    return stringsArray;
 }
 
 template<class iterator,

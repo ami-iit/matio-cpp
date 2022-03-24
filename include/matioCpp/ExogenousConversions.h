@@ -37,7 +37,7 @@ inline matioCpp::Vector<typename std::remove_cv_t<typename  matioCpp::SpanUtils:
  * @param input The input string.
  * @return A matioCpp::String containing a copy of the input data
  */
-inline matioCpp::String make_variable(const std::string& name, const std::string& input);
+matioCpp::String make_variable(const std::string& name, const std::string& input);
 
 /**
  * @brief Conversion from a boolean vector to a matioCpp::Vector<matioCpp::Logical>
@@ -45,7 +45,7 @@ inline matioCpp::String make_variable(const std::string& name, const std::string
  * @param input The input vector.
  * @return A matioCpp::Vector<matioCpp::Logical> containing a copy of the input data
  */
-inline matioCpp::Vector<matioCpp::Logical> make_variable(const std::string& name, const std::vector<bool>& input);
+matioCpp::Vector<matioCpp::Logical> make_variable(const std::string& name, const std::vector<bool>& input);
 
 /**
  * @brief Conversion from a fundamental type to the corresponding matioCpp::Element
@@ -62,7 +62,7 @@ inline matioCpp::Element<type> make_variable(const std::string& name, const type
  * @param input The input element.
  * @return A matioCpp::Element<matioCpp::Logical> whose value is equal to the input.
  */
-inline matioCpp::Element<matioCpp::Logical> make_variable(const std::string& name, bool input);
+matioCpp::Element<matioCpp::Logical> make_variable(const std::string& name, bool input);
 
 /**
  * @brief Conversion from a vector of strings to a matioCpp::CellArray containing the input strings
@@ -70,7 +70,7 @@ inline matioCpp::Element<matioCpp::Logical> make_variable(const std::string& nam
  * @param input The input vector of strings.
  * @return A matioCpp::CellArray of dimensions nx1 (with n the number of strings)
  */
-inline matioCpp::CellArray make_variable(const std::string& name, const std::vector<std::string>& input);
+matioCpp::CellArray make_variable(const std::string& name, const std::vector<std::string>& input);
 
 /**
  * @brief Create a matioCpp::Struct starting from the begin and end iterators of a map-like container

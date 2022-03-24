@@ -104,7 +104,8 @@ set(MATIOCPP_SRC src/Variable.cpp
                  src/CellArray.cpp
                  src/File.cpp
                  src/Struct.cpp
-                 src/StructArray.cpp)
+                 src/StructArray.cpp
+                 src/ExogenousConversions.cpp)
 
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/VectorIterator.h
