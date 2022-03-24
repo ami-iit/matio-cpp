@@ -7,8 +7,8 @@
 #ifndef MATIOCPP_EXOGENOUSCONVERSIONS_TPP
 #define MATIOCPP_EXOGENOUSCONVERSIONS_TPP
 
-template <class Vector, typename = typename std::enable_if_t<matioCpp::is_vector_compatible<Vector>::value &&
-                                                             !std::is_same<Vector, std::string>::value>>
+template <class Vector, typename std::enable_if_t<matioCpp::is_vector_compatible<Vector>::value &&
+                                                  !std::is_same<Vector, std::string>::value>* = nullptr>
 matioCpp::Vector<typename std::remove_cv_t<typename  matioCpp::SpanUtils::container_data<Vector>::type>> matioCpp::make_variable(const Vector& input, const std::string& name)
 {
     using type = typename  matioCpp::SpanUtils::container_data<Vector>::type;
@@ -25,7 +25,7 @@ inline matioCpp::Vector<matioCpp::Logical> matioCpp::make_variable(const std::ve
     return matioCpp::Vector<matioCpp::Logical>(name, input);
 }
 
-template<typename type, typename = typename std::enable_if<std::is_fundamental<type>::value && !std::is_same<type, bool>::value>::type>
+template<typename type, typename std::enable_if_t<std::is_fundamental<type>::value && !std::is_same<type, bool>::value>* = nullptr>
 matioCpp::Element<type> matioCpp::make_variable(const type& input, const std::string& name)
 {
     return matioCpp::Element<type>(name, input);

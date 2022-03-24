@@ -25,8 +25,8 @@ namespace matioCpp
  * @param name The name of the resulting matioCpp variable.
  * @return A matioCpp::Vector containing a copy of the input data
  */
-template <class Vector, typename = typename std::enable_if_t<is_vector_compatible<Vector>::value &&
-                                                             !std::is_same<Vector, std::string>::value>>
+template <class Vector, typename std::enable_if_t<is_vector_compatible<Vector>::value &&
+                                                  !std::is_same<Vector, std::string>::value>* = nullptr>
 matioCpp::Vector<typename std::remove_cv_t<typename  matioCpp::SpanUtils::container_data<Vector>::type>> make_variable(const Vector& input, const std::string& name);
 
 /**
@@ -51,7 +51,7 @@ inline matioCpp::Vector<matioCpp::Logical> make_variable(const std::vector<bool>
  * @param name The name of the resulting matioCpp variable.
  * @return A matioCpp::Element containing a copy of the input data
  */
-template<typename type, typename = typename std::enable_if<std::is_fundamental<type>::value && !std::is_same<type, bool>::value>::type>
+template<typename type, typename std::enable_if_t<std::is_fundamental<type>::value && !std::is_same<type, bool>::value>* = nullptr>
 matioCpp::Element<type> make_variable(const type& input, const std::string& name);
 
 /**
