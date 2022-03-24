@@ -40,8 +40,7 @@ const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, 1>> matioCpp::to_eigen(cons
     return Eigen::Map<const Eigen::Matrix<type, Eigen::Dynamic, 1>>(input.data(), input.size());
 }
 
-template <typename EigenDerived, typename = std::enable_if_t<Eigen::MatrixBase<EigenDerived>::RowsAtCompileTime != 1 &&
-                                                             Eigen::MatrixBase<EigenDerived>::ColsAtCompileTime != 1>>
+template <typename EigenDerived, typename>
 matioCpp::MultiDimensionalArray<typename EigenDerived::Scalar> matioCpp::make_variable(const Eigen::MatrixBase<EigenDerived>& input, const std::string& name)
 {
     matioCpp::MultiDimensionalArray<typename EigenDerived::Scalar> matio(name, {static_cast<size_t>(input.rows()), static_cast<size_t>(input.cols())});
