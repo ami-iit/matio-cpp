@@ -130,7 +130,9 @@ set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/Element.tpp
                  include/matioCpp/impl/StructArrayElement.tpp
                  include/matioCpp/impl/File.tpp
-                 include/matioCpp/impl/EigenConversions.tpp)
+                 include/matioCpp/impl/EigenConversions.tpp
+                 include/matioCpp/impl/ExogenousConversions.tpp
+                 include/matioCpp/impl/ExogenousConversionHelpers.tpp)
 
 source_group("Template Implementation Files" FILES ${MATIOCPP_TPP})
 

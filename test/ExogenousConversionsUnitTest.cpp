@@ -8,6 +8,8 @@
 //#define MATIOCPP_NO_EIGEN
 #include <catch2/catch.hpp>
 #include <matioCpp/matioCpp.h>
+#include <map>
+#include <set>
 
 template<typename Vector1, typename Vector2>
 void checkSameVectors(const Vector1& a, const Vector2& b)
@@ -119,6 +121,42 @@ TEST_CASE("Exogenous conversions")
         {
             REQUIRE(matioCell[i].asString()() == stringVector[i]);
         }
+    }
+
+    SECTION("Struct")
+    {
+        std::unordered_map<std::string, int> unordered_map;
+        unordered_map["one"] = 1;
+        unordered_map["two"] = 2;
+        unordered_map["three"] = 3;
+
+        matioCpp::Struct toMatio = matioCpp::make_struct(unordered_map.begin(), unordered_map.end(), "map");
+
+        REQUIRE(toMatio["one"].asElement<int>() == 1);
+        REQUIRE(toMatio["two"].asElement<int>() == 2);
+        REQUIRE(toMatio["three"].asElement<int>() == 3);
+    }
+
+    SECTION("Cell Array")
+    {
+        std::map<std::string, char> map;
+        map["a"] = 'a';
+        map["b"] = 'b';
+        map["c"] = 'c';
+
+        matioCpp::CellArray toMatioCell = matioCpp::make_cell_array(map.begin(), map.end(), "mapAsCell");
+        REQUIRE(toMatioCell[0].asElement<char>() == 'a');
+        REQUIRE(toMatioCell[0].name() == "a");
+        REQUIRE(toMatioCell[1].asElement<char>() == 'b');
+        REQUIRE(toMatioCell[1].name() == "b");
+        REQUIRE(toMatioCell[2].asElement<char>() == 'c');
+        REQUIRE(toMatioCell[2].name() == "c");
+
+        std::set<std::string> set({"Huey", "Dewey", "Louie"});
+        auto toMatioCellFromSet = matioCpp::make_cell_array(set.begin(), set.end(), "setAsCell");
+        REQUIRE(toMatioCellFromSet[0].asString()() == "Dewey");
+        REQUIRE(toMatioCellFromSet[1].asString()() == "Huey");
+        REQUIRE(toMatioCellFromSet[2].asString()() == "Louie");
     }
 }
 

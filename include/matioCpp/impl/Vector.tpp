@@ -1,12 +1,12 @@
-#ifndef MATIOCPP_VECTOR_TPP
-#define MATIOCPP_VECTOR_TPP
-
 /*
  * Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia
  *
  * This software may be modified and distributed under the terms of the
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
+
+#ifndef MATIOCPP_VECTOR_TPP
+#define MATIOCPP_VECTOR_TPP
 
 template<typename T>
 bool matioCpp::Vector<T>::initializeVector(const std::string& name, Span<const typename matioCpp::Vector<T>::element_type> inputVector)

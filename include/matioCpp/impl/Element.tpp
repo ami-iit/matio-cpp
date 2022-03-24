@@ -1,12 +1,12 @@
-#ifndef MATIOCPP_ELEMENT_TPP
-#define MATIOCPP_ELEMENT_TPP
-
 /*
  * Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia
  *
  * This software may be modified and distributed under the terms of the
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
+
+#ifndef MATIOCPP_ELEMENT_TPP
+#define MATIOCPP_ELEMENT_TPP
 
 template<typename T>
 bool matioCpp::Element<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
