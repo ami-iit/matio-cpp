@@ -386,7 +386,7 @@ TEST_CASE("from_container_constructor")
     std::vector<int> v = {1, 2, 3};
     const std::vector<int> cv = v;
 
-    size_t sizeAfterDeducton = foo(cv);
+    size_t sizeAfterDeducton = foo(v);
 
     REQUIRE(sizeAfterDeducton == v.size());
 

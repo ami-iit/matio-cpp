@@ -89,6 +89,12 @@ endif()
 
 ## Dependencies
 find_package(MATIO REQUIRED)
+find_package(Eigen3 QUIET)
+
+if (Eigen3_FOUND)
+    set(MATIOCPP_HAS_EIGEN TRUE)
+endif()
+
 
 set(MATIOCPP_SRC src/Variable.cpp
                  src/ConversionUtilities.cpp
@@ -103,6 +109,8 @@ set(MATIOCPP_SRC src/Variable.cpp
 set(MATIOCPP_HDR include/matioCpp/Span.h
                  include/matioCpp/VectorIterator.h
                  include/matioCpp/ConversionUtilities.h
+                 include/matioCpp/ExogenousConversions.h
+                 include/matioCpp/EigenConversions.h
                  include/matioCpp/Variable.h
                  include/matioCpp/ForwardDeclarations.h
                  include/matioCpp/Vector.h
@@ -121,7 +129,8 @@ set(MATIOCPP_TPP include/matioCpp/impl/Vector.tpp
                  include/matioCpp/impl/MultiDimensionalArray.tpp
                  include/matioCpp/impl/Element.tpp
                  include/matioCpp/impl/StructArrayElement.tpp
-                 include/matioCpp/impl/File.tpp)
+                 include/matioCpp/impl/File.tpp
+                 include/matioCpp/impl/EigenConversions.tpp)
 
 source_group("Template Implementation Files" FILES ${MATIOCPP_TPP})
 
@@ -150,6 +159,12 @@ target_include_directories(matioCpp PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SO
                                            "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
 target_link_libraries(matioCpp PUBLIC MATIO::MATIO)
+list(APPEND MATIOCPP_DEPENDENCIES MATIO)
+
+if (Eigen3_FOUND)
+    target_link_libraries(matioCpp PUBLIC Eigen3::Eigen)
+    list(APPEND MATIOCPP_DEPENDENCIES Eigen3)
+endif()
 
 target_compile_features(matioCpp PUBLIC cxx_std_14)
 
@@ -182,7 +197,7 @@ install_basic_package_files(${PROJECT_NAME}
                             COMPATIBILITY AnyNewerVersion
                             VARS_PREFIX ${PROJECT_NAME}
                             NO_CHECK_REQUIRED_COMPONENTS_MACRO
-                            DEPENDENCIES MATIO
+                            DEPENDENCIES ${MATIOCPP_DEPENDENCIES}
                             OVERRIDE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/share/matioCpp/cmake)
 # Add the uninstall target
 include(AddUninstallTarget)

@@ -76,6 +76,54 @@ template <typename T>
 struct has_size_method<T, void_t<decltype(std::declval<T>().size())>> : std::true_type
 {
 };
+
+//Small utility to detect if class T defines value_type
+template< class, typename = void >
+struct has_type_member : std::false_type { };
+
+template< class T >
+struct has_type_member<T, void_t<typename T::value_type>> : std::true_type { };
+
+//container_data is a utility metafunction to detect the type of container. If T is not a supported container, it throws
+ // an assertion at compile time.
+template <typename T, typename = void>
+struct container_data
+{
+    static_assert(dependent_false<T>::value, "Unable to detect type of data in the container.");
+};
+
+template <typename T>
+struct container_data<T, typename std::enable_if<has_type_member<T>::value>::type>
+{
+    using type = typename T::value_type;
+};
+
+// This specialization is enabled if <code>T::value_type<\code> is not available, but the method <code>data()<\code> is.
+template <typename T>
+struct container_data<T, typename std::enable_if<!has_type_member<T>::value && has_data_method<T>::value>::type>
+{
+    using type = typename std::remove_pointer<decltype(std::declval<T>().data())>::type;
+};
+
+//This specialization is enabled if T is an array.
+template <typename T>
+struct container_data<T, typename std::enable_if<std::is_array<T>::value>::type>
+{
+    using type = typename std::remove_all_extents_t<T>;
+};
+
+//is_span_constructible is a utility metafunction to check if matioCpp::Span is constructible given a reference to Class.
+template <typename Class, typename = void>
+struct is_span_constructible : std::false_type
+{};
+
+template <typename Class>
+struct is_span_constructible<Class,
+                             typename std::enable_if<
+                                 std::is_constructible<Span<typename container_data<Class>::type>, Class&>::value>::type>
+    : std::true_type
+{};
+
 }
 
 // implementation details
@@ -680,7 +728,7 @@ MATIOCPP_CONSTEXPR Span<ElementType, N> make_span(ElementType (&arr)[N]) noexcep
     return Span<ElementType, N>(arr);
 }
 
-template <class Container>
+template <class Container, typename = typename std::enable_if<SpanUtils::is_value_defined<Container>::value>::type>
 MATIOCPP_CONSTEXPR Span<typename Container::value_type> make_span(Container& cont)
 {
     return Span<typename Container::value_type>(cont);
@@ -710,6 +758,27 @@ template <class Container, typename = typename std::enable_if<!SpanUtils::is_val
 MATIOCPP_CONSTEXPR Span<typename std::remove_pointer<decltype (std::declval<Container>().data())>::type> make_span(Container& cont)
 {
     return Span<typename std::remove_pointer<decltype (std::declval<Container>().data())>::type>(cont);
+}
+
+template <class Container, typename = typename std::enable_if<!SpanUtils::is_value_defined<Container>::value &&
+                                                             !SpanUtils::is_element_defined<Container>::value &&
+                                                             SpanUtils::has_data_method<Container>::value>::type>
+MATIOCPP_CONSTEXPR Span<const typename std::remove_pointer<decltype (std::declval<Container>().data())>::type> make_span(const Container& cont)
+{
+    return Span<const typename std::remove_pointer<decltype (std::declval<Container>().data())>::type>(cont);
+}
+
+namespace SpanUtils {
+//is_make_span_callable is a utility metafunction to check if matioCpp::make_span can be called given the input Class
+template <typename Class, typename = void>
+struct is_make_span_callable : std::false_type
+{};
+
+template <typename Class>
+struct is_make_span_callable<Class, void_t<decltype(make_span(std::declval<Class>()))>> : std::true_type
+{
+};
+
 }
 
 } // namespace matioCpp

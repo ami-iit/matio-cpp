@@ -49,3 +49,7 @@ add_unit_test(NAME StructArrayElement
               SOURCES StructArrayElementUnitTest.cpp
               LINKS matioCpp::matioCpp)
 
+add_unit_test(NAME ExogenousConversions
+              SOURCES ExogenousConversionsUnitTest.cpp
+              LINKS matioCpp::matioCpp)
+

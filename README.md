@@ -20,6 +20,8 @@ The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``
 - macOS: ``brew install libmatio``
 - Windows, via [``vcpkg``](https://github.com/microsoft/vcpkg): ``vcpkg install --triplet x64-windows matio``
 
+[`Eigen`](https://eigen.tuxfamily.org/index.php) is an optional dependency. If available, some conversions are defined.
+
 For running the tests, it is necessary to install [`Catch2`](https://github.com/catchorg/Catch2). Where supported, [``valgrind``](https://valgrind.org/) can be installed to check for memory leaks.
 
 ## Linux/macOS
