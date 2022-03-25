@@ -16,6 +16,8 @@
 #include <matioCpp/Vector.h>
 #include <matioCpp/MultiDimensionalArray.h>
 
+#include <visit_struct/visit_struct_intrusive.hpp>
+
 #include "impl/ExogenousConversionHelpers.tpp"
 
 namespace matioCpp
@@ -71,6 +73,16 @@ matioCpp::Element<matioCpp::Logical> make_variable(const std::string& name, bool
  * @return A matioCpp::CellArray of dimensions nx1 (with n the number of strings)
  */
 matioCpp::CellArray make_variable(const std::string& name, const std::vector<std::string>& input);
+
+/**
+ * @brief Conversion from a visitable struct to a matioCpp::Struct.
+ * See https://github.com/garbageslam/visit_struct on how to make a Struct "visitable"
+ * @param name The name of the resulting matioCpp variable.
+ * @param input The input struct.
+ * @return A matioCpp::Struct containing the visitable fields
+ */
+template<typename Struct, typename = typename std::enable_if_t<visit_struct::traits::is_visitable<Struct>::value>>
+inline matioCpp::Struct make_variable(const std::string& name, const Struct& input);
 
 /**
  * @brief Create a matioCpp::Struct starting from the begin and end iterators of a map-like container

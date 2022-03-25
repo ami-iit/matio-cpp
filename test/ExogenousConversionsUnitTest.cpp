@@ -10,6 +10,7 @@
 #include <matioCpp/matioCpp.h>
 #include <map>
 #include <set>
+#include <algorithm>
 
 template<typename Vector1, typename Vector2>
 void checkSameVectors(const Vector1& a, const Vector2& b)
@@ -38,6 +39,29 @@ void checkSameMatrix(const Matrix& a, const matioCpp::MultiDimensionalArray<type
         }
     }
 }
+
+struct testStruct
+{
+    int i{1};
+    double d{2.0};
+    std::string s{"test"};
+    std::vector<double> stdVec = {1.0, 2.0, 3.0, 4.0, 5.0};
+    int* notSupported = nullptr;
+    std::vector<std::string> stringVector = {"Huey", "Dewey", "Louie"};
+    std::vector<bool> vecOfBool = {true, false, true};
+};
+VISITABLE_STRUCT(testStruct, i, d, s, stdVec, vecOfBool, stringVector);
+
+
+struct nestedStruct
+{
+    using array_3f = std::array<float,3>;
+    BEGIN_VISITABLES(nestedStruct);
+    VISITABLE_DIRECT_INIT(array_3f, array, {1.0, 2.0, 3.0});
+    VISITABLE(testStruct, s);
+    END_VISITABLES;
+    int* notSupported = nullptr;
+};
 
 #ifdef MATIOCPP_HAS_EIGEN
 
@@ -135,6 +159,40 @@ TEST_CASE("Exogenous conversions")
         REQUIRE(toMatio["one"].asElement<int>() == 1);
         REQUIRE(toMatio["two"].asElement<int>() == 2);
         REQUIRE(toMatio["three"].asElement<int>() == 3);
+
+        testStruct s;
+        matioCpp::Struct automaticStruct = matioCpp::make_variable("testStruct", s);
+        REQUIRE(automaticStruct["i"].asElement<int>() == s.i);
+        REQUIRE(automaticStruct["d"].asElement<double>() == s.d);
+        REQUIRE(automaticStruct["s"].asString()() == s.s);
+        checkSameVectors(automaticStruct["stdVec"].asVector<double>(), s.stdVec);
+        checkSameVectors(automaticStruct["vecOfBool"].asVector<matioCpp::Logical>(), s.vecOfBool);
+
+        for (size_t i = 0; i < s.stringVector.size(); ++i)
+        {
+            REQUIRE(automaticStruct["stringVector"].asCellArray()[i].asString()() == s.stringVector[i]);
+        }
+
+        auto fields = automaticStruct.fields();
+        REQUIRE(std::find(fields.begin(), fields.end(), "notSupported") == fields.end());
+
+
+        nestedStruct s2;
+        matioCpp::Struct automaticNestedStruct = matioCpp::make_variable("testStruct2", s2);
+        checkSameVectors(s2.array, automaticNestedStruct["array"].asVector<float>());
+        REQUIRE(automaticNestedStruct["s"].asStruct()["i"].asElement<int>() == s2.s.i);
+        REQUIRE(automaticNestedStruct["s"].asStruct()["d"].asElement<double>() == s2.s.d);
+        REQUIRE(automaticNestedStruct["s"].asStruct()["s"].asString()() == s2.s.s);
+        checkSameVectors(automaticNestedStruct["s"].asStruct()["stdVec"].asVector<double>(), s2.s.stdVec);
+        checkSameVectors(automaticNestedStruct["s"].asStruct()["vecOfBool"].asVector<matioCpp::Logical>(), s2.s.vecOfBool);
+
+        for (size_t i = 0; i < s2.s.stringVector.size(); ++i)
+        {
+            REQUIRE(automaticNestedStruct["s"].asStruct()["stringVector"].asCellArray()[i].asString()() == s2.s.stringVector[i]);
+        }
+
+        auto fields2 = automaticNestedStruct.fields();
+        REQUIRE(std::find(fields2.begin(), fields2.end(), "notSupported") == fields2.end());
     }
 
     SECTION("Cell Array")

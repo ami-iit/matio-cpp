@@ -20,6 +20,20 @@ inline matioCpp::Element<type> matioCpp::make_variable(const std::string& name, 
     return matioCpp::Element<type>(name, input);
 }
 
+template<typename Struct, typename>
+inline matioCpp::Struct matioCpp::make_variable(const std::string& name, const Struct& input)
+{
+    matioCpp::Struct matioStruct(name);
+
+    visit_struct::for_each(input,
+      [& matioStruct](const char * name, const auto & value) {
+        bool ok = matioStruct.setField(make_variable(name, value));
+        matioCpp::unused(ok);
+        assert(ok);
+      });
+    return matioStruct;
+}
+
 template<class iterator,
           typename>
 inline matioCpp::Struct matioCpp::make_struct(const std::string& name, iterator begin, iterator end)
@@ -28,7 +42,7 @@ inline matioCpp::Struct matioCpp::make_struct(const std::string& name, iterator 
     for (iterator it = begin; it != end; it++)
     {
         bool ok = matioStruct.setField(make_variable(it->first, it->second));
-        unused(ok);
+        matioCpp::unused(ok);
         assert(ok);
     }
 
@@ -46,7 +60,7 @@ inline matioCpp::CellArray matioCpp::make_cell_array(const std::string& name, co
     while (it != end)
     {
         bool ok = matioCellArray.setElement(index, make_variable(it->first, it->second));
-        unused(ok);
+        matioCpp::unused(ok);
         assert(ok);
         index++;
         it++;
@@ -66,7 +80,7 @@ inline matioCpp::CellArray matioCpp::make_cell_array(const std::string& name, co
     while (it != end)
     {
         bool ok = matioCellArray.setElement(index, make_variable("imported_element_" + std::to_string(index), *it));
-        unused(ok);
+        matioCpp::unused(ok);
         assert(ok);
         index++;
         it++;
