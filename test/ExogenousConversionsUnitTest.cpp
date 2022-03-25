@@ -174,8 +174,8 @@ TEST_CASE("Exogenous conversions")
         }
 
         auto fields = automaticStruct.fields();
-        REQUIRE(std::find(fields.begin(), fields.end(), "notSupported") == fields.end());
-
+        bool ok = std::find(fields.begin(), fields.end(), "notSupported") == fields.end();
+        REQUIRE(ok);
 
         nestedStruct s2;
         matioCpp::Struct automaticNestedStruct = matioCpp::make_variable("testStruct2", s2);
@@ -192,7 +192,8 @@ TEST_CASE("Exogenous conversions")
         }
 
         auto fields2 = automaticNestedStruct.fields();
-        REQUIRE(std::find(fields2.begin(), fields2.end(), "notSupported") == fields2.end());
+        ok = std::find(fields2.begin(), fields2.end(), "notSupported") == fields2.end();
+        REQUIRE(ok);
     }
 
     SECTION("Cell Array")
