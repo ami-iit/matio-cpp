@@ -164,7 +164,7 @@ TEST_CASE("Read")
     {
         std::cerr << stringValue << "!= test" << std::endl;
     }
-    REQUIRE(ok); //REQUIRE(inputString() == "test") is failing in some systems. (https://github.com/dic-iit/matio-cpp/issues/28)
+    REQUIRE(ok); //REQUIRE(inputString() == "test") is failing in some systems. (https://github.com/ami-iit/matio-cpp/issues/28)
 
     matioCpp::Struct structVar = input.read("struct").asStruct();
     REQUIRE(structVar.isValid());

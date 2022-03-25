@@ -24,7 +24,7 @@ For running the tests, it is necessary to install [`Catch2`](https://github.com/
 
 ## Linux/macOS
 ```sh
-git clone https://github.com/dic-iit/matio-cpp
+git clone https://github.com/ami-iit/matio-cpp
 cd matio-cpp
 mkdir build && cd build
 cmake ../
@@ -38,7 +38,7 @@ export matioCpp_DIR=/path/where/you/installed/
 ## Windows
 With IDE build tool facilities, such as Visual Studio:
 ```sh
-git clone https://github.com/dic-iit/matio-cpp
+git clone https://github.com/ami-iit/matio-cpp
 cd matio-cpp
 mkdir build && cd build
 cmake ..
