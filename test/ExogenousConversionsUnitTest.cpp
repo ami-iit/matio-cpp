@@ -105,6 +105,20 @@ TEST_CASE("Eigen Conversions")
 
 TEST_CASE("Exogenous conversions")
 {
+    SECTION("make_variable_callable")
+    {
+        REQUIRE(matioCpp::is_make_variable_callable<std::vector<double>>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<std::array<float,3>>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<int>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<std::string>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<std::vector<bool>>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<double>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<bool>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<int>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<char>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<std::vector<std::string>>::value);
+        REQUIRE(matioCpp::is_make_variable_callable<testStruct>::value);
+    }
     SECTION("Vector")
     {
         std::vector<double> stdVec = {1.0, 2.0, 3.0, 4.0, 5.0};

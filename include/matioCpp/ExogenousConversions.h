@@ -123,6 +123,18 @@ template<class iterator,
          typename std::enable_if_t<!is_pair<decltype(*std::declval<iterator>())>::value>* = nullptr>
 inline matioCpp::CellArray make_cell_array(const std::string& name, const iterator& begin, const iterator& end);
 
+/**
+ * @brief is_make_variable_callable is a template utility to check if the make_variable works for a give type
+ */
+template <typename Class, typename = void>
+struct is_make_variable_callable : std::false_type
+{};
+
+template <typename Class>
+struct is_make_variable_callable<Class, matioCpp::SpanUtils::void_t<decltype(matioCpp::make_variable(std::declval<std::string>(), std::declval<Class>()))>> : std::true_type
+{
+};
+
 }
 
 #include "impl/ExogenousConversions.tpp"
