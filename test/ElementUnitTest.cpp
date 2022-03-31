@@ -198,6 +198,19 @@ TEST_CASE("Assignements")
     }
 }
 
+TEST_CASE("Span")
+{
+    matioCpp::Element<int> i("hello_element", 7);
+
+    auto span = i.toSpan();
+    REQUIRE(span.size() == 1);
+    REQUIRE(span[0] == 7);
+
+    const matioCpp::Span<const int> constSpan = i.toSpan();
+    REQUIRE(constSpan.size() == 1);
+    REQUIRE(constSpan[0] == 7);
+}
+
 TEST_CASE("Set name")
 {
     matioCpp::Element<int> i("hello_element", 7);

@@ -106,6 +106,16 @@ public:
     Element<T>& operator=(element_type value);
 
     /**
+     * @brief Get this Vector as a Span
+     */
+    matioCpp::Span<element_type> toSpan();
+
+    /**
+     * @brief Get this Vector as a Span (const version)
+     */
+    const matioCpp::Span<const element_type> toSpan() const;
+
+    /**
      * @brief Change the name of the Variable
      * @param newName The new name
      * @return True if successful.

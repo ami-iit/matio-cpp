@@ -137,6 +137,18 @@ matioCpp::Element<T> &matioCpp::Element<T>::operator=(typename matioCpp::Element
 }
 
 template<typename T>
+matioCpp::Span<typename matioCpp::Element<T>::element_type> matioCpp::Element<T>::toSpan()
+{
+    return matioCpp::make_span(static_cast<typename matioCpp::Element<T>::pointer>(toMatio()->data), 1);
+}
+
+template<typename T>
+const matioCpp::Span<const typename matioCpp::Element<T>::element_type> matioCpp::Element<T>::toSpan() const
+{
+    return matioCpp::make_span(static_cast<typename matioCpp::Element<T>::const_pointer>(toMatio()->data), 1);
+}
+
+template<typename T>
 bool matioCpp::Element<T>::setName(const std::string &newName)
 {
     return changeName(newName);
