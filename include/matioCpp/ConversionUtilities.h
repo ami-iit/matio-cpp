@@ -131,7 +131,7 @@ bool is_convertible_to_primitive_type(matioCpp::ValueType type)
         return std::is_same<T, int64_t>::value;
         break;
     case matioCpp::ValueType::UINT64:
-        return std::is_same<T, uint64_t>::value;
+        return std::is_same<T, size_t_type>::value;
         break;
     case matioCpp::ValueType::UTF8:
         return (std::is_same<T, char>::value || std::is_same<T, uint8_t>::value);
