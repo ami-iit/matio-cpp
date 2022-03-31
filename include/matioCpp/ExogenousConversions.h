@@ -135,6 +135,15 @@ struct is_make_variable_callable<Class, matioCpp::SpanUtils::void_t<decltype(mat
 {
 };
 
+/**
+ * @brief make_variable_output is a template utility to check the type that make_variable would output. void is case make_variable is not callable
+ */
+template <typename Class>
+struct make_variable_output
+{
+    using type = typename std::conditional_t<matioCpp::is_make_variable_callable<Class>::value, decltype(matioCpp::make_variable(std::declval<std::string>(), std::declval<Class>())), void>;
+};
+
 }
 
 #include "impl/ExogenousConversions.tpp"

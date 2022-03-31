@@ -109,7 +109,6 @@ TEST_CASE("Exogenous conversions")
     {
         REQUIRE(matioCpp::is_make_variable_callable<std::vector<double>>::value);
         REQUIRE(matioCpp::is_make_variable_callable<std::array<float,3>>::value);
-        REQUIRE(matioCpp::is_make_variable_callable<int>::value);
         REQUIRE(matioCpp::is_make_variable_callable<std::string>::value);
         REQUIRE(matioCpp::is_make_variable_callable<std::vector<bool>>::value);
         REQUIRE(matioCpp::is_make_variable_callable<double>::value);
@@ -119,6 +118,21 @@ TEST_CASE("Exogenous conversions")
         REQUIRE(matioCpp::is_make_variable_callable<std::vector<std::string>>::value);
         REQUIRE(matioCpp::is_make_variable_callable<testStruct>::value);
     }
+
+    SECTION("make_variable_callable")
+    {
+        REQUIRE(std::is_same<matioCpp::make_variable_output<std::vector<double>>::type, matioCpp::Vector<double>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<std::array<float,3>>::type, matioCpp::Vector<float>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<std::string>::type, matioCpp::String>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<std::vector<bool>>::type, matioCpp::Vector<matioCpp::Logical>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<int>::type, matioCpp::Element<int>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<double>::type, matioCpp::Element<double>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<bool>::type, matioCpp::Element<matioCpp::Logical>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<char>::type, matioCpp::Element<char>>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<std::vector<std::string>>::type, matioCpp::CellArray>::value);
+        REQUIRE(std::is_same<matioCpp::make_variable_output<testStruct>::type, matioCpp::Struct>::value);
+    }
+
     SECTION("Vector")
     {
         std::vector<double> stdVec = {1.0, 2.0, 3.0, 4.0, 5.0};
