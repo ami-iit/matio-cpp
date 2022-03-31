@@ -46,21 +46,28 @@ template <typename Tp> struct get_type
     static_assert (matioCpp::dependent_false<Tp>::value, "Unsupported type.");
     static_assert (!std::is_same<Tp, bool>::value, "Use matioCpp::Logical instead of bool.");
 };
+
+#ifdef __APPLE__
+using size_t_type = unsigned long;
+#else
+using size_t_type = uint64_t;
+#endif
+
 // specializations
-template <> struct get_type<int8_t>    { using type = int8_t;   static inline ValueType valueType(){return ValueType::INT8;};     static inline std::string toString(){return "int8_t"            ;};};
-template <> struct get_type<uint8_t>   { using type = uint8_t;  static inline ValueType valueType(){return ValueType::UINT8;};    static inline std::string toString(){return "uint8_t"           ;};};
-template <> struct get_type<int16_t>   { using type = int16_t;  static inline ValueType valueType(){return ValueType::INT16;};    static inline std::string toString(){return "int16_t"           ;};};
-template <> struct get_type<uint16_t>  { using type = uint16_t; static inline ValueType valueType(){return ValueType::UINT16;};   static inline std::string toString(){return "uint16_t"          ;};};
-template <> struct get_type<int32_t>   { using type = int32_t;  static inline ValueType valueType(){return ValueType::INT32;};    static inline std::string toString(){return "int32_t"           ;};};
-template <> struct get_type<uint32_t>  { using type = uint32_t; static inline ValueType valueType(){return ValueType::UINT32;};   static inline std::string toString(){return "uint32_t"          ;};};
-template <> struct get_type<float>     { using type = float;    static inline ValueType valueType(){return ValueType::SINGLE;};   static inline std::string toString(){return "float"             ;};};
-template <> struct get_type<double>    { using type = double;   static inline ValueType valueType(){return ValueType::DOUBLE;};   static inline std::string toString(){return "double"            ;};};
-template <> struct get_type<int64_t>   { using type = int64_t;  static inline ValueType valueType(){return ValueType::INT64;};    static inline std::string toString(){return "int64_t"           ;};};
-template <> struct get_type<uint64_t>  { using type = uint64_t; static inline ValueType valueType(){return ValueType::UINT64;};   static inline std::string toString(){return "uint64_t"          ;};};
-template <> struct get_type<char>      { using type = char;     static inline ValueType valueType(){return ValueType::UTF8;};     static inline std::string toString(){return "char"              ;};};
-template <> struct get_type<char16_t>  { using type = char16_t; static inline ValueType valueType(){return ValueType::UTF16;};    static inline std::string toString(){return "char16_t"          ;};};
-template <> struct get_type<char32_t>  { using type = char32_t; static inline ValueType valueType(){return ValueType::UTF32;};    static inline std::string toString(){return "char32_t"          ;};};
-template <> struct get_type<Logical>   { using type = uint8_t;  static inline ValueType valueType(){return ValueType::LOGICAL;};  static inline std::string toString(){return "matioCpp::Logical" ;};};
+template <> struct get_type<int8_t>       { using type = int8_t;      static inline ValueType valueType(){return ValueType::INT8;};     static inline std::string toString(){return "int8_t"            ;};};
+template <> struct get_type<uint8_t>      { using type = uint8_t;     static inline ValueType valueType(){return ValueType::UINT8;};    static inline std::string toString(){return "uint8_t"           ;};};
+template <> struct get_type<int16_t>      { using type = int16_t;     static inline ValueType valueType(){return ValueType::INT16;};    static inline std::string toString(){return "int16_t"           ;};};
+template <> struct get_type<uint16_t>     { using type = uint16_t;    static inline ValueType valueType(){return ValueType::UINT16;};   static inline std::string toString(){return "uint16_t"          ;};};
+template <> struct get_type<int32_t>      { using type = int32_t;     static inline ValueType valueType(){return ValueType::INT32;};    static inline std::string toString(){return "int32_t"           ;};};
+template <> struct get_type<uint32_t>     { using type = uint32_t;    static inline ValueType valueType(){return ValueType::UINT32;};   static inline std::string toString(){return "uint32_t"          ;};};
+template <> struct get_type<float>        { using type = float;       static inline ValueType valueType(){return ValueType::SINGLE;};   static inline std::string toString(){return "float"             ;};};
+template <> struct get_type<double>       { using type = double;      static inline ValueType valueType(){return ValueType::DOUBLE;};   static inline std::string toString(){return "double"            ;};};
+template <> struct get_type<int64_t>      { using type = int64_t;     static inline ValueType valueType(){return ValueType::INT64;};    static inline std::string toString(){return "int64_t"           ;};};
+template <> struct get_type<size_t_type>  { using type = size_t_type; static inline ValueType valueType(){return ValueType::UINT64;};   static inline std::string toString(){return "size_t"            ;};};
+template <> struct get_type<char>         { using type = char;        static inline ValueType valueType(){return ValueType::UTF8;};     static inline std::string toString(){return "char"              ;};};
+template <> struct get_type<char16_t>     { using type = char16_t;    static inline ValueType valueType(){return ValueType::UTF16;};    static inline std::string toString(){return "char16_t"          ;};};
+template <> struct get_type<char32_t>     { using type = char32_t;    static inline ValueType valueType(){return ValueType::UTF32;};    static inline std::string toString(){return "char32_t"          ;};};
+template <> struct get_type<Logical>      { using type = uint8_t;     static inline ValueType valueType(){return ValueType::LOGICAL;};  static inline std::string toString(){return "matioCpp::Logical" ;};};
 
 /**
  * @brief Utility meta-function to check if a type is compatible with a std::string
