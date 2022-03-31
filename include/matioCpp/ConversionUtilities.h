@@ -56,6 +56,7 @@ template <> struct get_type<uint32_t>  { using type = uint32_t; static inline Va
 template <> struct get_type<float>     { using type = float;    static inline ValueType valueType(){return ValueType::SINGLE;};   static inline std::string toString(){return "float"             ;};};
 template <> struct get_type<double>    { using type = double;   static inline ValueType valueType(){return ValueType::DOUBLE;};   static inline std::string toString(){return "double"            ;};};
 template <> struct get_type<int64_t>   { using type = int64_t;  static inline ValueType valueType(){return ValueType::INT64;};    static inline std::string toString(){return "int64_t"           ;};};
+template <> struct get_type<uint64_t>  { using type = uint64_t; static inline ValueType valueType(){return ValueType::UINT64;};   static inline std::string toString(){return "uint64_t"          ;};};
 template <> struct get_type<char>      { using type = char;     static inline ValueType valueType(){return ValueType::UTF8;};     static inline std::string toString(){return "char"              ;};};
 template <> struct get_type<char16_t>  { using type = char16_t; static inline ValueType valueType(){return ValueType::UTF16;};    static inline std::string toString(){return "char16_t"          ;};};
 template <> struct get_type<char32_t>  { using type = char32_t; static inline ValueType valueType(){return ValueType::UTF32;};    static inline std::string toString(){return "char32_t"          ;};};

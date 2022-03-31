@@ -92,6 +92,10 @@ TEST_CASE("Constructors")
         REQUIRE(i64.isValid());
         REQUIRE(i64.valueType() == matioCpp::ValueType::INT64);
 
+        matioCpp::Element<size_t> ui64;
+        REQUIRE(ui64.isValid());
+        REQUIRE(ui64.valueType() == matioCpp::ValueType::UINT64);
+
         matioCpp::Element<char> c;
         REQUIRE(c.isValid());
         REQUIRE(c.valueType() == matioCpp::ValueType::UTF8);
