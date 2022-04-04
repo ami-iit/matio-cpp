@@ -27,6 +27,7 @@ inline matioCpp::Struct matioCpp::make_variable(const std::string& name, const S
 
     visit_struct::for_each(input,
       [& matioStruct](const char * name, const auto & value) {
+        static_assert (is_make_variable_callable<decltype(value)>::value, "The input struct contains non-compatible fields.");
         bool ok = matioStruct.setField(make_variable(name, value));
         matioCpp::unused(ok);
         assert(ok);
