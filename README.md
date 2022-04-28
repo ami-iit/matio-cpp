@@ -20,6 +20,8 @@ The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``
 - macOS: ``brew install libmatio``
 - Windows, via [``vcpkg``](https://github.com/microsoft/vcpkg): ``vcpkg install --triplet x64-windows matio``
 
+[`Eigen`](https://eigen.tuxfamily.org/index.php) is an optional dependency. If available, some conversions are defined.
+
 For running the tests, it is necessary to install [`Catch2`](https://github.com/catchorg/Catch2). Where supported, [``valgrind``](https://valgrind.org/) can be installed to check for memory leaks.
 
 ## Linux/macOS
@@ -108,6 +110,71 @@ testString = "string content";
 file.write(testString);
 
 ```
+
+It is possibile to convert common types to ``matioCpp`` types with the function ``matioCpp::make_variable``. Examples:
+```c++
+std::vector<double> stdVec = {1.0, 2.0, 3.0, 4.0, 5.0};
+auto toMatioVec = matioCpp::make_variable("test", stdVec);
+
+std::array<float,3> array = {1.0, 2.0, 3.0};
+auto toMatioArray = matioCpp::make_variable("test", array);
+
+int classicalArray[] = {1, 2, 3};
+auto toMatioClassic = matioCpp::make_variable("test", matioCpp::make_span(classicalArray, 3));
+
+std::string string("something");
+auto toMatioString = matioCpp::make_variable("name", string);
+
+std::vector<bool> vecOfBool = {true, false, true};
+auto toVecofBool = matioCpp::make_variable("vecOfBool", vecOfBool);
+
+auto matioDouble = matioCpp::make_variable("double", 5.0);
+
+auto matioBool = matioCpp::make_variable("bool", true);
+
+auto matioInt = matioCpp::make_variable("int", 2);
+
+auto matioChar = matioCpp::make_variable("char", 'f');
+
+std::vector<std::string> stringVector = {"Huey", "Dewey", "Louie"};
+auto matioCell = matioCpp::make_variable("stringVector", stringVector);
+```
+If ``eigen`` is available, it is also possible to convert from and to ``eigen`` types:
+```c++
+matioCpp::Vector<double> vector("vector", 5);                                               
+Eigen::VectorXd eigenVec = matioCpp::to_eigen(vector);                                      
+matioCpp::MultiDimensionalArray<float> matioCppMatrix("matrix"); 
+
+Eigen::MatrixXf toEigenMatrix = matioCpp::to_eigen(matioCppMatrix);
+
+Eigen::Matrix3f eigenMatrix;                                                    
+eigenMatrix << 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0;                     
+auto toMatioMatrix = matioCpp::make_variable("testMatrix", eigenMatrix);        
+Eigen::Vector3i eigenVec;      
+eigenVec << 2, 4, 6;                                                            
+auto toMatioEigenVec = matioCpp::make_variable("testEigen", eigenVec);          
+```
+
+``matioCpp`` also exploits [``visit_struct``](https://github.com/garbageslam/visit_struct) to parse C++ structs into ``matioCpp`` structs. Example:
+```c++
+struct testStruct
+{
+    int i{1};
+    double d{2.0};
+    std::string s{"test"};
+    std::vector<double> stdVec = {1.0, 2.0, 3.0, 4.0, 5.0};
+    int* notSupported = nullptr;
+    std::vector<std::string> stringVector = {"Huey", "Dewey", "Louie"};
+    std::vector<bool> vecOfBool = {true, false, true};
+};
+VISITABLE_STRUCT(testStruct, i, d, s, stdVec, vecOfBool, stringVector);
+
+//----------
+
+testStruct s;
+matioCpp::Struct automaticStruct = matioCpp::make_variable("testStruct", s);
+```
+
 
 # Known Limitations
  - Complex arrays are not yet supported

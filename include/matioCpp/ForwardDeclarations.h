@@ -30,6 +30,8 @@
 
 #include <matio.h>
 
+#include <matioCpp/Config.h>
+
 #ifdef _MSC_VER
 #pragma warning(push)
 

@@ -92,6 +92,10 @@ TEST_CASE("Constructors")
         REQUIRE(i64.isValid());
         REQUIRE(i64.valueType() == matioCpp::ValueType::INT64);
 
+        matioCpp::Element<size_t> ui64;
+        REQUIRE(ui64.isValid());
+        REQUIRE(ui64.valueType() == matioCpp::ValueType::UINT64);
+
         matioCpp::Element<char> c;
         REQUIRE(c.isValid());
         REQUIRE(c.valueType() == matioCpp::ValueType::UTF8);
@@ -196,6 +200,19 @@ TEST_CASE("Assignements")
         REQUIRE((((int *)(i.toMatio()->data))[0]) == 8);
 
     }
+}
+
+TEST_CASE("Span")
+{
+    matioCpp::Element<int> i("hello_element", 7);
+
+    auto span = i.toSpan();
+    REQUIRE(span.size() == 1);
+    REQUIRE(span[0] == 7);
+
+    const matioCpp::Span<const int> constSpan = i.toSpan();
+    REQUIRE(constSpan.size() == 1);
+    REQUIRE(constSpan[0] == 7);
 }
 
 TEST_CASE("Set name")

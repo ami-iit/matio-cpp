@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Using a custom variable in InstallBasicPackageFile to backup the module path: [#47](https://github.com/ami-iit/matio-cpp/pull/47).
 - Added more checks before creating a file: [#49](https://github.com/ami-iit/matio-cpp/pull/49).
+- Added reflection and conversions from common types [#55](https://github.com/ami-iit/matio-cpp/pull/55)
 
 ## [0.1.1] - 2021-03-22
 

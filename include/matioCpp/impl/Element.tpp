@@ -1,12 +1,12 @@
-#ifndef MATIOCPP_ELEMENT_TPP
-#define MATIOCPP_ELEMENT_TPP
-
 /*
  * Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia
  *
  * This software may be modified and distributed under the terms of the
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
+
+#ifndef MATIOCPP_ELEMENT_TPP
+#define MATIOCPP_ELEMENT_TPP
 
 template<typename T>
 bool matioCpp::Element<T>::checkCompatibility(const matvar_t* inputPtr, matioCpp::VariableType variableType, matioCpp::ValueType valueType) const
@@ -134,6 +134,18 @@ matioCpp::Element<T> &matioCpp::Element<T>::operator=(typename matioCpp::Element
 {
     operator()() = value;
     return *this;
+}
+
+template<typename T>
+matioCpp::Span<typename matioCpp::Element<T>::element_type> matioCpp::Element<T>::toSpan()
+{
+    return matioCpp::make_span(static_cast<typename matioCpp::Element<T>::pointer>(toMatio()->data), 1);
+}
+
+template<typename T>
+const matioCpp::Span<const typename matioCpp::Element<T>::element_type> matioCpp::Element<T>::toSpan() const
+{
+    return matioCpp::make_span(static_cast<typename matioCpp::Element<T>::const_pointer>(toMatio()->data), 1);
 }
 
 template<typename T>

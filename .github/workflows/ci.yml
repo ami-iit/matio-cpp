@@ -5,8 +5,6 @@ on:
   pull_request:
   
 env:
-  # commit from vcpkg's master branch on 2020/10/06
-  vcpkg_TAG: 76a7e9248fb3c57350b559966dcaa2d52a5e4458
   Catch2_TAG: v2.11.3
 
 jobs:
@@ -16,7 +14,7 @@ jobs:
     strategy:
       matrix:
         build_type: [Release, Debug]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest]
       fail-fast: false
 
     steps:
@@ -39,15 +37,6 @@ jobs:
         for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
  
-    # Restore from cache the previously built ports. If "cache miss"
-    # then provision vcpkg, install desired ports, finally cache everything for the next run.
-    - name: Dependencies [Windows]
-      if: matrix.os == 'windows-latest'
-      uses: lukka/run-vcpkg@v6
-      with:
-        vcpkgArguments: '--triplet x64-windows matio catch2'
-        vcpkgGitCommitId: ${{ env.vcpkg_TAG }}
-
     - name: Dependencies [macOS]
       if: matrix.os == 'macOS-latest'
       run: |
@@ -58,7 +47,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install libmatio-dev valgrind
+        sudo apt-get install libmatio-dev valgrind libeigen3-dev
         
     - name: Cache Source-based Dependencies
       id: cache-source-deps
@@ -88,17 +77,6 @@ jobs:
     # CMAKE-BASED PROJECT
     # ===================
 
-    - name: Configure [Windows]
-      # Use bash also on Windows (otherwise cd, mkdir, ... do not work)
-      if: matrix.os == 'windows-latest'
-      shell: bash
-      run: |
-        mkdir -p build
-        cd build
-        cmake -A x64 -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake \
-              -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
-              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
-              -DBUILD_TESTING:BOOL=ON ..
 
     - name: Configure [Ubuntu]
       if: matrix.os == 'ubuntu-latest'
