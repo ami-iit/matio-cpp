@@ -6,7 +6,7 @@
  */
 
 //#define MATIOCPP_NO_EIGEN
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <matioCpp/matioCpp.h>
 #include <map>
 #include <set>

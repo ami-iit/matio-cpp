@@ -5,7 +5,7 @@
  * BSD-2-Clause license (https://opensource.org/licenses/BSD-2-Clause).
  */
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <matioCpp/matioCpp.h>
 
 void checkSameDimensions(matioCpp::Span<const size_t> a, matioCpp::Span<const size_t> b)
