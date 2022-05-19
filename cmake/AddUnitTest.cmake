@@ -4,7 +4,7 @@
 # BSD-2-Clause license. See the accompanying LICENSE file for details.
 
 
-find_package(Catch2 REQUIRED)
+find_package(Catch2 3.0.1 REQUIRED)
 
 find_package(VALGRIND QUIET)
 
@@ -27,12 +27,6 @@ if (FRAMEWORK_RUN_Valgrind_tests)
     separate_arguments(MEMCHECK_COMMAND_COMPLETE)
 endif()
 
-configure_file(cmake/Catch2Main.cpp.in ${CMAKE_BINARY_DIR}/Testing/Catch2Main.cpp)
-add_library(CatchTestMain ${CMAKE_BINARY_DIR}/Testing/Catch2Main.cpp)
-target_link_libraries(CatchTestMain PUBLIC Catch2::Catch2)
-
-
-
 function(add_unit_test)
 
     set(options )
@@ -54,7 +48,7 @@ function(add_unit_test)
     add_executable(${targetname}
         "${unit_test_files}")
 
-    target_link_libraries(${targetname} PRIVATE CatchTestMain ${${prefix}_LINKS})
+    target_link_libraries(${targetname} PRIVATE Catch2::Catch2WithMain ${${prefix}_LINKS})
     target_compile_definitions(${targetname} PRIVATE CATCH_CONFIG_FAST_COMPILE CATCH_CONFIG_DISABLE_MATCHERS)
 
     add_test(NAME ${targetname} COMMAND ${targetname})

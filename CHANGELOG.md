@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unrealeased]
+- Moving from Catch2 v2 to v3 [#56](https://github.com/ami-iit/matio-cpp/pull/56)
+
+## [0.2.0] - 2022-04-28
 - Using a custom variable in InstallBasicPackageFile to backup the module path: [#47](https://github.com/ami-iit/matio-cpp/pull/47).
 - Added more checks before creating a file: [#49](https://github.com/ami-iit/matio-cpp/pull/49).
 - Added reflection and conversions from common types [#55](https://github.com/ami-iit/matio-cpp/pull/55)

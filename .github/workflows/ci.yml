@@ -3,9 +3,9 @@ name: C++ CI Workflow
 on:
   push:
   pull_request:
-  
+
 env:
-  Catch2_TAG: v2.11.3
+  Catch2_TAG: v3.0.1
 
 jobs:
   build:
@@ -36,30 +36,30 @@ jobs:
       run: |
         for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
- 
+
     - name: Dependencies [macOS]
       if: matrix.os == 'macOS-latest'
       run: |
         brew update
-        brew install libmatio catch2
+        brew install libmatio
 
     - name: Dependencies [Ubuntu]
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install libmatio-dev valgrind libeigen3-dev
-        
+
     - name: Cache Source-based Dependencies
       id: cache-source-deps
       uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/install/deps
         # Including ${{ runner.temp }} is a workaround taken from https://github.com/robotology/whole-body-estimators/pull/62 to fix macos configuration failure on https://github.com/ami-iit/bipedal-locomotion-framework/pull/45
-        key: source-deps-${{ runner.os }}-${{runner.temp}}-build-type-${{ matrix.build_type }}-vcpkg-${{ env.vcpkg_TAG }}-catch2-${{ env.Catch2_TAG }}
-        
-        
-    - name: Source-based Dependencies [Ubuntu]
-      if: steps.cache-source-deps.outputs.cache-hit != 'true' && matrix.os == 'ubuntu-latest'
+        key: source-deps-${{ runner.os }}-${{runner.temp}}-build-type-${{ matrix.build_type }}-catch2-${{ env.Catch2_TAG }}
+
+
+    - name: Catch2 installation
+      if: steps.cache-source-deps.outputs.cache-hit != 'true'
       shell: bash
       run: |
         # Catch2
@@ -110,4 +110,4 @@ jobs:
       run: |
         cd build
         ctest --output-on-failure -C ${{ matrix.build_type }} .
-        
+
