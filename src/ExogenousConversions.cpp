@@ -28,7 +28,7 @@ matioCpp::CellArray matioCpp::make_variable(const std::string& name, const std::
     matioCpp::CellArray stringsArray(name, {input.size(), 1});
     for (size_t i = 0; i < input.size(); ++i)
     {
-        stringsArray.setElement(i, make_variable(input[i], input[i]));
+        stringsArray.setElement(i, make_variable("unused_name_" + std::to_string(i), input[i]));
     }
 
     return stringsArray;

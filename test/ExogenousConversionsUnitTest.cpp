@@ -167,7 +167,7 @@ TEST_CASE("Exogenous conversions")
         auto matioChar = matioCpp::make_variable("char", 'f');
         REQUIRE(matioChar == 'f');
 
-        std::vector<std::string> stringVector = {"Huey", "Dewey", "Louie"};
+        std::vector<std::string> stringVector = {"Huey", "Dewey", "Louie", ""};
         auto matioCell = matioCpp::make_variable("stringVector", stringVector);
         for (size_t i = 0; i < stringVector.size(); ++i)
         {
