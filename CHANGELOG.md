@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unrealeased]
 - Moving from Catch2 v2 to v3 [#56](https://github.com/ami-iit/matio-cpp/pull/56)
 - Allowing input strings in vectors to be empty [#57](https://github.com/ami-iit/matio-cpp/pull/57)
+- Switch to use upstream repo of [`garbageslam/visit_struct`](https://github.com/garbageslam/visit_struct) instead of fork [`NikolausDemmel/visit_struct`](https://github.com/NikolausDemmel/visit_struct) [#58](https://github.com/ami-iit/matio-cpp/pull/58)
 
 ## [0.2.0] - 2022-04-28
 - Using a custom variable in InstallBasicPackageFile to backup the module path: [#47](https://github.com/ami-iit/matio-cpp/pull/47).
