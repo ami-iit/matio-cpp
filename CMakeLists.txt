@@ -105,7 +105,7 @@ else()
     include(FetchContent)
     FetchContent_Declare(visit_struct
       GIT_REPOSITORY https://github.com/ami-iit/visit_struct
-      GIT_TAG 969fc563477906432a9fcc91addf2c1e13c56f4c)
+      GIT_TAG 47bc6a3aa7588a1f4db39579a0b6812569a76b56)
 
     FetchContent_GetProperties(visit_struct)
     if(NOT visit_struct_POPULATED)
