@@ -86,9 +86,9 @@ Read a ``.mat`` file
 matioCpp::File input("input.mat");
 // You can check if input is open with the isOpen() method
 matioCpp::CellArray cellArray = input.read("cell_array").asCellArray(); //Read a Cell Array named "cell_array"
-matioCpp::Element<double> doubleVar = cellMatrix({1,2,3}).asElement<double>(); //Get the element in the cell array at position (1,2,3) (0-based), casting it as a double Element
+matioCpp::Element<double> doubleVar = cellArray({1,2,3}).asElement<double>(); //Get the element in the cell array at position (1,2,3) (0-based), casting it as a double Element
 doubleVar = 3.14; //Set the doubleVar to a new value
-assert(cellMatrix({1,2,3}).asElement<double>()() == 3.14); //Also the original cell array is modified, but not in the file.
+assert(cellArray({1,2,3}).asElement<double>()() == 3.14); //Also the original cell array is modified, but not in the file.
 
 ```
 
