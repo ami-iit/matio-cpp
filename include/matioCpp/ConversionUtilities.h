@@ -71,9 +71,12 @@ template <> struct get_type<Logical>      { using type = uint8_t;     static inl
 
 // As explained in https://learn.microsoft.com/it-it/cpp/cpp/data-type-ranges?view=msvc-170 
 // and in https://www.ibm.com/docs/en/ibm-mq/8.0?topic=platforms-standard-data-types
-// In windows 64 bit a long has the same numbet of bytes of an int (4 byte = 32 bit)
+// In windows 64 bit a long has the same number of bytes of an int (4 byte = 32 bit)
+// In mcOS 64 bit a long has 8 bytes (8 byte = 64 bit)
 #ifdef _WIN32
 template <> struct get_type<long>         { using type = long;        static inline ValueType valueType(){return ValueType::INT32;};    static inline std::string toString() { return "long"; }; };
+#elif defined(__APPLE__)
+template <> struct get_type<long>         { using type = long;        static inline ValueType valueType(){return ValueType::INT64;};    static inline std::string toString() { return "long"; }; };
 #endif
 
 /**
