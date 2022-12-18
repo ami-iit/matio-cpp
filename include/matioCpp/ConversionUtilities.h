@@ -69,6 +69,13 @@ template <> struct get_type<char16_t>     { using type = char16_t;    static inl
 template <> struct get_type<char32_t>     { using type = char32_t;    static inline ValueType valueType(){return ValueType::UTF32;};    static inline std::string toString(){return "char32_t"          ;};};
 template <> struct get_type<Logical>      { using type = uint8_t;     static inline ValueType valueType(){return ValueType::LOGICAL;};  static inline std::string toString(){return "matioCpp::Logical" ;};};
 
+// As explained in https://learn.microsoft.com/it-it/cpp/cpp/data-type-ranges?view=msvc-170 
+// and in https://www.ibm.com/docs/en/ibm-mq/8.0?topic=platforms-standard-data-types
+// In windows 64 bit a long has the same numbet of bytes of an int (4 byte = 32 bit)
+#ifdef _WIN32
+template <> struct get_type<long>         { using type = long;        static inline ValueType valueType(){return ValueType::INT32;};    static inline std::string toString() { return "long"; }; };
+#endif
+
 /**
  * @brief Utility meta-function to check if a type is compatible with a std::string
  */
