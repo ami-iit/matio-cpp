@@ -44,13 +44,14 @@ struct testStruct
 {
     int i{1};
     double d{2.0};
+    long l{3};
     std::string s{"test"};
     std::vector<double> stdVec = {1.0, 2.0, 3.0, 4.0, 5.0};
     int* notSupported = nullptr;
     std::vector<std::string> stringVector = {"Huey", "Dewey", "Louie"};
     std::vector<bool> vecOfBool = {true, false, true};
 };
-VISITABLE_STRUCT(testStruct, i, d, s, stdVec, vecOfBool, stringVector);
+VISITABLE_STRUCT(testStruct, i, d, l, s, stdVec, vecOfBool, stringVector);
 
 
 struct nestedStruct
@@ -192,6 +193,7 @@ TEST_CASE("Exogenous conversions")
         matioCpp::Struct automaticStruct = matioCpp::make_variable("testStruct", s);
         REQUIRE(automaticStruct["i"].asElement<int>() == s.i);
         REQUIRE(automaticStruct["d"].asElement<double>() == s.d);
+        REQUIRE(automaticStruct["l"].asElement<long>() == s.l);
         REQUIRE(automaticStruct["s"].asString()() == s.s);
         checkSameVectors(automaticStruct["stdVec"].asVector<double>(), s.stdVec);
         checkSameVectors(automaticStruct["vecOfBool"].asVector<matioCpp::Logical>(), s.vecOfBool);
@@ -210,6 +212,7 @@ TEST_CASE("Exogenous conversions")
         checkSameVectors(s2.array, automaticNestedStruct["array"].asVector<float>());
         REQUIRE(automaticNestedStruct["s"].asStruct()["i"].asElement<int>() == s2.s.i);
         REQUIRE(automaticNestedStruct["s"].asStruct()["d"].asElement<double>() == s2.s.d);
+        REQUIRE(automaticNestedStruct["s"].asStruct()["l"].asElement<long>() == s2.s.l);
         REQUIRE(automaticNestedStruct["s"].asStruct()["s"].asString()() == s2.s.s);
         checkSameVectors(automaticNestedStruct["s"].asStruct()["stdVec"].asVector<double>(), s2.s.stdVec);
         checkSameVectors(automaticNestedStruct["s"].asStruct()["vecOfBool"].asVector<matioCpp::Logical>(), s2.s.vecOfBool);
