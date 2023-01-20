@@ -65,7 +65,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
 }
 
 template<typename T>
-matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name, const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &dimensions)
+matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name, const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &dimensions)
 {
     matioCpp::MultiDimensionalArray<T>::index_type totalElements = 1;
     for (matioCpp::MultiDimensionalArray<T>::index_type dim : dimensions)
@@ -88,7 +88,7 @@ matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &nam
 }
 
 template<typename T>
-matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name, const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &dimensions, matioCpp::MultiDimensionalArray<T>::const_pointer inputVector)
+matioCpp::MultiDimensionalArray<T>::MultiDimensionalArray(const std::string &name, const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &dimensions, matioCpp::MultiDimensionalArray<T>::const_pointer inputVector)
 {
     for (matioCpp::MultiDimensionalArray<T>::index_type dim : dimensions)
     {
@@ -316,13 +316,13 @@ typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimension
 }
 
 template<typename T>
-typename matioCpp::MultiDimensionalArray<T>::reference matioCpp::MultiDimensionalArray<T>::operator[](const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &el)
+typename matioCpp::MultiDimensionalArray<T>::reference matioCpp::MultiDimensionalArray<T>::operator[](const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &el)
 {
     return data()[rawIndexFromIndices(el)];
 }
 
 template<typename T>
-typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator[](const std::vector<matioCpp::MultiDimensionalArray<T>::index_type> &el) const
+typename matioCpp::MultiDimensionalArray<T>::value_type matioCpp::MultiDimensionalArray<T>::operator[](const std::vector<typename matioCpp::MultiDimensionalArray<T>::index_type> &el) const
 {
     return data()[rawIndexFromIndices(el)];
 }

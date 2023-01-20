@@ -23,9 +23,8 @@ jobs:
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
-        mamba-version: "*"
-        channels: conda-forge,defaults
-        channel-priority: true
+        miniforge-variant: Mambaforge
+        miniforge-version: latest
 
     - name: Dependencies
       shell: bash -l {0}
@@ -49,7 +48,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -G"Visual Studio 16 2019" -DBUILD_TESTING:BOOL=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
+        cmake -G"Visual Studio 16 2019" -DBUILD_TESTING:BOOL=ON -DDISABLE_PERMISSIVE:BOOL=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
 
     - name: Build
       shell: bash -l {0}

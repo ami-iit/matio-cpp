@@ -31,6 +31,9 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # installation directories.
 if(MSVC)
     set(CMAKE_DEBUG_POSTFIX "d")
+
+    option(DISABLE_PERMISSIVE "Add the /permissive- flag to MSVC" OFF)
+    mark_as_advanced(DISABLE_PERMISSIVE)
 endif()
 
 # Build position independent code.
@@ -188,6 +191,12 @@ if (Eigen3_FOUND)
 endif()
 
 target_compile_features(matioCpp PUBLIC cxx_std_14)
+if(DISABLE_PERMISSIVE)
+    message(STATUS "Adding /permissive- flag.")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /permissive-")
+    add_compile_options(/permissive-)
+endif()
 
 set_target_properties(matioCpp PROPERTIES
   OUTPUT_NAME matioCpp
