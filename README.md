@@ -18,7 +18,7 @@ It can be used for reading and writing binary MATLAB `.mat` files from C++, with
 The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``matio``](https://github.com/tbeu/matio). While we suggest to follow the build instructions provided in the [``matio`` home page](https://github.com/tbeu/matio), it can also installed from common package managers:
 - Linux: ``sudo apt install libmatio-dev``
 - macOS: ``brew install libmatio``
-- Windows, via [``vcpkg``](https://github.com/microsoft/vcpkg): ``vcpkg install --triplet x64-windows matio``
+- Windows (but also Linux and macOS), via [``conda``](https://docs.conda.io/en/latest/).
 
 [`Eigen`](https://eigen.tuxfamily.org/index.php) is an optional dependency. If available, some conversions are defined.
 
@@ -175,6 +175,8 @@ testStruct s;
 matioCpp::Struct automaticStruct = matioCpp::make_variable("testStruct", s);
 ```
 
+# Example
+You can check the example in the ``example`` folder on how to include and use ``matioCpp``.
 
 # Known Limitations
  - Complex arrays are not yet supported

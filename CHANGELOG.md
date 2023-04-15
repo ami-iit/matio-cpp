@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+- Added example. It is tested in CI. [#67](https://github.com/ami-iit/matio-cpp/pull/67)
 
 ## [0.2.2] - 2023-02-24
 - Switch to use upstream repo of [`garbageslam/visit_struct`](https://github.com/garbageslam/visit_struct) instead of fork [`NikolausDemmel/visit_struct`](https://github.com/NikolausDemmel/visit_struct) [#58](https://github.com/ami-iit/matio-cpp/pull/58)

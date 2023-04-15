@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v3
 
     # Print environment variables to simplify development and debugging
     - name: Environment Variables
@@ -41,7 +41,7 @@ jobs:
       if: matrix.os == 'macOS-latest'
       run: |
         brew update
-        brew install libmatio
+        brew install libmatio eigen
 
     - name: Dependencies [Ubuntu]
       if: matrix.os == 'ubuntu-latest'
@@ -51,7 +51,7 @@ jobs:
 
     - name: Cache Source-based Dependencies
       id: cache-source-deps
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/install/deps
         # Including ${{ runner.temp }} is a workaround taken from https://github.com/robotology/whole-body-estimators/pull/62 to fix macos configuration failure on https://github.com/ami-iit/bipedal-locomotion-framework/pull/45
@@ -103,11 +103,21 @@ jobs:
       shell: bash
       run: |
         cd build
-        cmake --build . --config ${{ matrix.build_type }}
+        cmake --build . --config ${{ matrix.build_type }} --target install
 
     - name: Test
       shell: bash
       run: |
         cd build
         ctest --output-on-failure -C ${{ matrix.build_type }} .
+
+    - name: Test example
+      shell: bash
+      run: |
+        cd example
+        mkdir build
+        cd build
+        cmake -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/install/deps;${GITHUB_WORKSPACE}/install" ..
+        cmake --build . --config ${{ matrix.build_type }}
+        ./matiocpp_example
 
