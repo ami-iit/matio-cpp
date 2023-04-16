@@ -219,6 +219,9 @@ install(TARGETS    matioCpp
 install(FILES "cmake/FindMATIO.cmake" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/matioCpp/cmake")
 file(COPY "cmake/FindMATIO.cmake" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/share/matioCpp/cmake")
 
+install(FILES "cmake/Findvisit_struct.cmake" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/matioCpp/cmake")
+file(COPY "cmake/Findvisit_struct.cmake" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/share/matioCpp/cmake")
+
 include(InstallBasicPackageFiles)
 
 install_basic_package_files(${PROJECT_NAME}
