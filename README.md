@@ -189,3 +189,6 @@ You can check the example in the ``example`` folder on how to include and use ``
 - [``matiopp``](https://github.com/bmc-labs/matiopp)
 - [``matiocpp``](https://github.com/joka90/matiocpp)
 - [``matiocpp``(2)](https://github.com/ldobinson/matiocpp)
+
+## Maintainers
+* Stefano Dafarra ([@S-Dafarra](https://github.com/S-Dafarra))
