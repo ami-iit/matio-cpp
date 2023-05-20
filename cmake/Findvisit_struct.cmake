@@ -16,9 +16,9 @@ find_package(visit_struct CONFIG QUIET)
 if(NOT visit_struct_FOUND)
   find_path(VISIT_STRUCT_INCLUDE_DIR visit_struct/visit_struct_intrusive.hpp)
   mark_as_advanced(VISIT_STRUCT_INCLUDE_DIR)
-  
+
   if(VISIT_STRUCT_INCLUDE_DIR)
-    set(visit_struct_FOUND)
+    set(visit_struct_FOUND TRUE)
   endif()
 endif()
 
