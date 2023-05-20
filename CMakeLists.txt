@@ -101,7 +101,7 @@ endif()
 # Fetching visit_struct
 include(CMakeDependentOption)
 find_package(visit_struct QUIET)
-cmake_dependent_option(USE_SYSTEM_visit_struct "Use system visit_struct" ON "visit_struct_FOUND" OFF)
+option(USE_SYSTEM_visit_struct "Use system visit_struct" ${visit_struct_FOUND})
 if(USE_SYSTEM_visit_struct)
      find_package(visit_struct REQUIRED)
 else()
