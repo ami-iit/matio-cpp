@@ -205,6 +205,11 @@ TEST_CASE("Read")
     REQUIRE_FALSE(logicalVector(1));
     REQUIRE(logicalVector(2));
     REQUIRE_FALSE(logicalVector(3));
+
+
+    matioCpp::Variable notExisting = input.read("not_existing");
+    REQUIRE_FALSE(notExisting.isValid());
+
 }
 
 TEST_CASE("Create and delete file")

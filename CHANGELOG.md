@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 - Added example. It is tested in CI. [#67](https://github.com/ami-iit/matio-cpp/pull/67)
+- Clarify how to install matio with conda-forge [#68](https://github.com/ami-iit/matio-cpp/pull/68)
+- Support finding visit_struct in the system also if it is installed without any CMake config file [#70](https://github.com/ami-iit/matio-cpp/pull/70)
+- Added error message when variable does not exist in file [#74](https://github.com/ami-iit/matio-cpp/pull/74)
 
 ## [0.2.2] - 2023-02-24
 - Switch to use upstream repo of [`garbageslam/visit_struct`](https://github.com/garbageslam/visit_struct) instead of fork [`NikolausDemmel/visit_struct`](https://github.com/NikolausDemmel/visit_struct) [#58](https://github.com/ami-iit/matio-cpp/pull/58)
