@@ -323,6 +323,11 @@ matioCpp::Variable matioCpp::File::read(const std::string &name) const
 
     matioCpp::Variable output((matioCpp::SharedMatvar(matVar)));
 
+    if (!output.isValid())
+    {
+        std::cerr << "[ERROR][matioCpp::File::read] Failed to read variable " << name << ". The output is not valid." <<std::endl;
+    }
+
     return output;
 }
 
