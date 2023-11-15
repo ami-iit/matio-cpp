@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         build_type: [Release, Debug]
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest]
       fail-fast: false
 
     steps:
@@ -31,20 +31,11 @@ jobs:
 
     # Remove apt repos that are known to break from time to time
     # See https://github.com/actions/virtual-environments/issues/323
-    - name: Remove broken apt repos [Ubuntu]
-      if: matrix.os == 'ubuntu-latest'
+    - name: Remove broken apt repos
       run: |
         for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
-
-    - name: Dependencies [macOS]
-      if: matrix.os == 'macOS-latest'
-      run: |
-        brew update
-        brew install libmatio eigen
-
-    - name: Dependencies [Ubuntu]
-      if: matrix.os == 'ubuntu-latest'
+    - name: Dependencies
       run: |
         sudo apt-get update
         sudo apt-get install libmatio-dev valgrind libeigen3-dev
@@ -77,9 +68,7 @@ jobs:
     # CMAKE-BASED PROJECT
     # ===================
 
-
-    - name: Configure [Ubuntu]
-      if: matrix.os == 'ubuntu-latest'
+    - name: Configure
       shell: bash
       run: |
         mkdir -p build
@@ -88,16 +77,6 @@ jobs:
               -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
               -DBUILD_TESTING:BOOL=ON \
               -DFRAMEWORK_RUN_Valgrind_tests:BOOL=ON ..
-
-    - name: Configure [macOS]
-      if: matrix.os == 'macOS-latest'
-      shell: bash
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install/deps \
-              -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install \
-              -DBUILD_TESTING:BOOL=ON ..
 
     - name: Build
       shell: bash

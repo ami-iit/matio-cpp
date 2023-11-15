@@ -17,8 +17,7 @@ It can be used for reading and writing binary MATLAB `.mat` files from C++, with
 
 The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``matio``](https://github.com/tbeu/matio). While we suggest to follow the build instructions provided in the [``matio`` home page](https://github.com/tbeu/matio), it can also installed from common package managers:
 - Linux: ``sudo apt install libmatio-dev``
-- macOS: ``brew install libmatio``
-- Windows (but also Linux and macOS), via [``conda-forge``](https://conda-forge.org/): ``mamba install -c conda-forge libmatio``
+- Linux, macOS, Windows, via [``conda-forge``](https://conda-forge.org/): ``mamba install -c conda-forge libmatio``
 
 [`Eigen`](https://eigen.tuxfamily.org/index.php) is an optional dependency. If available, some conversions are defined.
 
