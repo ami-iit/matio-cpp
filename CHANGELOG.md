@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+
+## [0.2.4] - 2024-04-09
 - Remove use of brew from CI [#76](https://github.com/ami-iit/matio-cpp/pull/76)
-- 
+- InstallBasicPackageFiles: Fix bug of OVERRIDE_MODULE_PATH that corrupt CMAKE_MODULE_PATH values set by blf transitive dependencies and fix OVERRIDE_MODULE_PATH with CMake 3.29.1 [#79](https://github.com/ami-iit/matio-cpp/pull/79)
+
 ## [0.2.3] - 2023-11-15
 - Added example. It is tested in CI. [#67](https://github.com/ami-iit/matio-cpp/pull/67)
 - Clarify how to install matio with conda-forge [#68](https://github.com/ami-iit/matio-cpp/pull/68)
