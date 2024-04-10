@@ -3,6 +3,7 @@ name: C++ CI Workflow
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 env:
   Catch2_TAG: v3.0.1
