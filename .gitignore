@@ -9,3 +9,8 @@ example/build/*
 # Qtcreator
 *.user*
 *.autosave
+
+# Visual studio
+.vs/*
+.vscode/*
+CMakeSettings.json
