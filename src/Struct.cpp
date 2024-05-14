@@ -47,16 +47,19 @@ matioCpp::Struct::Struct(const std::string &name)
 matioCpp::Struct::Struct(const std::string &name, const std::vector<Variable> &elements)
 {
     size_t emptyDimensions[] = {1, 1};
-    std::vector<matvar_t*> vectorOfPointers(elements.size() + 1, nullptr); //The vector of pointers has to be null terminated
+    std::vector<matvar_t*> vectorOfPointers;
     for (size_t i = 0; i < elements.size(); ++i)
     {
-        if (!elements[i].isValid())
+        if (elements[i].isValid())
         {
-            std::cerr << "[ERROR][matioCpp::Struct::Struct] The element at index "<< i << " (0-based) is not valid." << std::endl;
-            assert(false);
+            vectorOfPointers.push_back(matioCpp::MatvarHandler::GetMatvarDuplicate(elements[i].toMatio()));
         }
-        vectorOfPointers[i] = matioCpp::MatvarHandler::GetMatvarDuplicate(elements[i].toMatio());
+        else
+        {
+            std::cerr << "[ERROR][matioCpp::Struct::Struct] The element of " << name << " at index " << i << " (0-based) is not valid. It will be skipped." << std::endl;
+        }
     }
+    vectorOfPointers.push_back(nullptr);  //The vector of pointers has to be null terminated
 
     initializeVariable(name,
                        VariableType::Struct,
