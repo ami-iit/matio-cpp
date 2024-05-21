@@ -291,7 +291,7 @@ std::vector<std::string> matioCpp::File::variableNames() const
     if (isOpen())
     {
         size_t list_size;
-        char** list = Mat_GetDir(m_pimpl->mat_ptr, &list_size);
+        char* const* list = Mat_GetDir(m_pimpl->mat_ptr, &list_size);
 
         outputNames.resize(list_size);
         for (size_t i = 0; i < list_size; ++i)
