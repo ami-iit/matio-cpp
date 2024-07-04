@@ -544,6 +544,32 @@ bool matioCpp::Variable::isValid() const
     return m_handler->get() && checkCompatibility(m_handler->get(), m_handler->variableType(), m_handler->valueType());
 }
 
+matioCpp::Variable matioCpp::Variable::operator[](const std::string& el)
+{
+    if (variableType() != matioCpp::VariableType::Struct)
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::operator[]] The operator[](string) can be used only with structs." << std::endl;
+        assert(false);
+        return matioCpp::Variable();
+    }
+    size_t index = getStructFieldIndex(el);
+    assert(index < getStructNumberOfFields() && "The specified field does not exist.");
+    return getStructField(index);
+}
+
+const matioCpp::Variable matioCpp::Variable::operator[](const std::string& el) const
+{
+    if (variableType() != matioCpp::VariableType::Struct)
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::operator[]] The operator[](string) can be used only with structs." << std::endl;
+        assert(false);
+        return matioCpp::Variable();
+    }
+    size_t index = getStructFieldIndex(el);
+    assert(index < getStructNumberOfFields() && "The specified field does not exist.");
+    return getStructField(index);
+}
+
 matioCpp::CellArray matioCpp::Variable::asCellArray()
 {
     return matioCpp::CellArray(*m_handler);

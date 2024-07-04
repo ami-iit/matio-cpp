@@ -329,6 +329,26 @@ public:
     bool isValid() const;
 
     /**
+     * @brief Access field at a specific index.
+     * @param el The name of the field to be accessed.
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     * @note This works only if the variable is a struct.
+     * @note If the field is not found, the output variable is not valid.
+     */
+    matioCpp::Variable operator[](const std::string& el);
+
+    /**
+     * @brief Access field at a specific index.
+     * @param el The name of the field to be accessed.
+     * @warning Each element of el has to be strictly smaller than the corresponding dimension.
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     * @note This works only if the variable is a struct.
+     * @note If the field is not found, the output variable is not valid.
+     */
+    const matioCpp::Variable operator[](const std::string& el) const;
+
+    /**
      * @brief Cast the variable as a Element.
      *
      * The implementation is in Element.tpp
