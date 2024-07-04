@@ -561,3 +561,9 @@ TEST_CASE("Write version 4")
     REQUIRE(boolVector(2));
     REQUIRE_FALSE(boolVector(3));
 }
+
+TEST_CASE("Open not existing file")
+{
+    matioCpp::File file;
+    REQUIRE_FALSE(file.open("notExisting.mat"));
+}
