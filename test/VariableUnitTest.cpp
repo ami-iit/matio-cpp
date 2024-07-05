@@ -359,7 +359,7 @@ TEST_CASE("Conversions")
 
 TEST_CASE("operator[](string)")
 {
-        std::vector<size_t> dimensions = {1, 1};
+    std::vector<size_t> dimensions = {1, 1};
     std::vector<matvar_t*> pointers;
     pointers.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
     pointers.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
