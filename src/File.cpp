@@ -124,6 +124,13 @@ void matioCpp::File::close()
 
 bool matioCpp::File::open(const std::string &name, matioCpp::FileMode mode)
 {
+    struct stat info;
+
+    if (stat(name.c_str(), &info) != 0)
+    {
+        std::cerr << "[ERROR][matioCpp::File::open] The file " << name << " does not exists." << std::endl;
+        return false;
+    }
     int matio_mode = mode == matioCpp::FileMode::ReadOnly ? mat_acc::MAT_ACC_RDONLY : mat_acc::MAT_ACC_RDWR;
     m_pimpl->reset(Mat_Open(name.c_str(), matio_mode), mode);
     return isOpen();

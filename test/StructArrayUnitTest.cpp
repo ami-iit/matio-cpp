@@ -357,6 +357,8 @@ TEST_CASE("Assignments and modifications")
             size_t numberOfFields = in.numberOfFields();
             REQUIRE(numberOfFields == arrayFields.size());
 
+            REQUIRE(in.getFieldIndex("notExisting") == numberOfFields);
+
             in.addField("addedField");
 
             REQUIRE(in.numberOfFields() == numberOfFields + 1);

@@ -127,9 +127,10 @@ protected:
     /**
      * @brief Get the index of the specified field in the variable, considered as a struct
      * @param field The field to search
-     * @return The index of the field, the output of getStructNumberOfFields() if not found.
+     * @param index The index of the field
+     * @return True if successfull, false otherwise.
      */
-    size_t getStructFieldIndex(const std::string& field) const;
+    bool getStructFieldIndex(const std::string& field, size_t& index) const;
 
     /**
      * @brief Set the field of the struct at the specified position
@@ -327,6 +328,26 @@ public:
      * @return true if valid.
      */
     bool isValid() const;
+
+    /**
+     * @brief Access field with specific name.
+     * @param el The name of the field to be accessed.
+     * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
+     * but the variable cannot be resized and the name cannot change.
+     * @note This works only if the variable is a struct.
+     * @note If the field is not found, the output variable is not valid.
+     */
+    matioCpp::Variable operator[](const std::string& el);
+
+    /**
+     * @brief Access field with specific name.
+     * @param el The name of the field to be accessed.
+     * @warning Each element of el has to be strictly smaller than the corresponding dimension.
+     * @return A const Variable with a weak ownership to the underlying mat variable.
+     * @note This works only if the variable is a struct.
+     * @note If the field is not found, the output variable is not valid.
+     */
+    const matioCpp::Variable operator[](const std::string& el) const;
 
     /**
      * @brief Cast the variable as a Element.

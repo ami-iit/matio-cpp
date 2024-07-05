@@ -357,5 +357,26 @@ TEST_CASE("Conversions")
     }
 }
 
+TEST_CASE("operator[](string)")
+{
+    std::vector<size_t> dimensions = {1, 1};
+    std::vector<matvar_t*> pointers;
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::Vector<double>("vector").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::Element<int>("element").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::MultiDimensionalArray<double>("array").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::String("name", "content").toMatio(), 1));
+    pointers.emplace_back(Mat_VarDuplicate(matioCpp::Struct("otherStruct", { matioCpp::String("name", "anotherContent") }).toMatio(), 1));
+    pointers.emplace_back(nullptr);
 
+    matvar_t* matioVar = Mat_VarCreate("test", matio_classes::MAT_C_STRUCT, matio_types::MAT_T_STRUCT, 2, dimensions.data(), pointers.data(), 0);
+    REQUIRE(matioVar);
 
+    matioCpp::Variable sharedVar((matioCpp::SharedMatvar(matioVar)));
+
+    REQUIRE(sharedVar["name"].asString()() == "content");
+
+    const matioCpp::Variable& constRef = sharedVar;
+    REQUIRE(constRef["name"].asString()() == "content");
+
+    REQUIRE(sharedVar["otherStruct"]["name"].asString()() == "anotherContent");
+}
