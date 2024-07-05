@@ -127,9 +127,10 @@ protected:
     /**
      * @brief Get the index of the specified field in the variable, considered as a struct
      * @param field The field to search
-     * @return The index of the field, the output of getStructNumberOfFields() if not found.
+     * @param index The index of the field
+     * @return True if successfull, false otherwise.
      */
-    size_t getStructFieldIndex(const std::string& field) const;
+    bool getStructFieldIndex(const std::string& field, size_t& index) const;
 
     /**
      * @brief Set the field of the struct at the specified position

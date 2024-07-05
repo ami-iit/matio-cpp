@@ -232,15 +232,16 @@ char * const * matioCpp::Variable::getStructFields() const
     return Mat_VarGetStructFieldnames(m_handler->get());
 }
 
-size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
+bool matioCpp::Variable::getStructFieldIndex(const std::string& field, size_t& index) const
 {
     size_t i = 0;
     size_t numberOfFields = getStructNumberOfFields();
     char * const * fields = getStructFields();
+    index = numberOfFields;
 
     if (!fields)
     {
-        return numberOfFields;
+        return false;
     }
 
     while (i < numberOfFields && (strcmp(fields[i], field.c_str()) != 0))
@@ -248,7 +249,9 @@ size_t matioCpp::Variable::getStructFieldIndex(const std::string &field) const
         ++i;
     }
 
-    return i;
+    index = i;
+
+    return index < numberOfFields;
 }
 
 bool matioCpp::Variable::setStructField(size_t index, const matioCpp::Variable &newValue, size_t structPositionInArray)
@@ -312,13 +315,14 @@ bool matioCpp::Variable::setStructField(const std::string& field, const matioCpp
         return false;
     }
 
-    size_t fieldindex = getStructFieldIndex(field);
+    size_t fieldindex;
 
-    if ((fieldindex == getStructNumberOfFields()) && !((getArrayNumberOfElements() == 1) && addStructField(field)))
+    if (!getStructFieldIndex(field, fieldindex) && !((getArrayNumberOfElements() == 1) && addStructField(field)))
     {
         //This is the case when the field has not been found and, either there are more than one elements (i.e. it is part of an array), or there was an error in adding the field
         return false;
     }
+    //If it was not found, but the field has been added, the fieldindex is the last one
 
     return setStructField(fieldindex, newValue, structPositionInArray);
 }
@@ -552,8 +556,13 @@ matioCpp::Variable matioCpp::Variable::operator[](const std::string& el)
         assert(false);
         return matioCpp::Variable();
     }
-    size_t index = getStructFieldIndex(el);
-    assert(index < getStructNumberOfFields() && "The specified field does not exist.");
+    size_t index;
+    if (!getStructFieldIndex(el, index))
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::operator[]] The field " << el << " does not exist." << std::endl;
+        assert(false);
+        return matioCpp::Variable();
+    }
     return getStructField(index);
 }
 
@@ -565,8 +574,13 @@ const matioCpp::Variable matioCpp::Variable::operator[](const std::string& el) c
         assert(false);
         return matioCpp::Variable();
     }
-    size_t index = getStructFieldIndex(el);
-    assert(index < getStructNumberOfFields() && "The specified field does not exist.");
+    size_t index;
+    if (!getStructFieldIndex(el, index))
+    {
+        std::cerr << "[ERROR][matioCpp::Variable::operator[]] The field " << el << " does not exist." << std::endl;
+        assert(false);
+        return matioCpp::Variable();
+    }
     return getStructField(index);
 }
 

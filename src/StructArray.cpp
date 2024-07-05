@@ -371,12 +371,15 @@ void matioCpp::StructArray::clear()
 
 bool matioCpp::StructArray::isFieldExisting(const std::string &field) const
 {
-    return getStructFieldIndex(field) < numberOfFields();
+    size_t index;
+    return getStructFieldIndex(field, index);
 }
 
 size_t matioCpp::StructArray::getFieldIndex(const std::string &field) const
 {
-    return getStructFieldIndex(field);
+    size_t index;
+    getStructFieldIndex(field, index);
+    return index;
 }
 
 bool matioCpp::StructArray::addField(const std::string &newField)
