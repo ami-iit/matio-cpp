@@ -329,7 +329,7 @@ public:
     bool isValid() const;
 
     /**
-     * @brief Access field at a specific index.
+     * @brief Access field with specific name.
      * @param el The name of the field to be accessed.
      * @return A Variable with a weak ownership to the underlying mat variable. This means that the data can be changed,
      * but the variable cannot be resized and the name cannot change.
@@ -339,7 +339,7 @@ public:
     matioCpp::Variable operator[](const std::string& el);
 
     /**
-     * @brief Access field at a specific index.
+     * @brief Access field with specific name.
      * @param el The name of the field to be accessed.
      * @warning Each element of el has to be strictly smaller than the corresponding dimension.
      * @return A const Variable with a weak ownership to the underlying mat variable.
