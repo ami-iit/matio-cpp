@@ -165,8 +165,8 @@ matioCpp::MultiDimensionalArray<float> matioCppMatrix2("matrix", { 2, 2, 3 }, te
 
 /*
 So we have a tensor of the type
-| 1  3 | | 5 6 | |  9 11 |
-| 2  4 | | 7 8 | | 10 12 |
+| 1  3 | | 5 7 | |  9 11 |
+| 2  4 | | 6 8 | | 10 12 |
 */
 
 Eigen::MatrixXf slice1 = matioCpp::to_eigen(matioCppMatrix2, { -1, -1, 0 }; //Equivalent to the Matlab operation matioCppMatrix2(:,:,1)
@@ -179,7 +179,7 @@ Obtain
 Eigen::MatrixXf slice2 = matioCpp::to_eigen(matioCppMatrix2, { 1, -1, -1 }; //Equivalent to the Matlab operation matioCppMatrix2(2,:,:)
 /*
 Obtain
-| 2 7 10|
+| 2 6 10|
 | 4 8 12|
 */
 
