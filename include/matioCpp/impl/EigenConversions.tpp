@@ -24,6 +24,8 @@ namespace matioCpp
     template <typename type>
     SlicingInfo computeSlicingInfo(const matioCpp::MultiDimensionalArray<type>& input, const std::vector<int>& slice)
     {
+        std::string errorPrefix = "[ERROR][matioCpp::to_eigen] ";
+
         using index_type = typename matioCpp::MultiDimensionalArray<type>::index_type;
         SlicingInfo info;
 
@@ -31,7 +33,7 @@ namespace matioCpp
 
         if (slice.size() != dimensions.size())
         {
-            std::cerr << "The number of slices must be equal to the number of dimensions of the input MultiDimensionalArray" << std::endl;
+            std::cerr << errorPrefix << "The number of slices must be equal to the number of dimensions of the input MultiDimensionalArray" << std::endl;
             assert(false);
             return info;
         }
@@ -45,7 +47,7 @@ namespace matioCpp
             {
                 if (slice[i] >= dimensions(i))
                 {
-                    std::cerr << "The slice is larger than the dimension of the input MultiDimensionalArray" << std::endl;
+                    std::cerr << errorPrefix << "The slice is larger than the dimension of the input MultiDimensionalArray" << std::endl;
                     assert(false);
                     return SlicingInfo();
                 }
@@ -65,7 +67,7 @@ namespace matioCpp
                 }
                 else
                 {
-                    std::cerr << "Only at most two free dimensions are allowed" << std::endl;
+                    std::cerr << errorPrefix << "Only at most two free dimensions are allowed" << std::endl;
                     assert(false);
                     return SlicingInfo();
                 }
