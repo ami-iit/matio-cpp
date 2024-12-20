@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  Catch2_TAG: v3.0.1
+  Catch2_TAG: v3.7.1
 
 jobs:
   build:

@@ -20,6 +20,12 @@
 namespace matioCpp
 {
 
+template <typename type>
+using EigenMapWithStride = Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>>;
+
+template <typename type>
+using ConstEigenMapWithStride = Eigen::Map<const Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>>;
+
 /**
  * @brief Conversion from a MultiDimensionalArray to an Eigen matrix
  * @param input The MultiDimensionalArray
@@ -34,7 +40,31 @@ inline Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> to_eigen(
  * @return A const map from the internal data of the MultiDimensionalArray
  */
 template <typename type>
-inline const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> to_eigen(const MultiDimensionalArray<type>& input);
+inline Eigen::Map<const Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> to_eigen(const MultiDimensionalArray<type>& input);
+
+/**
+ * @brief Conversion from a MultiDimensionalArray to an Eigen matrix
+ * @param input The MultiDimensionalArray
+ * @param slice The slice to extract from the MultiDimensionalArray. Use a negative value to extract the whole dimension.
+ *              If not provided, it is assumed that the input is a matrix.
+ *              At most 2 slices are allowed, one for the rows and one for the columns of the output matrix.
+ *              If only one dimension is selected, the output is a column vector.
+ * @return A map from the internal data of the MultiDimensionalArray
+ */
+template <typename type>
+inline EigenMapWithStride<type> to_eigen(MultiDimensionalArray<type>& input, const std::vector<int>& slice);
+
+/**
+ * @brief Conversion from a const MultiDimensionalArray to an Eigen matrix
+ * @param input The MultiDimensionalArray
+ * @param slice The slice to extract from the MultiDimensionalArray. Use a negative value to extract the whole dimension.
+ *              If not provided, it is assumed that the input is a matrix.
+ *              At most 2 slices are allowed, one for the rows and one for the columns of the output matrix.
+ *              If only one dimension is selected, the output is a column vector.
+ * @return A const map from the internal data of the MultiDimensionalArray
+ */
+template <typename type>
+inline ConstEigenMapWithStride<type> to_eigen(const MultiDimensionalArray<type>& input, const std::vector<int>& slice);
 
 /**
  * @brief Conversion from a Vector to an Eigen vector

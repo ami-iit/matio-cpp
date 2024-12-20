@@ -17,7 +17,7 @@ It can be used for reading and writing binary MATLAB `.mat` files from C++, with
 
 The depencies are [``CMake``](https://cmake.org/) (minimum version 3.10) and [``matio``](https://github.com/tbeu/matio). While we suggest to follow the build instructions provided in the [``matio`` home page](https://github.com/tbeu/matio), it can also installed from common package managers:
 - Linux: ``sudo apt install libmatio-dev``
-- Linux, macOS, Windows, via [``conda-forge``](https://conda-forge.org/): ``mamba install -c conda-forge libmatio``
+- Linux, macOS, Windows, via [``conda-forge``](https://conda-forge.org/): ``conda install -c conda-forge libmatio``
 
 [`Eigen`](https://eigen.tuxfamily.org/index.php) is an optional dependency. If available, some conversions are defined.
 
@@ -153,6 +153,44 @@ Eigen::Vector3i eigenVec;
 eigenVec << 2, 4, 6;                                                            
 auto toMatioEigenVec = matioCpp::make_variable("testEigen", eigenVec);          
 ```
+It is also possible to slice a ``MultiDimensionalArray`` into an Eigen matrix:
+```c++
+std::vector<float> tensor(12);
+for (size_t i = 0; i < 12; ++i)
+{
+    tensor[i] = i + 1.0;
+}
+
+matioCpp::MultiDimensionalArray<float> matioCppMatrix2("matrix", { 2, 2, 3 }, tensor.data());
+
+/*
+So we have a tensor of the type
+| 1  3 | | 5 7 | |  9 11 |
+| 2  4 | | 6 8 | | 10 12 |
+*/
+
+Eigen::MatrixXf slice1 = matioCpp::to_eigen(matioCppMatrix2, { -1, -1, 0 }; //Equivalent to the Matlab operation matioCppMatrix2(:,:,1)
+/* 
+Obtain
+| 1  3 |
+| 2  4 |
+*/
+
+Eigen::MatrixXf slice2 = matioCpp::to_eigen(matioCppMatrix2, { 1, -1, -1 }; //Equivalent to the Matlab operation matioCppMatrix2(2,:,:)
+/*
+Obtain
+| 2 6 10|
+| 4 8 12|
+*/
+
+Eigen::MatrixXf slice3 = matioCpp::to_eigen(matioCppMatrix2, { -1, 0, 0 }; //Equivalent to the Matlab operation matioCppMatrix2(:,1,1)
+/*
+Obtain
+| 1 |
+| 2 |
+*/
+```
+In the slice, the value `-1` means that the entire dimension is taken.
 
 ``matioCpp`` also exploits [``visit_struct``](https://github.com/garbageslam/visit_struct) to parse C++ structs into ``matioCpp`` structs. Example:
 ```c++

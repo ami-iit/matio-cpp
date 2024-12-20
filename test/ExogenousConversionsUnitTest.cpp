@@ -85,6 +85,56 @@ TEST_CASE("Eigen Conversions")
 
         Eigen::MatrixXf toEigenMatrix = matioCpp::to_eigen(matioCppMatrix);
         checkSameMatrix(toEigenMatrix, matioCppMatrix);
+
+        const auto& constMatioCppMatrix = matioCppMatrix;
+        Eigen::MatrixXf toEigenMatrixConst = matioCpp::to_eigen(constMatioCppMatrix);
+        checkSameMatrix(toEigenMatrixConst, constMatioCppMatrix);
+
+        std::vector<float> tensor(12);
+        for (size_t i = 0; i < 12; ++i)
+        {
+            tensor[i] = i + 1.0;
+        }
+
+        matioCpp::MultiDimensionalArray<float> matioCppMatrix2("matrix", { 2, 2, 3 }, tensor.data());
+
+        /*
+        So we have a tensor of the type
+        | 1  3 | | 5 7 | |  9 11 |
+        | 2  4 | | 6 8 | | 10 12 |
+        */
+
+        Eigen::MatrixXf expectedSlice(2, 2);
+        expectedSlice << 1.0, 3.0,
+                         2.0, 4.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, -1, 0 }), 1e-5));
+
+
+        expectedSlice.resize(2,3);
+        expectedSlice << 2.0, 6.0, 10.0,
+                         4.0, 8.0, 12.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, {1, -1, -1 }), 1e-5));
+
+        expectedSlice.resize(2, 3);
+        expectedSlice << 3.0, 7.0, 11.0,
+                         4.0, 8.0, 12.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, 1, -1 }), 1e-5));
+
+        expectedSlice.resize(2, 1);
+        expectedSlice << 11.0,
+                         12.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, 1, 2 }), 1e-5));
+
+        expectedSlice.resize(1, 1);
+        expectedSlice << 8.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { 1, 1, 1 }), 1e-5));
+
+        const auto& constMatioCppMatrix2 = matioCppMatrix2;
+        expectedSlice.resize(2, 3);
+        expectedSlice << 1.0, 5.0, 9.0,
+                         3.0, 7.0, 11.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(constMatioCppMatrix2, { 0, -1, -1 }), 1e-5));
+
     }
 
     SECTION("From Eigen")
