@@ -40,7 +40,7 @@ inline Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> to_eigen(
  * @return A const map from the internal data of the MultiDimensionalArray
  */
 template <typename type>
-inline const Eigen::Map<Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> to_eigen(const MultiDimensionalArray<type>& input);
+inline Eigen::Map<const Eigen::Matrix<type, Eigen::Dynamic, Eigen::Dynamic>> to_eigen(const MultiDimensionalArray<type>& input);
 
 /**
  * @brief Conversion from a MultiDimensionalArray to an Eigen matrix

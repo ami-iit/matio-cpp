@@ -86,6 +86,10 @@ TEST_CASE("Eigen Conversions")
         Eigen::MatrixXf toEigenMatrix = matioCpp::to_eigen(matioCppMatrix);
         checkSameMatrix(toEigenMatrix, matioCppMatrix);
 
+        const auto& constMatioCppMatrix = matioCppMatrix;
+        Eigen::MatrixXf toEigenMatrixConst = matioCpp::to_eigen(constMatioCppMatrix);
+        checkSameMatrix(toEigenMatrixConst, constMatioCppMatrix);
+
         std::vector<float> tensor(12);
         for (size_t i = 0; i < 12; ++i)
         {
@@ -125,11 +129,11 @@ TEST_CASE("Eigen Conversions")
         expectedSlice << 8.0;
         expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { 1, 1, 1 }), 1e-5);
 
-        const auto& constMatioCppMatrix = matioCppMatrix2;
+        const auto& constMatioCppMatrix2 = matioCppMatrix2;
         expectedSlice.resize(2, 3);
         expectedSlice << 1.0, 5.0, 9.0,
                          3.0, 6.0, 11.0;
-        expectedSlice.isApprox(matioCpp::to_eigen(constMatioCppMatrix, { 0, -1, -1 }), 1e-5);
+        expectedSlice.isApprox(matioCpp::to_eigen(constMatioCppMatrix2, { 0, -1, -1 }), 1e-5);
 
     }
 
