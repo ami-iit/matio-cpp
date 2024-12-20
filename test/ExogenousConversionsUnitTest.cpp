@@ -111,29 +111,29 @@ TEST_CASE("Eigen Conversions")
 
 
         expectedSlice.resize(2,3);
-        expectedSlice << 2.0, 7.0, 10.0,
+        expectedSlice << 2.0, 6.0, 10.0,
                          4.0, 8.0, 12.0;
-        expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, {1, -1, -1 }), 1e-5);
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, {1, -1, -1 }), 1e-5));
 
         expectedSlice.resize(2, 3);
-        expectedSlice << 3.0, 6.0, 11.0,
+        expectedSlice << 3.0, 7.0, 11.0,
                          4.0, 8.0, 12.0;
-        expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, 1, -1 }), 1e-5);
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, 1, -1 }), 1e-5));
 
         expectedSlice.resize(2, 1);
         expectedSlice << 11.0,
                          12.0;
-        expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, 1, 2 }), 1e-5);
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { -1, 1, 2 }), 1e-5));
 
         expectedSlice.resize(1, 1);
         expectedSlice << 8.0;
-        expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { 1, 1, 1 }), 1e-5);
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(matioCppMatrix2, { 1, 1, 1 }), 1e-5));
 
         const auto& constMatioCppMatrix2 = matioCppMatrix2;
         expectedSlice.resize(2, 3);
         expectedSlice << 1.0, 5.0, 9.0,
-                         3.0, 6.0, 11.0;
-        expectedSlice.isApprox(matioCpp::to_eigen(constMatioCppMatrix2, { 0, -1, -1 }), 1e-5);
+                         3.0, 7.0, 11.0;
+        REQUIRE(expectedSlice.isApprox(matioCpp::to_eigen(constMatioCppMatrix2, { 0, -1, -1 }), 1e-5));
 
     }
 
